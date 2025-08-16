@@ -1,25 +1,49 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, ViewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { NgxMaskDirective } from 'ngx-mask';
 import { Cliente } from '../../shared/models/cliente.model';
 import { CommonModule } from '@angular/common';
 import { CpfValidatorDirective } from '../../shared/directives/cpf-validator.directive';
+import { InputGreaterThanZeroDirective } from '../../shared/directives/input-greater-than-zero.directive';
+import { AutocadastroService, SaveResult } from '../../services/autocadastro.service';
 
 @Component({
   selector: 'app-autocadastro',
   standalone: true,
-  imports: [NgxMaskDirective, FormsModule, CommonModule, CpfValidatorDirective],
+  imports: [NgxMaskDirective, FormsModule, CommonModule, CpfValidatorDirective, InputGreaterThanZeroDirective],
   templateUrl: './autocadastro.component.html',
   styleUrl: './autocadastro.component.css'
 })
 export class AutocadastroComponent {
+  @ViewChild('meuForm') meuForm!: NgForm;
+
   cliente: Cliente;
 
-  constructor() {
+  constructor(private clientService: AutocadastroService) {
     this.cliente = new Cliente();
   }
 
   onSubmit() {
+
+    //Marca todas as caixas como touched para aparecer os erros caso existam
+    Object.values(this.meuForm.controls).forEach(control => {
+      control.markAsTouched();
+    });
+
+    //Se tiver erros não prossegue
+    if (this.meuForm.invalid) {
+      console.log("Formulário inválido. Por favor, corrija os erros.");
+      return;
+    }
+
+    const result: SaveResult = this.clientService.saveClient(this.cliente);
+
+    if(result.success){
+      console.log(result.message);
+    }else{
+      console.log(result.message);
+    }
+
     console.log(this.cliente);
   }
 }

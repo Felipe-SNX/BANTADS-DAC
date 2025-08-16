@@ -1,7 +1,7 @@
 <main class="container-main">
     <h1>BANTADS</h1>
 
-    <form class="shadow-lg container-form" (ngSubmit)="onSubmit()">
+    <form #meuForm="ngForm" class="shadow-lg container-form" (ngSubmit)="onSubmit()">
             <h4>Dados Pessoais</h4>
             <div class="container-inputs">
                 <div class="form-group col-md-12 container-field">
@@ -16,7 +16,13 @@
                         [(ngModel)]="cliente.nome"
                         required
                     />
-                    <small id="name-warning" *ngIf="nameInput.touched && !nameInput.valid">O campo nome é obrigatório</small>
+                    <div
+                        id="name-warning"
+                        class="text-danger mt-1"
+                        *ngIf="nameInput.invalid && (nameInput.dirty || nameInput.touched)"
+                    >
+                        <small *ngIf="nameInput.errors?.['required']">O campo nome é obrigatório</small>
+                    </div>
                 </div> 
                 <div class="form-group col-md-5">
                     <label class="col-sm-2 col-form-label labels" for="CPF">CPF</label>
@@ -28,13 +34,19 @@
                         mask="000.000.000-00"
                         name="CPF"
                         aria-describedby="cpf-warning"
-                        #CPFWarning="ngModel"
+                        #CPFInput="ngModel"
                         [(ngModel)]="cliente.cpf"
                         cpfValidator
                         required
                     />
-                    <small id="cpf-warning" *ngIf="CPFWarning.touched && !CPFWarning.dirty">O campo CPF é obrigatório</small>
-                    <small id="cpf-warning" *ngIf="CPFWarning.touched && CPFWarning.errors?.['cpfInvalido']">O CPF digitado é inválido</small>
+                    <div 
+                        id="cpf-warning"
+                        *ngIf="CPFInput.invalid && (CPFInput.dirty || CPFInput.touched)"
+                        class="text-danger mt-1"
+                    >
+                        <small *ngIf="CPFInput.errors?.['required']">O campo CPF é obrigatório</small>
+                        <small *ngIf="CPFInput.errors?.['cpfInvalido']">O CPF digitado é inválido</small>
+                    </div>
                 </div>
                 <div class="form-group col-md-6">
                     <label class="col-sm-2 col-form-label labels" for="email">Email</label>
@@ -45,7 +57,19 @@
                         name="email"
                         placeholder="exemplo@email.com"
                         [(ngModel)]="cliente.email"
+                        aria-describedby="email-warning"
+                        #emailInput="ngModel"
+                        email
+                        required
                     />
+                    <div
+                        id="email-warning"
+                        class="text-danger mt-1"
+                        *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
+                    >
+                        <small *ngIf="emailInput.errors?.['required']">O campo email é obrigatório</small>
+                        <small *ngIf="emailInput.errors?.['email']">O email digitado é inválido</small>
+                    </div>
                 </div>
                 <div class="form-group col-md-5">
                     <label class="col-sm-2 col-form-label labels" for="telefone">Telefone</label>
@@ -56,7 +80,19 @@
                         name="telefone"
                         mask="(00) 0000-0000||(00) 00000-0000"
                         [(ngModel)]="cliente.telefone"
+                        aria-describedby="telefone-warning"
+                        #telefoneInput="ngModel"
+                        minlength="10"
+                        required
                     />
+                    <div
+                        id="telefone-warning"
+                        class="text-danger mt-1"
+                        *ngIf="telefoneInput.invalid && (telefoneInput.dirty || telefoneInput.touched)"
+                    >
+                        <small *ngIf="telefoneInput.errors?.['required']">O campo Telefone é obrigatório</small>
+                        <small *ngIf="telefoneInput.errors?.['minlength']">O Telefone deve ter no mínimo o DDD mais 8 dígitos</small>
+                    </div>
                 </div>
                 <div class="form-group col-md-6">
                     <label class="col-sm-2 col-form-label labels" for="salario">Salário</label>
@@ -70,8 +106,20 @@
                         decimalMarker=","
                         prefix="R$ "
                         [allowNegativeNumbers]="false"
+                        #salarioInput="ngModel"
+                        aria-describedby="salario-warning"
                         [(ngModel)]="cliente.salario"
+                        inputGreaterThanZero
+                        required
                     />
+                    <div
+                        id="salario-warning"
+                        class="text-danger mt-1"
+                        *ngIf="salarioInput.invalid && (salarioInput.touched)"
+                    >
+                        <small *ngIf="salarioInput.errors?.['required']">O campo Salário é obrigatório</small>
+                        <small *ngIf="salarioInput.errors?.['maiorQueZero']">O campo Salário deve ser maior que zero</small>
+                    </div>
                 </div>
             </div>
             <h4>Endereço</h4>
@@ -85,8 +133,20 @@
                         placeholder="XXXXX-XXX" 
                         mask="00000-000"
                         name="CEP"
+                        aria-describedby="cep-warning"
+                        #CEPInput="ngModel"
                         [(ngModel)]="cliente.endereco.cep"
+                        minlength="8"
+                        required
                     />
+                    <div
+                        id="cep-warning"
+                        class="text-danger mt-1"
+                        *ngIf="CEPInput.invalid && (CEPInput.dirty || CEPInput.touched)"
+                    >
+                        <small *ngIf="CEPInput.errors?.['required']">O campo CEP é obrigatório</small>
+                        <small *ngIf="CEPInput.errors?.['minlength']">O CEP digitado é inválido</small>
+                    </div>
                 </div>
                 <div class="form-group col-md-6">
                     <label class="col-sm-2 col-form-label labels" for="estado">Estado</label>
@@ -95,8 +155,18 @@
                         class="form-control form-control-sm" 
                         id="estado"
                         name="estado"
+                        aria-describedby="estado-warning"
+                        #estadoInput="ngModel"
                         [(ngModel)]="cliente.endereco.estado"
+                        required
                     />
+                    <div
+                        id="estado-warning"
+                        class="text-danger mt-1"
+                        *ngIf="estadoInput.invalid && (estadoInput.dirty || estadoInput.touched)"
+                    >
+                        <small *ngIf="estadoInput.errors?.['required']">O campo Estado é obrigatório</small>
+                    </div>
                 </div>
                 <div class="form-group col-md-5">
                     <label class="col-sm-2 col-form-label labels" for="cidade">Cidade</label>
@@ -105,8 +175,18 @@
                         class="form-control form-control-sm" 
                         id="cidade"
                         name="cidade"
+                        #cidadeInput="ngModel"
+                        aria-describedby="cidade-warning"
                         [(ngModel)]="cliente.endereco.cidade"
+                        required
                     />
+                    <div
+                        id="cidade-warning"
+                        class="text-danger mt-1"
+                        *ngIf="cidadeInput.invalid && (cidadeInput.dirty || cidadeInput.touched)"
+                    >
+                        <small *ngIf="cidadeInput.errors?.['required']">O campo Cidade é obrigatório</small>
+                    </div>
                 </div>
                 <div class="form-group col-md-6">
                     <label class="col-sm-5 col-form-label labels" for="tipoEnd">Tipo de Endereço</label>
@@ -116,6 +196,7 @@
                         id="tipoEnd" 
                         placeholder="Ex: Rua, Avenida"
                         name="tipoEnd"
+                        #tipoInput="ngModel"
                         [(ngModel)]="cliente.endereco.tipo"
                     />
                 </div>
@@ -126,8 +207,18 @@
                         class="form-control form-control-sm" 
                         id="logradouro"
                         name="logradouro"
+                        aria-describedby="logradouro-warning"
+                        #logradouroInput="ngModel"
                         [(ngModel)]="cliente.endereco.logradouro"
+                        required
                     />
+                    <div
+                        id="logradouro-warning"
+                        class="text-danger mt-1"
+                        *ngIf="logradouroInput.invalid && (logradouroInput.dirty || logradouroInput.touched)"
+                    >
+                        <small *ngIf="logradouroInput.errors?.['required']">O campo Logradouro é obrigatório</small>
+                    </div>
                 </div>
                 <div class="form-group col-md-5">
                     <label class="col-sm-2 col-form-label labels" for="number">Número</label>
@@ -137,8 +228,20 @@
                         id="numero" 
                         mask="0*"
                         name="numero"
+                        aria-describedby="numero-warning"
+                        #numeroInput="ngModel"
                         [(ngModel)]="cliente.endereco.numero"
+                        inputGreaterThanZero
+                        required
                     />
+                    <div
+                        id="numero-warning"
+                        class="text-danger mt-1"
+                        *ngIf="numeroInput.invalid && (numeroInput.touched)"
+                    >
+                        <small *ngIf="numeroInput.errors?.['required']">O campo Número é obrigatório</small>
+                        <small *ngIf="numeroInput.errors?.['maiorQueZero']">O campo Número deve ser maior que zero</small>
+                    </div>
                 </div>
                 <div class="form- col-md-6">
                     <label class="col-sm-2 col-form-label labels" for="complemento">Complemento</label>

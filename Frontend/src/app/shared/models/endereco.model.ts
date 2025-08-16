@@ -7,7 +7,5 @@ export class Endereco {
         public cep: string = '',
         public cidade: string = '',
         public estado: string = ''
-    ){
-
-    }
+    ){}
 }

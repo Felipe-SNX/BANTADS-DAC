@@ -1,59 +1,155 @@
 <main class="container-main">
     <h1>BANTADS</h1>
 
-    <form class="shadow-lg container-form">
+    <form class="shadow-lg container-form" (ngSubmit)="onSubmit()">
             <h4>Dados Pessoais</h4>
             <div class="container-inputs">
                 <div class="form-group col-md-12 container-field">
                     <label class="col-sm-2 col-form-label labels" for="name">Nome</label>
-                    <input type="text" class="form-control form-control-sm" id="name"/>
+                    <input 
+                        type="text" 
+                        class="form-control form-control-sm" 
+                        id="name" 
+                        name="name"
+                        aria-describedby="name-warning"
+                        #nameInput="ngModel"
+                        [(ngModel)]="cliente.nome"
+                        required
+                    />
+                    <small id="name-warning" *ngIf="nameInput.touched && !nameInput.valid">O campo nome é obrigatório</small>
                 </div> 
                 <div class="form-group col-md-5">
                     <label class="col-sm-2 col-form-label labels" for="CPF">CPF</label>
-                    <input type="text" class="form-control form-control-sm" id="CPF" placeholder="XXX.XXX.XXX-XX"/>
+                    <input 
+                        type="text" 
+                        class="form-control form-control-sm" 
+                        id="CPF" 
+                        placeholder="XXX.XXX.XXX-XX" 
+                        mask="000.000.000-00"
+                        name="CPF"
+                        aria-describedby="cpf-warning"
+                        #CPFWarning="ngModel"
+                        [(ngModel)]="cliente.cpf"
+                        cpfValidator
+                        required
+                    />
+                    <small id="cpf-warning" *ngIf="CPFWarning.touched && !CPFWarning.dirty">O campo CPF é obrigatório</small>
+                    <small id="cpf-warning" *ngIf="CPFWarning.touched && CPFWarning.errors?.['cpfInvalido']">O CPF digitado é inválido</small>
                 </div>
                 <div class="form-group col-md-6">
                     <label class="col-sm-2 col-form-label labels" for="email">Email</label>
-                    <input type="email" class="form-control form-control-sm" id="email" placeholder="exemplo@email.com"/>
+                    <input 
+                        type="email" 
+                        class="form-control form-control-sm" 
+                        id="email" 
+                        name="email"
+                        placeholder="exemplo@email.com"
+                        [(ngModel)]="cliente.email"
+                    />
                 </div>
                 <div class="form-group col-md-5">
                     <label class="col-sm-2 col-form-label labels" for="telefone">Telefone</label>
-                    <input type="text" class="form-control form-control-sm" id="telefone" placeholder="(XX)XXXXX-XXXX"/>
+                    <input 
+                        type="text" 
+                        class="form-control form-control-sm" 
+                        id="telefone" 
+                        name="telefone"
+                        mask="(00) 0000-0000||(00) 00000-0000"
+                        [(ngModel)]="cliente.telefone"
+                    />
                 </div>
                 <div class="form-group col-md-6">
                     <label class="col-sm-2 col-form-label labels" for="salario">Salário</label>
-                    <input type="text" class="form-control form-control-sm" id="salario"/>
+                    <input 
+                        type="text" 
+                        class="form-control form-control-sm" 
+                        id="salario" 
+                        name="salario"
+                        mask="separator.2" 
+                        thousandSeparator="."
+                        decimalMarker=","
+                        prefix="R$ "
+                        [allowNegativeNumbers]="false"
+                        [(ngModel)]="cliente.salario"
+                    />
                 </div>
             </div>
             <h4>Endereço</h4>
             <div class="container-inputs">
                 <div class="form-group col-md-5">
                     <label class="col-sm-2 col-form-label labels" for="CEP">CEP</label>
-                    <input type="text" class="form-control form-control-sm" id="CEP" placeholder="XXXXX-XXX"/>
+                    <input 
+                        type="text" 
+                        class="form-control form-control-sm" 
+                        id="CEP" 
+                        placeholder="XXXXX-XXX" 
+                        mask="00000-000"
+                        name="CEP"
+                        [(ngModel)]="cliente.endereco.cep"
+                    />
                 </div>
                 <div class="form-group col-md-6">
                     <label class="col-sm-2 col-form-label labels" for="estado">Estado</label>
-                    <input type="text" class="form-control form-control-sm" id="estado"/>
+                    <input 
+                        type="text" 
+                        class="form-control form-control-sm" 
+                        id="estado"
+                        name="estado"
+                        [(ngModel)]="cliente.endereco.estado"
+                    />
                 </div>
                 <div class="form-group col-md-5">
                     <label class="col-sm-2 col-form-label labels" for="cidade">Cidade</label>
-                    <input type="text" class="form-control form-control-sm" id="cidade"/>
+                    <input 
+                        type="text" 
+                        class="form-control form-control-sm" 
+                        id="cidade"
+                        name="cidade"
+                        [(ngModel)]="cliente.endereco.cidade"
+                    />
                 </div>
                 <div class="form-group col-md-6">
                     <label class="col-sm-5 col-form-label labels" for="tipoEnd">Tipo de Endereço</label>
-                    <input type="text" class="form-control form-control-sm" id="tipoEnd" placeholder="Ex: Rua, Avenida"/>
+                    <input 
+                        type="text" 
+                        class="form-control form-control-sm" 
+                        id="tipoEnd" 
+                        placeholder="Ex: Rua, Avenida"
+                        name="tipoEnd"
+                        [(ngModel)]="cliente.endereco.tipo"
+                    />
                 </div>
                 <div class="form-group col-md-12">
                     <label class="col-sm-2 col-form-label labels" for="logradouro">Logradouro</label>
-                    <input type="text" class="form-control form-control-sm" id="logradouro"/>
+                    <input 
+                        type="text" 
+                        class="form-control form-control-sm" 
+                        id="logradouro"
+                        name="logradouro"
+                        [(ngModel)]="cliente.endereco.logradouro"
+                    />
                 </div>
                 <div class="form-group col-md-5">
-                    <label class="col-sm-2 col-form-label labels" for="numero">Número</label>
-                    <input type="text" class="form-control form-control-sm" id="numero"/>
+                    <label class="col-sm-2 col-form-label labels" for="number">Número</label>
+                    <input 
+                        type="text" 
+                        class="form-control form-control-sm" 
+                        id="numero" 
+                        mask="0*"
+                        name="numero"
+                        [(ngModel)]="cliente.endereco.numero"
+                    />
                 </div>
                 <div class="form- col-md-6">
                     <label class="col-sm-2 col-form-label labels" for="complemento">Complemento</label>
-                    <input type="text" class="form-control form-control-sm" id="complemento" placeholder="Ex: Casa, Apartamento"/>
+                    <input 
+                        type="text" 
+                        class="form-control form-control-sm" 
+                        id="complemento" 
+                        placeholder="Ex: Casa, Apartamento"
+                        name="complemento"
+                        [(ngModel)]="cliente.endereco.complemento"
+                    />
                 </div>
             </div>
         <div class="button-container">

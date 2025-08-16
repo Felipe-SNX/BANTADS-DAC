@@ -40,3 +40,7 @@ h4{
 .labels{
     font-weight: 600;
 }
+
+small{
+    color: red;
+}

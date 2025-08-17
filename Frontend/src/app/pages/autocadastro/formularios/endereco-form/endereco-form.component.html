@@ -1,0 +1,134 @@
+<fieldset ngModelGroup="endereco">
+    <h4>Endereço</h4>
+    <div class="container-inputs">
+        <div class="form-group col-md-5">
+            <label class="col-sm-2 col-form-label labels" for="CEP">CEP</label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="CEP" 
+                placeholder="XXXXX-XXX" 
+                mask="00000-000"
+                name="CEP"
+                aria-describedby="cep-warning"
+                #CEPInput="ngModel"
+                ngModel
+                minlength="8"
+                required
+            />
+            <div
+                id="cep-warning"
+                class="text-danger mt-1"
+                *ngIf="CEPInput.invalid && (CEPInput.dirty || CEPInput.touched)"
+            >
+                <small *ngIf="CEPInput.errors?.['required']">O campo CEP é obrigatório</small>
+                <small *ngIf="CEPInput.errors?.['minlength']">O CEP digitado é inválido</small>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <label class="col-sm-2 col-form-label labels" for="estado">Estado</label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="estado"
+                name="estado"
+                aria-describedby="estado-warning"
+                #estadoInput="ngModel"
+                ngModel
+                required
+            />
+            <div
+                id="estado-warning"
+                class="text-danger mt-1"
+                *ngIf="estadoInput.invalid && (estadoInput.dirty || estadoInput.touched)"
+            >
+                <small *ngIf="estadoInput.errors?.['required']">O campo Estado é obrigatório</small>
+            </div>
+        </div>
+        <div class="form-group col-md-5">
+            <label class="col-sm-2 col-form-label labels" for="cidade">Cidade</label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="cidade"
+                name="cidade"
+                #cidadeInput="ngModel"
+                aria-describedby="cidade-warning"
+                ngModel
+                required
+            />
+            <div
+                id="cidade-warning"
+                class="text-danger mt-1"
+                *ngIf="cidadeInput.invalid && (cidadeInput.dirty || cidadeInput.touched)"
+            >
+                <small *ngIf="cidadeInput.errors?.['required']">O campo Cidade é obrigatório</small>
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <label class="col-sm-5 col-form-label labels" for="tipoEnd">Tipo de Endereço</label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="tipoEnd" 
+                placeholder="Ex: Rua, Avenida"
+                name="tipoEnd"
+                #tipoInput="ngModel"
+                ngModel
+            />
+        </div>
+        <div class="form-group col-md-12">
+            <label class="col-sm-2 col-form-label labels" for="logradouro">Logradouro</label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="logradouro"
+                name="logradouro"
+                aria-describedby="logradouro-warning"
+                #logradouroInput="ngModel"
+                ngModel
+                required
+            />
+            <div
+                id="logradouro-warning"
+                class="text-danger mt-1"
+                *ngIf="logradouroInput.invalid && (logradouroInput.dirty || logradouroInput.touched)"
+            >
+                <small *ngIf="logradouroInput.errors?.['required']">O campo Logradouro é obrigatório</small>
+            </div>
+        </div>
+        <div class="form-group col-md-5">
+            <label class="col-sm-2 col-form-label labels" for="number">Número</label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="numero" 
+                mask="0*"
+                name="numero"
+                aria-describedby="numero-warning"
+                #numeroInput="ngModel"
+                ngModel
+                required
+            />
+            <div
+                id="numero-warning"
+                class="text-danger mt-1"
+                *ngIf="numeroInput.invalid && (numeroInput.touched)"
+            >
+                <small *ngIf="numeroInput.errors?.['required']">O campo Número é obrigatório</small>
+                <small *ngIf="numeroInput.errors?.['maiorQueZero']">O campo Número deve ser maior que zero</small>
+            </div>
+        </div>
+        <div class="form- col-md-6">
+            <label class="col-sm-2 col-form-label labels" for="complemento">Complemento</label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="complemento" 
+                placeholder="Ex: Casa, Apartamento"
+                name="complemento"
+                ngModel
+            />
+        </div>
+    </div>
+</fieldset>

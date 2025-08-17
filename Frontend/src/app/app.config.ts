@@ -2,7 +2,7 @@ import { APP_INITIALIZER, ApplicationConfig, provideZoneChangeDetection } from '
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideNgxMask } from 'ngx-mask';
-import { MockDataService } from './services/mock-data.service';
+import { MockDataService } from './services/mock/mock-data.service';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
 

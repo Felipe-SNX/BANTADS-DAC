@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Cliente } from '../shared/models/cliente.model';
-import { Endereco } from '../shared/models/endereco.model';
-import { Gerente } from '../shared/models/gerente.model';
+import { Cliente } from '../../shared/models/cliente.model';
+import { Endereco } from '../../shared/models/endereco.model';
+import { Gerente } from '../../shared/models/gerente.model';
 
 @Injectable({
   providedIn: 'root'

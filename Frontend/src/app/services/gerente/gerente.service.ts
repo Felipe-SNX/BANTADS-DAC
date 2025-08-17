@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Gerente } from '../shared/models/gerente.model';
-import { Cliente } from '../shared/models/cliente.model';
+import { Gerente } from '../../shared/models/gerente.model';
+import { Cliente } from '../../shared/models/cliente.model';
 
 const LS_CHAVE = "gerentes";
 

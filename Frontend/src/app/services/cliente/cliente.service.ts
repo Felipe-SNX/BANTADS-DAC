@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Cliente } from '../shared/models/cliente.model';
+import { Cliente } from '../../shared/models/cliente.model';
 
 const LS_CHAVE = "clientes";
 
@@ -11,7 +11,7 @@ export interface SaveResult {
 @Injectable({
   providedIn: 'root'
 })
-export class AutocadastroService {
+export class ClienteService {
 
   constructor() { }
 

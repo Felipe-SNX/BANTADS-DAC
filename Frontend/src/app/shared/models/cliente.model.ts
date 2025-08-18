@@ -9,6 +9,9 @@ export class Cliente {
         public cpf: string = '',
         public endereco: Endereco = new Endereco(),
         public telefone: string = '',
-        public salario: number = 0
+        public salario: number = 0,
+        public limite: number = 0,
+        public saldo: number = 0,
+        public gerenteNome: string = ''
     ){}
 }

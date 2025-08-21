@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { Cliente } from '../../shared/models/cliente.model';
 import { Endereco } from '../../shared/models/endereco.model';
 import { Gerente } from '../../shared/models/gerente.model';
+import { Conta } from '../../shared/models/conta.model';
+import { HistoricoMovimentacoes } from '../../shared/models/historico-movimentacoes.model';
+import { TipoMovimentacao } from '../../shared/enums/tipoMovimentacao';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +27,29 @@ export class MockDataService {
   private readonly gerente2 = new Gerente(2, "Godophredo", "ger2@bantads.com.br", "64065268052", "4180808080", [this.cliente2, this.cliente5]);
   private readonly gerente3 = new Gerente(3, "Gyândula", "ger3@bantads.com.br", "23862179060", "4170707070", [this.cliente3]);
   
+  private readonly conta1 = new Conta(1291, this.cliente1, new Date("01/01/2000"), 800.00, 5000.00, this.gerente1);
+  private readonly conta2 = new Conta(950, this.cliente2, new Date("10/10/1990"), -10000.00, 10000.00, this.gerente2);
+  private readonly conta3 = new Conta(8573, this.cliente3, new Date("12/12/2012"), -1000.00, 1500.00, this.gerente3);
+  private readonly conta4 = new Conta(5887, this.cliente4, new Date("02/22/2022"), 150000.00, 0.00, this.gerente1);
+  private readonly conta5 = new Conta(7617, this.cliente5, new Date("01/01/2025"), 1500.00, 0.00, this.gerente2);
+
+  private readonly historicoMovimentacao1 = new HistoricoMovimentacoes(new Date("01/01/2020 10:00"), TipoMovimentacao.DEPOSITO, this.cliente1, null, 1000.00);
+  private readonly historicoMovimentacao2 = new HistoricoMovimentacoes(new Date("01/01/2020 11:00"), TipoMovimentacao.DEPOSITO, this.cliente1, null, 900.00);
+  private readonly historicoMovimentacao3 = new HistoricoMovimentacoes(new Date("01/01/2020 12:00"), TipoMovimentacao.SAQUE, this.cliente1, null, 550.00);
+  private readonly historicoMovimentacao4 = new HistoricoMovimentacoes(new Date("01/01/2020 13:00"), TipoMovimentacao.SAQUE, this.cliente1, null, 350.00);
+  private readonly historicoMovimentacao5 = new HistoricoMovimentacoes(new Date("01/10/2020 15:00"), TipoMovimentacao.DEPOSITO, this.cliente1, null, 2000.00);
+  private readonly historicoMovimentacao6 = new HistoricoMovimentacoes(new Date("01/15/2020 08:00"), TipoMovimentacao.SAQUE, this.cliente1, null, 500.00);
+  private readonly historicoMovimentacao7 = new HistoricoMovimentacoes(new Date("01/20/2020 12:00"), TipoMovimentacao.TRANSFERENCIA, this.cliente1, this.cliente2, 1700.00);
+  private readonly historicoMovimentacao8 = new HistoricoMovimentacoes(new Date("01/01/2025 12:00"), TipoMovimentacao.DEPOSITO, this.cliente2, null, 1000.00);
+  private readonly historicoMovimentacao9 = new HistoricoMovimentacoes(new Date("01/02/2025 10:00"), TipoMovimentacao.DEPOSITO, this.cliente2, null, 5000.00);
+  private readonly historicoMovimentacao10 = new HistoricoMovimentacoes(new Date("01/10/2025 10:00"), TipoMovimentacao.SAQUE, this.cliente2, null, 200.00);
+  private readonly historicoMovimentacao11 = new HistoricoMovimentacoes(new Date("02/05/2025 10:00"), TipoMovimentacao.DEPOSITO, this.cliente2, null, 7000.00);
+  private readonly historicoMovimentacao12 = new HistoricoMovimentacoes(new Date("05/05/2025 00:00"), TipoMovimentacao.DEPOSITO, this.cliente3, null, 1000.00);
+  private readonly historicoMovimentacao13 = new HistoricoMovimentacoes(new Date("05/06/2025 00:00"), TipoMovimentacao.SAQUE, this.cliente3, null, 2000.00);
+  private readonly historicoMovimentacao14 = new HistoricoMovimentacoes(new Date("06/01/2025 00:00"), TipoMovimentacao.DEPOSITO, this.cliente4, null, 150000.00);
+  private readonly historicoMovimentacao15 = new HistoricoMovimentacoes(new Date("07/01/2025 00:00"), TipoMovimentacao.DEPOSITO, this.cliente5, null, 1500.00);
+
+  
   public loadMockData(): void {
     const mockCustomers = [
       this.cliente1,
@@ -39,6 +65,32 @@ export class MockDataService {
       this.gerente3
     ];
 
+    const mockContas = [
+      this.conta1,
+      this.conta2,
+      this.conta3,
+      this.conta4,
+      this.conta5
+    ];
+
+    const mockMovimentacoes = [
+      this.historicoMovimentacao1,
+      this.historicoMovimentacao2,
+      this.historicoMovimentacao3,
+      this.historicoMovimentacao4,
+      this.historicoMovimentacao5,
+      this.historicoMovimentacao6,
+      this.historicoMovimentacao7,
+      this.historicoMovimentacao8,
+      this.historicoMovimentacao9,
+      this.historicoMovimentacao10,
+      this.historicoMovimentacao11,
+      this.historicoMovimentacao12,
+      this.historicoMovimentacao13,
+      this.historicoMovimentacao14,
+      this.historicoMovimentacao15
+    ]
+
     // Verifica se os dados já existem para não ficar sobrescrevendo sem necessidade
     if (!localStorage.getItem('clientes')) {
       localStorage.setItem('clientes', JSON.stringify(mockCustomers));
@@ -46,6 +98,14 @@ export class MockDataService {
 
     if (!localStorage.getItem('gerentes')) {
       localStorage.setItem('gerentes', JSON.stringify(mockManagers));
+    }
+
+    if (!localStorage.getItem('contas')) {
+      localStorage.setItem('contas', JSON.stringify(mockContas));
+    }
+
+    if (!localStorage.getItem('movimentacoes')) {
+      localStorage.setItem('movimentacoes', JSON.stringify(mockMovimentacoes));
     }
   }
 }

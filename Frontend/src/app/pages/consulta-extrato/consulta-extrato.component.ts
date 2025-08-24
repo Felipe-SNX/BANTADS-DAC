@@ -125,7 +125,7 @@ export class ConsultaExtratoComponent implements OnInit{
   }
 
   filterCustomerTransactionsForDate() {
-    const transactions = this.accountService.listCustomerTransactions(this.id);
+    const transactions = this.processTransactions(this.accountService.listCustomerTransactions(this.id));
 
     if (!this.dataInicio && !this.dataFim) {
       this.transacoes = this.processTransactions(transactions);
@@ -153,7 +153,7 @@ export class ConsultaExtratoComponent implements OnInit{
       return atendeFiltroInicio && atendeFiltroFim;
     });
 
-    this.transacoes = this.processTransactions(filteredTransactions);
+    this.transacoes = filteredTransactions;
   }
 
 

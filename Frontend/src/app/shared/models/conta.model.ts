@@ -1,6 +1,5 @@
 import { Cliente } from "./cliente.model";
 import { Gerente } from "./gerente.model";
-import { HistoricoMovimentacoes } from "./historico-movimentacoes.model";
 
 export class Conta {
 

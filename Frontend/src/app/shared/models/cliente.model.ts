@@ -1,3 +1,4 @@
+import { Conta } from "./conta.model";
 import { Endereco } from "./endereco.model";
 
 export class Cliente {
@@ -12,6 +13,6 @@ export class Cliente {
         public salario: number = 0,
         public limite: number = 0,
         public saldo: number = 0,
-        public gerenteNome: string = ''
+        public gerenteNome: string = '',
     ){}
 }

@@ -28,6 +28,12 @@ export class ClienteService {
     return customers ? JSON.parse(customers) : [];
   }
 
+  getClientById(id: number): Cliente | undefined {
+    const customers: Cliente[] = this.listClient();
+    const customer: Cliente | undefined = customers.find((currentCustomer) => currentCustomer.id === id)
+    return customer;
+  }
+
   saveClient(newClient: Cliente): SaveResult{
     if(!this.validClient(newClient)){
       return {

@@ -1,18 +1,18 @@
-<main class="d-flex flex-column align-items-start gap-4 w-100 vh-100 p-4">
+<main class="d-flex flex-column align-items-center gap-2 w-100 vh-100 p-4 w-100">
     <h1>Extrato da Conta</h1>
-    <section class="d-flex flex-column w-100 rounded-2 gap-3 border shadow-sm px-3 py-2">
-        <h3 class="ms-2">Filtrar por Período</h3>
-        <div class="d-flex flex-row gap-5 w-100">
-            <div class="mb-3 ms-2 w-25 gap-2">
-                <label for="dataInicio">Data Início</label>
-                <input id="dataInicio" class="form-control w-75 input-date" type="date" placeholder="DD/MM/AAAA"/>
-            </div>
-            <div class="mb-3 ms-2 w-25 gap-2">
-                <label for="dataFim">Data Fim</label>
-                <input id="dataFim" class="form-control w-75 input-date" type="date" placeholder="DD/MM/AAAA"/>
-            </div>
+    <section class="d-flex flex-row flex-wrap justify-content-center w-50 gap-5">
+        <div class="mb-3 gap-2 w-25">
+            <label for="dataInicio">Data Início</label>
+            <input [(ngModel)]="dataInicio" id="dataInicio" class="form-control w-100 input-date" type="date" placeholder="DD/MM/AAAA"/>
+        </div>
+        <div class="mb-3 ms-2 gap-2 w-25">
+            <label for="dataFim">Data Fim</label>
+            <input [(ngModel)]="dataFim" id="dataFim" class="form-control w-100 input-date" type="date" placeholder="DD/MM/AAAA"/>
         </div>
     </section>
+    <div class="d-flex justify-content-center w-25">
+        <button (click)="filterCustomerTransactionsForDate()" class="btn btn-primary w-25">Buscar</button>
+    </div>
     <section class="d-flex flex-column w-100 gap-3 p-2">
         <h3>Detalhes das Transações e Saldo Diário</h3>
         <table class="table table-hover border">
@@ -20,22 +20,25 @@
                 <tr>
                     <th>Data/Hora</th>
                     <th>Tipo de Operação</th>
-                    <th>Cliente Origem/Destino</th>
+                    <th>Cliente Origem</th>
+                    <th>Cliente Destino</th>
                     <th>Valor</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>12/08/2025 14:30</td>
-                    <td>Saque</td>
-                    <td></td>
-                    <td>R$100,00</td>
-                </tr>
-                <tr>
-                    <td>11/08/2025 09:27</td>
-                    <td>Depósito</td>
-                    <td></td>
-                    <td>R$300,00</td>
+                <tr 
+                    *ngFor="let transacao of transacoes"
+                    [ngClass]="{
+                        'table-primary': transacao.tipo === 'DEPÓSITO' || (transacao.tipo === 'TRANSFERÊNCIA' && (transacao.clienteDestino?.id === id)),
+                        'table-danger': transacao.tipo === 'SAQUE' || (transacao.tipo === 'TRANSFERÊNCIA' && (transacao.clienteOrigem?.id === id)),
+                        'table-secondary': transacao.tipo === 'SALDO'
+                    }"
+                >
+                    <td>{{transacao.data | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+                    <td>{{transacao.tipo}}</td>
+                    <td>{{transacao.clienteOrigem?.nome}}</td>
+                    <td>{{transacao.clienteDestino?.nome}}</td>
+                    <td>{{transacao.valor | currency:'BRL'}}</td>
                 </tr>
             </tbody>
         </table>

@@ -3,7 +3,7 @@ import { Cliente } from '../../shared/models/cliente.model';
 import { Endereco } from '../../shared/models/endereco.model';
 import { Gerente } from '../../shared/models/gerente.model';
 import { Conta } from '../../shared/models/conta.model';
-import { HistoricoMovimentacoes } from '../../shared/models/historico-movimentacoes.model';
+import { Transacao } from '../../shared/models/transacao.model';
 import { TipoMovimentacao } from '../../shared/enums/tipoMovimentacao';
 
 @Injectable({
@@ -33,21 +33,21 @@ export class MockDataService {
   private readonly conta4 = new Conta(5887, this.cliente4, new Date("02/22/2022"), 150000.00, 0.00, this.gerente1);
   private readonly conta5 = new Conta(7617, this.cliente5, new Date("01/01/2025"), 1500.00, 0.00, this.gerente2);
 
-  private readonly historicoMovimentacao1 = new HistoricoMovimentacoes(new Date("01/01/2020 10:00"), TipoMovimentacao.DEPOSITO, this.cliente1, null, 1000.00);
-  private readonly historicoMovimentacao2 = new HistoricoMovimentacoes(new Date("01/01/2020 11:00"), TipoMovimentacao.DEPOSITO, this.cliente1, null, 900.00);
-  private readonly historicoMovimentacao3 = new HistoricoMovimentacoes(new Date("01/01/2020 12:00"), TipoMovimentacao.SAQUE, this.cliente1, null, 550.00);
-  private readonly historicoMovimentacao4 = new HistoricoMovimentacoes(new Date("01/01/2020 13:00"), TipoMovimentacao.SAQUE, this.cliente1, null, 350.00);
-  private readonly historicoMovimentacao5 = new HistoricoMovimentacoes(new Date("01/10/2020 15:00"), TipoMovimentacao.DEPOSITO, this.cliente1, null, 2000.00);
-  private readonly historicoMovimentacao6 = new HistoricoMovimentacoes(new Date("01/15/2020 08:00"), TipoMovimentacao.SAQUE, this.cliente1, null, 500.00);
-  private readonly historicoMovimentacao7 = new HistoricoMovimentacoes(new Date("01/20/2020 12:00"), TipoMovimentacao.TRANSFERENCIA, this.cliente1, this.cliente2, 1700.00);
-  private readonly historicoMovimentacao8 = new HistoricoMovimentacoes(new Date("01/01/2025 12:00"), TipoMovimentacao.DEPOSITO, this.cliente2, null, 1000.00);
-  private readonly historicoMovimentacao9 = new HistoricoMovimentacoes(new Date("01/02/2025 10:00"), TipoMovimentacao.DEPOSITO, this.cliente2, null, 5000.00);
-  private readonly historicoMovimentacao10 = new HistoricoMovimentacoes(new Date("01/10/2025 10:00"), TipoMovimentacao.SAQUE, this.cliente2, null, 200.00);
-  private readonly historicoMovimentacao11 = new HistoricoMovimentacoes(new Date("02/05/2025 10:00"), TipoMovimentacao.DEPOSITO, this.cliente2, null, 7000.00);
-  private readonly historicoMovimentacao12 = new HistoricoMovimentacoes(new Date("05/05/2025 00:00"), TipoMovimentacao.DEPOSITO, this.cliente3, null, 1000.00);
-  private readonly historicoMovimentacao13 = new HistoricoMovimentacoes(new Date("05/06/2025 00:00"), TipoMovimentacao.SAQUE, this.cliente3, null, 2000.00);
-  private readonly historicoMovimentacao14 = new HistoricoMovimentacoes(new Date("06/01/2025 00:00"), TipoMovimentacao.DEPOSITO, this.cliente4, null, 150000.00);
-  private readonly historicoMovimentacao15 = new HistoricoMovimentacoes(new Date("07/01/2025 00:00"), TipoMovimentacao.DEPOSITO, this.cliente5, null, 1500.00);
+  private readonly historicoMovimentacao1 = new Transacao(new Date("01/01/2020 10:00"), TipoMovimentacao.DEPOSITO, this.cliente1, null, 1000.00);
+  private readonly historicoMovimentacao2 = new Transacao(new Date("01/01/2020 11:00"), TipoMovimentacao.DEPOSITO, this.cliente1, null, 900.00);
+  private readonly historicoMovimentacao3 = new Transacao(new Date("01/01/2020 12:00"), TipoMovimentacao.SAQUE, this.cliente1, null, 550.00);
+  private readonly historicoMovimentacao4 = new Transacao(new Date("01/01/2020 13:00"), TipoMovimentacao.SAQUE, this.cliente1, null, 350.00);
+  private readonly historicoMovimentacao5 = new Transacao(new Date("01/10/2020 15:00"), TipoMovimentacao.DEPOSITO, this.cliente1, null, 2000.00);
+  private readonly historicoMovimentacao6 = new Transacao(new Date("01/15/2020 08:00"), TipoMovimentacao.SAQUE, this.cliente1, null, 500.00);
+  private readonly historicoMovimentacao7 = new Transacao(new Date("01/20/2020 12:00"), TipoMovimentacao.TRANSFERENCIA, this.cliente1, this.cliente2, 1700.00);
+  private readonly historicoMovimentacao8 = new Transacao(new Date("01/01/2025 12:00"), TipoMovimentacao.DEPOSITO, this.cliente2, null, 1000.00);
+  private readonly historicoMovimentacao9 = new Transacao(new Date("01/02/2025 10:00"), TipoMovimentacao.DEPOSITO, this.cliente2, null, 5000.00);
+  private readonly historicoMovimentacao10 = new Transacao(new Date("01/10/2025 10:00"), TipoMovimentacao.SAQUE, this.cliente2, null, 200.00);
+  private readonly historicoMovimentacao11 = new Transacao(new Date("02/05/2025 10:00"), TipoMovimentacao.DEPOSITO, this.cliente2, null, 7000.00);
+  private readonly historicoMovimentacao12 = new Transacao(new Date("05/05/2025 00:00"), TipoMovimentacao.DEPOSITO, this.cliente3, null, 1000.00);
+  private readonly historicoMovimentacao13 = new Transacao(new Date("05/06/2025 00:00"), TipoMovimentacao.SAQUE, this.cliente3, null, 2000.00);
+  private readonly historicoMovimentacao14 = new Transacao(new Date("06/01/2025 00:00"), TipoMovimentacao.DEPOSITO, this.cliente4, null, 150000.00);
+  private readonly historicoMovimentacao15 = new Transacao(new Date("07/01/2025 00:00"), TipoMovimentacao.DEPOSITO, this.cliente5, null, 1500.00);
 
   
   public loadMockData(): void {

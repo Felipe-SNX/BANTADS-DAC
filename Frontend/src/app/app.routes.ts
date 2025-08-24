@@ -6,5 +6,5 @@ import { ConsultaExtratoComponent } from './pages/consulta-extrato/consulta-extr
 export const routes: Routes = [
     { path: 'autocadastro', component: AutocadastroComponent},
     { path: 'atualizarcliente', component: AtualizarClienteComponent},
-    { path: 'consultaExtrato', component: ConsultaExtratoComponent}
+    { path: 'consultaExtrato/:id', component: ConsultaExtratoComponent}
 ];

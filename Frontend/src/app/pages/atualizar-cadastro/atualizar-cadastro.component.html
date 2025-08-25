@@ -1,0 +1,40 @@
+<main class="container-main">
+  <h1>BANTADS</h1>
+
+  <form #meuForm="ngForm" class="shadow-lg container-form" (ngSubmit)="onSubmit()">
+
+    <div class="container-page" [hidden]="etapaAtual !== 1">
+      <pessoa-form></pessoa-form>
+    </div>
+
+    <div class="container-page" [hidden]="etapaAtual !== 2">
+        <endereco-form></endereco-form>
+    </div>
+
+    <div class="button-container" *ngIf="etapaAtual === 1">
+        <button 
+            type="button" 
+            class="btn btn-secondary"
+        >
+            Cancelar
+        </button>
+        <button 
+            type="button" 
+            class="btn btn-primary"
+            (click)="avancarEtapa()" 
+        >
+            Avançar
+        </button>
+    </div>
+    <div class="button-container"  *ngIf="etapaAtual === 2">
+        <button 
+            type="button" 
+            (click)="voltarEtapa()" 
+            class="btn btn-secondary"
+        >
+            Voltar
+        </button>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </div>
+  </form>
+</main>

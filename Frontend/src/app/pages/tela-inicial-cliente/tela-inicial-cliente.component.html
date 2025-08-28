@@ -1,0 +1,22 @@
+<div class="home-container">
+  <app-sidebar (actionSelected)="onActionSelected($event)"></app-sidebar>
+  
+  <div class="main-content">
+    <header class="content-header">
+      <h1>Bem-vindo ao BANTADS</h1>
+    </header>
+    
+    <div class="dashboard">
+      <div class="welcome-card">
+        <h2>Olá, {{ cliente?.nome }}!</h2>
+        <p>Número da conta: {{ conta?.numConta }}</p>
+        <div class="balance">
+          <h3>Saldo disponível</h3>
+          <p class="balance-value" [class.negative]="saldoNegativo">
+            R$ {{ conta?.saldo?.toFixed(2) }}
+          </p>
+        </div>
+      </div>            
+    </div>
+  </div>
+</div>

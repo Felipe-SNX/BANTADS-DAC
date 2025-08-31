@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Gerente } from '../../shared/models/gerente.model';
 import { Cliente } from '../../shared/models/cliente.model';
+import { ContaService } from '../conta/conta.service';
 
 const LS_CHAVE = "gerentes";
 
@@ -9,7 +10,7 @@ const LS_CHAVE = "gerentes";
 })
 export class GerenteService {
 
-  constructor() { }
+  constructor(private readonly accountService: ContaService) { }
 
   listManagers(): Gerente[] {
     const managers = localStorage[LS_CHAVE];
@@ -39,5 +40,9 @@ export class GerenteService {
     });
 
     localStorage.setItem(LS_CHAVE, JSON.stringify(updatedManagers));
+  }
+
+  approveCustomer(customer: Cliente, manager: Gerente): void{
+    this.accountService.createAccount(customer, manager);
   }
 }

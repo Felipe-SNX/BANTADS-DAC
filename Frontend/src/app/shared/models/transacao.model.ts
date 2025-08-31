@@ -1,4 +1,4 @@
-import { TipoMovimentacao } from "../enums/tipoMovimentacao";
+import { TipoMovimentacao } from "../enums/TipoMovimentacao";
 import { Cliente } from "./cliente.model";
 
 export class Transacao {

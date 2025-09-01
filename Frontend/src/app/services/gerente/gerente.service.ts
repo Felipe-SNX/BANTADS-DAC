@@ -45,4 +45,8 @@ export class GerenteService {
   approveCustomer(customer: Cliente, manager: Gerente): void{
     this.accountService.createAccount(customer, manager);
   }
+
+  rejectCustomer(customer: Cliente, rejectionReason: string){
+    
+  }
 }

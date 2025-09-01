@@ -1,12 +1,13 @@
 import { Routes } from '@angular/router';
 import { AutocadastroComponent } from './pages/autocadastro';
-import { AtualizarClienteComponent } from './pages/atualizar-cliente/atualizar-cliente.component';
+import { AtualizarCadastroComponent } from './pages/atualizar-cadastro/atualizar-cadastro.component';
 import { ConsultaExtratoComponent } from './pages/consulta-extrato/consulta-extrato.component';
 import { TelaInicialClienteComponent } from './pages/tela-inicial-cliente/tela-inicial-cliente.component';
 
 export const routes: Routes = [
     { path: 'autocadastro', component: AutocadastroComponent},
-    { path: 'atualizarcliente', component: AtualizarClienteComponent},
+    { path: 'atualizarcadastro', component: AtualizarCadastroComponent},
+    { path: 'consultaExtrato/:id', component: ConsultaExtratoComponent},
     { path: 'consultaExtrato/:id', component: ConsultaExtratoComponent},
     { path: 'cliente/:id', component: TelaInicialClienteComponent}
 ];

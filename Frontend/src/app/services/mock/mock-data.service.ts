@@ -5,6 +5,8 @@ import { Gerente } from '../../shared/models/gerente.model';
 import { Conta } from '../../shared/models/conta.model';
 import { Transacao } from '../../shared/models/transacao.model';
 import { TipoMovimentacao } from '../../shared/enums/TipoMovimentacao';
+import { Autenticacao } from '../../shared/models/autenticacao.model';
+import { TipoUsuario } from '../../shared/enums/TipoUsuario';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +24,16 @@ export class MockDataService {
   private readonly cliente3 = new Cliente(3, "Catianna", "cli3@bantads.com.br", "85733854057", this.endereco3, "47977777777", 3000.00);
   private readonly cliente4 = new Cliente(4, "Cutardo", "cli4@bantads.com.br", "58872160006", this.endereco2, "4998000000", 500.00);
   private readonly cliente5 = new Cliente(5, "Coândrya", "cli5@bantads.com.br", "76179646090", this.endereco1, "49989896976", 1500.00);
+
+  private readonly auth1 = new Autenticacao("Catharyna", TipoUsuario.CLIENTE, "cli1@bantads.com.br", "tads");
+  private readonly auth2 = new Autenticacao("Cleuddônio", TipoUsuario.CLIENTE, "cli2@bantads.com.br", "tads");
+  private readonly auth3 = new Autenticacao("Catianna", TipoUsuario.CLIENTE, "cli3@bantads.com.br", "tads");
+  private readonly auth4 = new Autenticacao("Cutardo", TipoUsuario.CLIENTE, "cli4@bantads.com.br", "tads");
+  private readonly auth5 = new Autenticacao("Coândrya", TipoUsuario.CLIENTE, "cli5@bantads.com.br", "tads");
+  private readonly auth6 = new Autenticacao("Geniéve", TipoUsuario.GERENTE, "ger1@bantads.com.br", "tads");
+  private readonly auth7 = new Autenticacao("Godophredo", TipoUsuario.GERENTE, "ger2@bantads.com.br", "tads");
+  private readonly auth8 = new Autenticacao("Gyândula", TipoUsuario.GERENTE, "ger3@bantads.com.br", "tads");
+  private readonly auth9 = new Autenticacao("Adamântio", TipoUsuario.ADMIN, "adm1@bantads.com.br", "tads");
 
   private readonly gerente1 = new Gerente(1, "Geniéve", "ger1@bantads.com.br", "98574307084", "4190909090", [this.cliente1, this.cliente4]);
   private readonly gerente2 = new Gerente(2, "Godophredo", "ger2@bantads.com.br", "64065268052", "4180808080", [this.cliente2, this.cliente5]);
@@ -89,7 +101,19 @@ export class MockDataService {
       this.historicoMovimentacao13,
       this.historicoMovimentacao14,
       this.historicoMovimentacao15
-    ]
+    ];
+    
+    const mockAuth = [
+      this.auth1,
+      this.auth2,
+      this.auth3,
+      this.auth4,
+      this.auth5,
+      this.auth6,
+      this.auth7,
+      this.auth8,
+      this.auth9
+    ];
 
     // Verifica se os dados já existem para não ficar sobrescrevendo sem necessidade
     if (!localStorage.getItem('clientes')) {
@@ -106,6 +130,10 @@ export class MockDataService {
 
     if (!localStorage.getItem('movimentacoes')) {
       localStorage.setItem('movimentacoes', JSON.stringify(mockMovimentacoes));
+    }
+
+    if (!localStorage.getItem('autenticacao')) {
+      localStorage.setItem('autenticacao', JSON.stringify(mockAuth));
     }
   }
 }

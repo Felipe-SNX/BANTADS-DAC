@@ -3,8 +3,10 @@ import { AutocadastroComponent } from './pages/autocadastro';
 import { AtualizarClienteComponent } from './pages/atualizar-cliente/atualizar-cliente.component';
 import { ConsultaExtratoComponent } from './pages/consulta-extrato/consulta-extrato.component';
 import { TelaInicialClienteComponent } from './pages/tela-inicial-cliente/tela-inicial-cliente.component';
+import { LoginComponent } from './pages/login/login.component';
 
 export const routes: Routes = [
+    { path: '', component: LoginComponent},
     { path: 'autocadastro', component: AutocadastroComponent},
     { path: 'atualizarcliente', component: AtualizarClienteComponent},
     { path: 'consultaExtrato/:id', component: ConsultaExtratoComponent},

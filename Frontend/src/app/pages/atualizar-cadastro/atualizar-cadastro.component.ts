@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormsModule, NgForm } from '@angular/forms';
 import { EnderecoFormComponent } from '../autocadastro/formularios/endereco-form/endereco-form.component';
 import { PessoaFormComponent } from '../autocadastro/formularios/pessoa-form/pessoa-form.component';
@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Cliente } from '../../shared/models/cliente.model';
 import { ClienteService, SaveResult } from '../../services/cliente/cliente.service';
 import { GerenteService } from '../../services/gerente/gerente.service';
+import { MockDataService } from '../../services/mock/mock-data.service';
 
 @Component({
   selector: 'app-atualizar-cadastro',
@@ -17,7 +18,7 @@ import { GerenteService } from '../../services/gerente/gerente.service';
     CommonModule,
     EnderecoFormComponent,
     PessoaFormComponent,
-    AutocadastroComponent
+    AutocadastroComponent,
   ],
   templateUrl: './atualizar-cadastro.component.html',
   styleUrl: './atualizar-cadastro.component.css'
@@ -48,9 +49,12 @@ export class AtualizarCadastroComponent {
   
     public etapaAtual: number = 1;
   
-    constructor(private readonly customerService: ClienteService, private readonly managerService: GerenteService) {
-    }
-  
+    constructor(
+      private readonly customerService: ClienteService,
+      private readonly managerService: GerenteService
+    ) {}
+
+ 
     avancarEtapa() { this.etapaAtual++; }
     voltarEtapa() { this.etapaAtual--; }
   
@@ -74,19 +78,38 @@ export class AtualizarCadastroComponent {
   
       //Transforma os campos no objeto cliente
       const formValue = this.meuForm.value;
-      const customer = new Cliente(0, formValue.dadosPessoais.name , formValue.dadosPessoais.email, formValue.dadosPessoais.CPF, formValue.endereco, formValue.dadosPessoais.telefone, formValue.dadosPessoais.salario);
+      const customer = new Cliente(
+        0,
+        formValue.dadosPessoais.name,
+        formValue.dadosPessoais.email,
+        formValue.dadosPessoais.CPF,
+        formValue.endereco,
+        formValue.dadosPessoais.telefone,
+        formValue.dadosPessoais.salario);
   
       const result: SaveResult = this.customerService.saveClient(customer);
   
       if(result.success){
         this.managerService.addCustomerToManager(customer);
         this.toastr.success('A solicitação foi enviada com sucesso!', 'Sucesso');
+        localStorage.setItem('cliente', JSON.stringify(this.cliente));
       }else{
         console.log(result.message);
         this.toastr.warning('Já existe um cliente com CPF informado!', 'Erro');
       }
   
       console.log(customer);
+    }
+
+    buscarCliente() {
+      const dados = localStorage.getItem('meuItem');
+
+      if (dados) {
+      const objeto = JSON.parse(dados);
+      console.log(objeto);
+      } else {
+        console.log('Nenhum dado encontrado');
+      }
     }
 
 }

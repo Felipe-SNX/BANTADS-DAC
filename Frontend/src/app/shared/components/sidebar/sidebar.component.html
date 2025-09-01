@@ -1,0 +1,12 @@
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h3>Menu do Cliente</h3>
+  </div>
+  <nav class="sidebar-nav">
+    <button *ngFor="let item of menuItems" 
+            class="menu-item" 
+            (click)="onMenuItemClick(item.action)">
+      <span class="material-icons">{{ item.icon }}</span>      
+    </button>
+  </nav>
+</div>

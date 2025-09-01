@@ -2,15 +2,12 @@
   <h1>BANTADS</h1>
 
   <form #meuForm="ngForm" class="shadow-lg container-form" (ngSubmit)="onSubmit()">
-
     <div class="container-page" [hidden]="etapaAtual !== 1">
-      <pessoa-form></pessoa-form>
+        <pessoa-form></pessoa-form>
     </div>
-
     <div class="container-page" [hidden]="etapaAtual !== 2">
         <endereco-form></endereco-form>
     </div>
-
     <div class="button-container" *ngIf="etapaAtual === 1">
         <button 
             type="button" 

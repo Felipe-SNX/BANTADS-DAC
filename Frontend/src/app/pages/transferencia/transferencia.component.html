@@ -1,0 +1,33 @@
+<div class="container">
+  <h2>Transferência Bancária</h2>
+
+  <form #transferForm="ngForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="contaDestino">Conta de Destino:</label>
+      <input type="text" id="contaDestino" name="contaDestino" required>
+    </div>
+
+    <div class="form-group">
+      <label for="saldo">Valor:</label>
+      <input type="number" id="saldo" name="saldo" required min="0.01">
+    </div>
+
+    <button type="submit" [disabled]="!transferForm.valid">Transferir</button>
+  </form>
+
+  <div class="status-message">
+    status
+  </div>
+
+  <hr>
+
+  <h3>Histórico de Transferências</h3>
+  <div class="empty-message">
+    Nenhuma transferência realizada ainda.
+  </div>
+
+  <ul class="history-list">
+    <li >
+    </li>
+  </ul>
+</div>

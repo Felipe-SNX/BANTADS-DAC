@@ -4,7 +4,7 @@ import { Gerente } from "./gerente.model";
 export class Conta {
 
     constructor(
-        public numConta: number = 0,
+        public numConta: string = "",
         public cliente: Cliente = new Cliente(),
         public dataCriacao?: Date,
         public saldo: number = 0,

@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { TipoMovimentacao } from '../../enums/tipoMovimentacao';
+import { TipoMovimentacao } from '../../enums/TipoMovimentacao';
 import { CommonModule } from '@angular/common';
 
 @Component({

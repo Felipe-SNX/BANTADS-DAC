@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Transacao } from '../../shared/models/transacao.model';
 import { ContaService } from '../../services/conta/conta.service';
 import { FormsModule } from '@angular/forms';
-import { TipoMovimentacao } from '../../shared/enums/tipoMovimentacao';
+import { TipoMovimentacao } from '../../shared/enums/TipoMovimentacao';
 
 @Component({
   selector: 'app-consulta-extrato',

@@ -12,8 +12,8 @@
                 name="CEP"
                 aria-describedby="cep-warning"
                 #CEPInput="ngModel"
-                ngModel
                 minlength="8"
+                [(ngModel)]="endereco.cep"
                 required
             />
             <div
@@ -34,7 +34,7 @@
                 name="estado"
                 aria-describedby="estado-warning"
                 #estadoInput="ngModel"
-                ngModel
+                [(ngModel)]="endereco.estado"
                 required
             />
             <div
@@ -54,7 +54,7 @@
                 name="cidade"
                 #cidadeInput="ngModel"
                 aria-describedby="cidade-warning"
-                ngModel
+                [(ngModel)]="endereco.cidade"
                 required
             />
             <div
@@ -74,7 +74,7 @@
                 placeholder="Ex: Rua, Avenida"
                 name="tipoEnd"
                 #tipoInput="ngModel"
-                ngModel
+                [(ngModel)]="endereco.tipo"
             />
         </div>
         <div class="form-group col-md-12">
@@ -86,7 +86,7 @@
                 name="logradouro"
                 aria-describedby="logradouro-warning"
                 #logradouroInput="ngModel"
-                ngModel
+                [(ngModel)]="endereco.logradouro"
                 required
             />
             <div
@@ -107,7 +107,7 @@
                 name="numero"
                 aria-describedby="numero-warning"
                 #numeroInput="ngModel"
-                ngModel
+                [(ngModel)]="endereco.numero"
                 required
             />
             <div
@@ -127,7 +127,7 @@
                 id="complemento" 
                 placeholder="Ex: Casa, Apartamento"
                 name="complemento"
-                ngModel
+                [(ngModel)]="endereco.complemento"
             />
         </div>
     </div>

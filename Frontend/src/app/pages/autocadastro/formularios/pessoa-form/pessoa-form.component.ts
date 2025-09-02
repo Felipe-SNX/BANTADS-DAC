@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import { NgxMaskDirective } from 'ngx-mask';
 import { CpfValidatorDirective } from '../../../../shared/directives/cpf-validator.directive';
@@ -14,5 +14,13 @@ import { InputGreaterThanZeroDirective } from '../../../../shared/directives/inp
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }]
 })
 export class PessoaFormComponent {
+  @Input() dadosPessoais!: {
+    nome: string;
+    cpf: string;
+    email: string;
+    telefone: string;
+    salario: number;
+  };
 
+  constructor() { }
 }

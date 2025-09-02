@@ -48,15 +48,16 @@
                     #passwordInput="ngModel"
                     [(ngModel)]="login.senha" 
                     required   
-                    [class.is-invalid]="emailInput.invalid && (emailInput.dirty || emailInput.touched)" 
+                    [class.is-invalid]="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" 
                 >
-            </div>
-            <div 
+                <div 
                     id="password-warning"
                     *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)"
                     class="invalid-feedback">
                 >
-                <small *ngIf="passwordInput.errors?.['required']">É necessário informar a senha</small>
+                    <small *ngIf="passwordInput.errors?.['required']">É necessário informar a senha</small>
+                    <small *ngIf="passwordInput.errors?.['incorrect']"> Usuário ou senha incorretos </small>
+                </div>
             </div>
 
             <div class="text-end mb-3">

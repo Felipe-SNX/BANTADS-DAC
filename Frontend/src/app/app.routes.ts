@@ -10,6 +10,6 @@ export const routes: Routes = [
     { path: 'autocadastro', component: AutocadastroComponent},
     { path: 'atualizarcadastro', component: AtualizarCadastroComponent},
     { path: 'consultaExtrato/:id', component: ConsultaExtratoComponent},
-    { path: 'consultaExtrato/:id', component: ConsultaExtratoComponent},
-    { path: 'cliente/:id', component: TelaInicialClienteComponent}
+    { path: 'cliente/:id', component: TelaInicialClienteComponent},
+    { path: 'tela-inicial-cliente', component: TelaInicialClienteComponent}
 ];

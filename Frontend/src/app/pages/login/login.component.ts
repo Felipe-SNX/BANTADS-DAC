@@ -1,7 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
-import { Autenticacao } from '../../shared/models/autenticacao.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
+import { User } from '../../shared/models/user.model';
+import { UserService } from '../../services/auth/user.service';
+import { Router } from '@angular/router';
+import { TipoUsuario } from '../../shared/enums/TipoUsuario';
 
 @Component({
   selector: 'app-login',
@@ -12,10 +15,11 @@ import { FormsModule, NgForm } from '@angular/forms';
 })
 export class LoginComponent {
   @ViewChild('meuForm') meuForm!: NgForm;
-  login: Autenticacao;
+  login: User;
+  loginError: string | null = null;
 
-  constructor() {
-    this.login = new Autenticacao();
+  constructor(private readonly userService: UserService, private router: Router) {
+    this.login = new User();
   }
 
   onSubmit(){
@@ -29,7 +33,28 @@ export class LoginComponent {
       return;
     }
 
-    console.log(this.login);
+    const temp = this.userService.getUserByLoginAndPassword(this.login.login, this.login.senha);
+
+    if(temp){
+      this.login = temp;
+      this.loginError = null;
+
+      if(this.login.tipoUsuario === TipoUsuario.CLIENTE){
+        this.router.navigate(['/tela-inicial-cliente'])
+      }
+      else if(this.login.tipoUsuario === TipoUsuario.GERENTE){
+        //Tela Gerente
+      }
+      else{
+        //Tela Admin
+      }
+    }
+    else{
+      const loginControl = this.meuForm.controls['password'];
+      if (loginControl) {
+        loginControl.setErrors({ 'incorrect': true });
+      }
+    }
   }
 
 }

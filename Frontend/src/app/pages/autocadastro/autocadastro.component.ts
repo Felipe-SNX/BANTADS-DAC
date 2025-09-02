@@ -20,7 +20,7 @@ import { PessoaFormComponent } from "./formularios/pessoa-form/pessoa-form.compo
   templateUrl: './autocadastro.component.html',
   styleUrl: './autocadastro.component.css'
 })
-export class AutocadastroComponent {
+export class AutocadastroComponent{
   @ViewChild('meuForm') meuForm!: NgForm;
   private readonly toastr = inject(ToastrService);
 
@@ -42,6 +42,8 @@ export class AutocadastroComponent {
       estado: ''
     }
   };
+
+
 
   public etapaAtual: number = 1;
 

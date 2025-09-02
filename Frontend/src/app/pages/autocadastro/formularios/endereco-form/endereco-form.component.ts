@@ -1,17 +1,26 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import { NgxMaskDirective } from 'ngx-mask';
-import { InputGreaterThanZeroDirective } from '../../../../shared/directives/input-greater-than-zero.directive';
 
 @Component({
   selector: 'endereco-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxMaskDirective, InputGreaterThanZeroDirective],
+  imports: [CommonModule, FormsModule, NgxMaskDirective],
   templateUrl: './endereco-form.component.html',
   styleUrl: '../../autocadastro.component.css',
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }]
 })
 export class EnderecoFormComponent {
+    @Input() endereco!: {
+      cep: string,
+      tipo: string,
+      logradouro: string,
+      numero: number,
+      complemento: string,
+      cidade: string,
+      estado: string
+    };
 
+    constructor(){}
 }

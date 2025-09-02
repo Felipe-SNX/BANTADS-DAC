@@ -1,6 +1,6 @@
 import { TipoUsuario } from "../enums/TipoUsuario";
 
-export class Autenticacao {
+export class User {
 
     constructor(
         public nome: string = '',

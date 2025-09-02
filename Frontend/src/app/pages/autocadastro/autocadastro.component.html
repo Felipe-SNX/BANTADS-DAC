@@ -3,17 +3,17 @@
 
   <form #meuForm="ngForm" class="shadow-lg container-form" (ngSubmit)="onSubmit()">
     <div class="container-page" [hidden]="etapaAtual !== 1">
-        <pessoa-form></pessoa-form>
+        <pessoa-form  [dadosPessoais]="cliente.dadosPessoais"></pessoa-form>
     </div>
     <div class="container-page" [hidden]="etapaAtual !== 2">
-        <endereco-form></endereco-form>
+        <endereco-form  [endereco]="cliente.endereco"></endereco-form>
     </div>
     <div class="button-container" *ngIf="etapaAtual === 1">
         <button 
             type="button" 
             class="btn btn-secondary"
         >
-            <a href="/">Cancelar</a>
+            <a href="/" >Cancelar</a>
         </button>
         <button 
             type="button" 

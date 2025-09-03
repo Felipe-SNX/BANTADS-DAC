@@ -4,6 +4,7 @@ import { AtualizarCadastroComponent } from './pages/atualizar-cadastro/atualizar
 import { ConsultaExtratoComponent } from './pages/consulta-extrato/consulta-extrato.component';
 import { TelaInicialClienteComponent } from './pages/tela-inicial-cliente/tela-inicial-cliente.component';
 import { LoginComponent } from './pages/login/login.component';
+import { TransferenciaComponent } from './pages/transferencia/transferencia.component';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent},
@@ -11,5 +12,5 @@ export const routes: Routes = [
     { path: 'atualizarcadastro', component: AtualizarCadastroComponent},
     { path: 'consultaExtrato/:id', component: ConsultaExtratoComponent},
     { path: 'cliente/:id', component: TelaInicialClienteComponent},
-    { path: 'tela-inicial-cliente', component: TelaInicialClienteComponent}
+    { path: 'transferencia/:id', component: TransferenciaComponent},
 ];

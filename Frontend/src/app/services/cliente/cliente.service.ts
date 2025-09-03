@@ -71,7 +71,7 @@ export class ClienteService {
     updatedClient.cpf = customers[index].cpf;
 
     //Verifica se o salário foi alterado
-    if(updatedClient.salario !== customers[index].salario){
+    /*if(updatedClient.salario !== customers[index].salario){
 
       //Placeholder para calculo de novo limite, deve ser movido para o gerente?
       //O Cliente tem direito a limite se o salario for >= R$2000,00
@@ -88,7 +88,7 @@ export class ClienteService {
     } else {
       //Se o salário não mudou o limite permanece o mesmo
       updatedClient.limite = customers[index].limite; 
-    }
+    }*/
 
     customers[index] = updatedClient;
     localStorage[LS_CHAVE] = JSON.stringify(customers);

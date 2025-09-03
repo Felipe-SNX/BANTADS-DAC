@@ -7,6 +7,7 @@ import { Transacao } from '../../shared/models/transacao.model';
 import { TipoMovimentacao } from '../../shared/enums/TipoMovimentacao';
 import { TipoUsuario } from '../../shared/enums/TipoUsuario';
 import { User } from '../../shared/models/user.model';
+import { Admin } from '../../shared/models/admin.model';
 
 @Injectable({
   providedIn: 'root'
@@ -25,20 +26,21 @@ export class MockDataService {
   private readonly cliente4 = new Cliente(4, "Cutardo", "cli4@bantads.com.br", "58872160006", this.endereco2, "4998000000", 500.00);
   private readonly cliente5 = new Cliente(5, "Coândrya", "cli5@bantads.com.br", "76179646090", this.endereco1, "49989896976", 1500.00);
 
-  private readonly auth1 = new User("Catharyna", TipoUsuario.CLIENTE, "cli1@bantads.com.br", "tads");
-  private readonly auth2 = new User("Cleuddônio", TipoUsuario.CLIENTE, "cli2@bantads.com.br", "tads");
-  private readonly auth3 = new User("Catianna", TipoUsuario.CLIENTE, "cli3@bantads.com.br", "tads");
-  private readonly auth4 = new User("Cutardo", TipoUsuario.CLIENTE, "cli4@bantads.com.br", "tads");
-  private readonly auth5 = new User("Coândrya", TipoUsuario.CLIENTE, "cli5@bantads.com.br", "tads");
-  private readonly auth6 = new User("Geniéve", TipoUsuario.GERENTE, "ger1@bantads.com.br", "tads");
-  private readonly auth7 = new User("Godophredo", TipoUsuario.GERENTE, "ger2@bantads.com.br", "tads");
-  private readonly auth8 = new User("Gyândula", TipoUsuario.GERENTE, "ger3@bantads.com.br", "tads");
-  private readonly auth9 = new User("Adamântio", TipoUsuario.ADMIN, "adm1@bantads.com.br", "tads");
-
   private readonly gerente1 = new Gerente(1, "Geniéve", "ger1@bantads.com.br", "98574307084", "4190909090", [this.cliente1, this.cliente4]);
   private readonly gerente2 = new Gerente(2, "Godophredo", "ger2@bantads.com.br", "64065268052", "4180808080", [this.cliente2, this.cliente5]);
   private readonly gerente3 = new Gerente(3, "Gyândula", "ger3@bantads.com.br", "23862179060", "4170707070", [this.cliente3]);
-  
+  private readonly admin = new Admin(1, "Adamântio", "adm1@bantads.com.br", "40501740066");
+
+  private readonly auth1 = new User(TipoUsuario.CLIENTE, "cli1@bantads.com.br", "tads", this.cliente1);
+  private readonly auth2 = new User(TipoUsuario.CLIENTE, "cli2@bantads.com.br", "tads", this.cliente2);
+  private readonly auth3 = new User(TipoUsuario.CLIENTE, "cli3@bantads.com.br", "tads", this.cliente3);
+  private readonly auth4 = new User(TipoUsuario.CLIENTE, "cli4@bantads.com.br", "tads", this.cliente4);
+  private readonly auth5 = new User(TipoUsuario.CLIENTE, "cli5@bantads.com.br", "tads", this.cliente5);
+  private readonly auth6 = new User(TipoUsuario.GERENTE, "ger1@bantads.com.br", "tads", this.gerente1);
+  private readonly auth7 = new User(TipoUsuario.GERENTE, "ger2@bantads.com.br", "tads", this.gerente2);
+  private readonly auth8 = new User(TipoUsuario.GERENTE, "ger3@bantads.com.br", "tads", this.gerente3);
+  private readonly auth9 = new User(TipoUsuario.ADMIN, "adm1@bantads.com.br", "tads", this.admin);
+
   private readonly conta1 = new Conta("1291", this.cliente1, new Date("01/01/2000"), 800.00, 5000.00, this.gerente1);
   private readonly conta2 = new Conta("950", this.cliente2, new Date("10/10/1990"), -10000.00, 10000.00, this.gerente2);
   private readonly conta3 = new Conta("8573", this.cliente3, new Date("12/12/2012"), -1000.00, 1500.00, this.gerente3);
@@ -102,6 +104,10 @@ export class MockDataService {
       this.historicoMovimentacao14,
       this.historicoMovimentacao15
     ];
+
+    const mockAdmin = [
+      this.admin
+    ];
     
     const mockAuth = [
       this.auth1,
@@ -122,6 +128,10 @@ export class MockDataService {
 
     if (!localStorage.getItem('gerentes')) {
       localStorage.setItem('gerentes', JSON.stringify(mockManagers));
+    }
+
+    if (!localStorage.getItem('admin')) {
+      localStorage.setItem('admin', JSON.stringify(mockAdmin));
     }
 
     if (!localStorage.getItem('contas')) {

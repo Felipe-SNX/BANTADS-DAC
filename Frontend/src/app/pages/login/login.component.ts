@@ -18,7 +18,7 @@ export class LoginComponent {
   login: User;
   loginError: string | null = null;
 
-  constructor(private readonly userService: UserService, private router: Router) {
+  constructor(private readonly userService: UserService, private readonly router: Router) {
     this.login = new User();
   }
 
@@ -40,7 +40,8 @@ export class LoginComponent {
       this.loginError = null;
 
       if(this.login.tipoUsuario === TipoUsuario.CLIENTE){
-        this.router.navigate(['/tela-inicial-cliente'])
+        const id = this.login.usuario?.id;
+        this.router.navigate([`/cliente/:${id}`])
       }
       else if(this.login.tipoUsuario === TipoUsuario.GERENTE){
         //Tela Gerente

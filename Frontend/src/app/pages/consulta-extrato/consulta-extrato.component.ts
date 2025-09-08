@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Transacao } from '../../shared/models/transacao.model';
-import { ContaService } from '../../services/conta/conta.service';
 import { FormsModule } from '@angular/forms';
 import { TipoMovimentacao } from '../../shared/enums/TipoMovimentacao';
+import { TransacaoService } from '../../services/transacao/transacao.service';
 
 @Component({
   selector: 'app-consulta-extrato',
@@ -19,7 +19,10 @@ export class ConsultaExtratoComponent implements OnInit{
   public dataInicio: string | null = null;
   public dataFim: string | null = null;
 
-  constructor(private readonly route: ActivatedRoute, private readonly accountService: ContaService){}
+  constructor(
+    private readonly route: ActivatedRoute, 
+    private readonly transactionService: TransacaoService
+  ){}
 
   ngOnInit(): void {
     this.id = +this.route.snapshot.params['id']; 
@@ -28,7 +31,7 @@ export class ConsultaExtratoComponent implements OnInit{
       console.log("Erro");
     }
 
-    this.transacoes = this.accountService.listCustomerTransactions(this.id);
+    this.transacoes = this.transactionService.listCustomerTransactions(this.id);
 
     this.transacoes = this.processTransactions(this.transacoes);
   }
@@ -125,7 +128,7 @@ export class ConsultaExtratoComponent implements OnInit{
   }
 
   filterCustomerTransactionsForDate() {
-    const transactions = this.processTransactions(this.accountService.listCustomerTransactions(this.id));
+    const transactions = this.processTransactions(this.transactionService.listCustomerTransactions(this.id));
 
     if (!this.dataInicio && !this.dataFim) {
       this.transacoes = this.processTransactions(transactions);
@@ -155,6 +158,4 @@ export class ConsultaExtratoComponent implements OnInit{
 
     this.transacoes = filteredTransactions;
   }
-
-
 }

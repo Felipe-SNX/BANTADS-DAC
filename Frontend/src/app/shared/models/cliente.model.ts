@@ -1,3 +1,4 @@
+import { Conta } from "./conta.model";
 import { Endereco } from "./endereco.model";
 import { Gerente } from "./gerente.model";
 

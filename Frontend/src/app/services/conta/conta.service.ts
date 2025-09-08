@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
-import { ClienteService } from '../cliente/cliente.service';
-import { Transacao } from '../../shared/models/transacao.model';
 import { Conta } from '../../shared/models/conta.model';
 import { Cliente } from '../../shared/models/cliente.model';
 import { Gerente } from '../../shared/models/gerente.model';
 
-const LS_CHAVE_MOV = "movimentacoes";
 const LS_CHAVE_CONTAS = "contas";
 
 @Injectable({
@@ -13,16 +10,11 @@ const LS_CHAVE_CONTAS = "contas";
 })
 export class ContaService {
 
-  constructor(private readonly customerService: ClienteService) { }
+  constructor() { }
 
   listAccounts(): Conta[]{
     const accounts = localStorage[LS_CHAVE_CONTAS];
     return accounts ? JSON.parse(accounts) : [];
-  }
-
-  listTransactions(): Transacao[]{
-    const transaction = localStorage[LS_CHAVE_MOV];
-    return transaction ? JSON.parse(transaction) : [];
   }
 
   getAccountByNum(numConta: string): Conta | undefined{
@@ -37,17 +29,6 @@ export class ContaService {
     return account;
   }
 
-  listCustomerTransactions(id: number): Transacao[]{
-    const customer = this.customerService.getClientById(id);
-    const transactions = this.listTransactions();
-    const customerTransactions = transactions.filter(
-      (currentTransaction) => 
-        currentTransaction.clienteDestino?.id === customer?.id || currentTransaction.clienteOrigem?.id === customer?.id
-    )
-
-    return customerTransactions;
-  }
-
   createAccount(customer: Cliente, manager: Gerente){
     const newAccount: Conta = new Conta(this.generateAccountNumber(), customer, new Date(), 0.00, this.calculateLimit(customer.salario), manager);
 
@@ -59,6 +40,18 @@ export class ContaService {
       success: true,
       message: 'Conta cadastrada com sucesso!'
     };
+  }
+
+  updateAccount(account: Conta){
+    const accounts = this.listAccounts();
+
+    accounts.forEach((conta) => {
+      if(conta.numConta === account.numConta){
+        conta.saldo = account.saldo;
+      }
+    });
+
+    localStorage[LS_CHAVE_CONTAS] = JSON.stringify(accounts);
   }
 
   private generateAccountNumber(): string{

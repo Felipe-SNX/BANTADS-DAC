@@ -40,8 +40,9 @@ export class LoginComponent {
       this.loginError = null;
 
       if(this.login.tipoUsuario === TipoUsuario.CLIENTE){
-        const id = this.login.usuario?.id;
-        this.router.navigate([`/cliente/:${id}`])
+        const user = this.login;
+        localStorage.setItem('usuarioLogado', JSON.stringify(user));
+        this.router.navigate(['/cliente/', user.usuario?.id])
       }
       else if(this.login.tipoUsuario === TipoUsuario.GERENTE){
         //Tela Gerente

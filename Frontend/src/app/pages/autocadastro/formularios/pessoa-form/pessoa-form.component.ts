@@ -5,7 +5,7 @@ import { NgxMaskDirective } from 'ngx-mask';
 import { CpfValidatorDirective } from '../../../../shared/directives/cpf-validator.directive';
 import { InputGreaterThanZeroDirective } from '../../../../shared/directives/input-greater-than-zero.directive';
 
-@Component({
+@Component({  
   selector: 'pessoa-form',
   standalone: true,
   imports: [CommonModule, FormsModule, NgxMaskDirective, CpfValidatorDirective, InputGreaterThanZeroDirective],

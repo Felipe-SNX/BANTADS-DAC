@@ -9,7 +9,7 @@ import { TransferenciaComponent } from './pages/transferencia/transferencia.comp
 export const routes: Routes = [
     { path: '', component: LoginComponent},
     { path: 'autocadastro', component: AutocadastroComponent},
-    { path: 'atualizarcadastro', component: AtualizarCadastroComponent},
+    { path: 'atualizarcadastro/:id', component: AtualizarCadastroComponent},
     { path: 'consultaExtrato/:id', component: ConsultaExtratoComponent},
     { path: 'cliente/:id', component: TelaInicialClienteComponent},
     { path: 'transferencia', component: TransferenciaComponent},

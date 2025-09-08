@@ -22,5 +22,7 @@ export class PessoaFormComponent {
     salario: number;
   };
 
+  @Input() isEditMode: boolean = false;
+
   constructor() { }
 }

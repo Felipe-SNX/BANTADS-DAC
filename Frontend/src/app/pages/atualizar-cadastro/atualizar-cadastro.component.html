@@ -4,11 +4,11 @@
   <form #meuForm="ngForm" class="shadow-lg container-form" (ngSubmit)="onSubmit()">
 
     <div class="container-page" [hidden]="etapaAtual !== 1">
-      <pessoa-form></pessoa-form>
+      <pessoa-form [dadosPessoais]="cliente.dadosPessoais" [isEditMode]="true"></pessoa-form>
     </div>
 
     <div class="container-page" [hidden]="etapaAtual !== 2">
-        <endereco-form></endereco-form>
+        <endereco-form [endereco]="cliente.endereco"></endereco-form>
     </div>
 
     <div class="button-container" *ngIf="etapaAtual === 1">

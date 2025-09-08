@@ -35,6 +35,7 @@
                 [(ngModel)]="dadosPessoais.cpf"
                 cpfValidator
                 required
+                [readonly]="isEditMode"
             />
             <div 
                 id="cpf-warning"

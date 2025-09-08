@@ -63,8 +63,8 @@ export class MockDataService {
   private readonly historicoMovimentacao14 = new Transacao(new Date("06/01/2025 00:00"), TipoMovimentacao.DEPOSITO, this.cliente4, null, 150000.00);
   private readonly historicoMovimentacao15 = new Transacao(new Date("07/01/2025 00:00"), TipoMovimentacao.DEPOSITO, this.cliente5, null, 1500.00);
 
-  
   public loadMockData(): void {
+
     const mockCustomers = [
       this.cliente1,
       this.cliente2,

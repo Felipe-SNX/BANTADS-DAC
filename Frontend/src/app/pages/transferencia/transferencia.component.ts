@@ -1,17 +1,114 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
+import { NgxMaskDirective } from 'ngx-mask';
+import { Transacao } from '../../shared/models/transacao.model';
+import { TipoMovimentacao } from '../../shared/enums/TipoMovimentacao';
+import { ContaService } from '../../services/conta/conta.service';
+import { TransacaoService } from '../../services/transacao/transacao.service';
+import { User } from '../../shared/models/user.model';
+import { Cliente } from '../../shared/models/cliente.model';
+import { Router } from '@angular/router';
+import { Conta } from '../../shared/models/conta.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-transferencia',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgxMaskDirective],
   templateUrl: './transferencia.component.html',
   styleUrl: './transferencia.component.css'
 })
-export class TransferenciaComponent {
+export class TransferenciaComponent implements OnInit{
+  @ViewChild('transferForm') transferForm!: NgForm;
+  user: User | null | undefined;
+  loading: boolean = false;
+  private readonly toastr = inject(ToastrService);
+  
+  public saldo: number = 0; 
+  public saldoVisivel: boolean = false;
 
-  onSubmit(){
-    
+  contaOrigem: Conta | undefined;
+
+  public transferencia = {
+    contaDestino: "",
+    valor: ""
+  }
+
+  constructor(
+    private readonly accountService: ContaService, 
+    private readonly transactionService: TransacaoService,
+    private readonly router: Router,
+    private readonly cd: ChangeDetectorRef
+  ){
+  }
+  ngOnInit(): void {
+    const usuarioString = localStorage.getItem('usuarioLogado');
+    if (usuarioString) {
+      const usuarioLogado = JSON.parse(usuarioString);
+      this.user = usuarioLogado;
+    }
+    else{
+      this.router.navigate(['/']);
+    }
+
+    const temp = this.accountService.getAccountByCustomer(this.user?.usuario as Cliente);
+
+    if(!temp){
+      this.router.navigate(['/']);
+    }
+    else{
+      this.contaOrigem = temp;
+      this.saldo = this.contaOrigem.saldo;
+    }
+  }
+
+  toggleVisibilidadeSaldo(): void {
+    this.saldoVisivel = !this.saldoVisivel;
+  }
+
+  onSubmit() {
+    Object.values(this.transferForm.controls).forEach(control => {
+      control.markAsTouched();
+    });
+
+    if (this.transferForm.invalid) {
+      this.toastr.error('Corrija os erros do formulário', 'Erro');
+      return;
+    }
+
+    this.loading = true;
+    this.cd.detectChanges();
+
+    setTimeout(() => {
+      try {
+        const contaDestino = this.accountService.getAccountByNum(this.transferencia.contaDestino);
+        
+        if (!contaDestino) {
+          this.toastr.error('A conta informada não existe', 'Erro');
+          return;
+        }
+
+        const valor = +this.transferencia.valor;
+        const transacao = new Transacao(new Date(), TipoMovimentacao.TRANSFERENCIA, this.user?.usuario as Cliente, contaDestino.cliente, valor);
+        const result = this.transactionService.registerNewTransaction(transacao);
+        
+        if (result.success) {
+          this.toastr.success(result.message, 'Sucesso');
+          console.log("Transação foi cadastrada");
+          this.router.navigate(['cliente/', this.user?.usuario?.id])
+        } else {
+          this.toastr.error(result.message, 'Erro');
+        }
+
+      } catch (error) {
+        console.log(error);
+        this.toastr.error('Por favor, tente novamente', 'Erro');
+      } finally {
+        this.loading = false;
+        this.cd.detectChanges();
+      }
+    }, 0); 
+
   }
 }

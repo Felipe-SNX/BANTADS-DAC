@@ -12,5 +12,5 @@ export const routes: Routes = [
     { path: 'atualizarcadastro', component: AtualizarCadastroComponent},
     { path: 'consultaExtrato/:id', component: ConsultaExtratoComponent},
     { path: 'cliente/:id', component: TelaInicialClienteComponent},
-    { path: 'transferencia/:id', component: TransferenciaComponent},
+    { path: 'transferencia', component: TransferenciaComponent},
 ];

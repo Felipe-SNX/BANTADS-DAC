@@ -19,10 +19,13 @@ export class TelaInicialClienteComponent implements OnInit {
   transacoesRecentes: Transacao[] = [];
   saldoNegativo: boolean = false;
 
+
   constructor
   (private mockDataService: MockDataService,
-    private route: ActivatedRoute
-  ) { }
+    private route: ActivatedRoute,
+  ) {
+
+   }
 
   ngOnInit(): void {        
     this.mockDataService.loadMockData();

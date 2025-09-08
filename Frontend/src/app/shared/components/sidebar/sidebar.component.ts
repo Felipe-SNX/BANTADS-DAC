@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { TipoMovimentacao } from '../../enums/TipoMovimentacao';
 import { CommonModule } from '@angular/common';
 
@@ -13,7 +13,9 @@ import { CommonModule } from '@angular/common';
 })
 export class SidebarComponent {
   @Output() actionSelected = new EventEmitter<string>();
-  
+  @Input() tipoTela: 'cliente' | 'gerente' = 'cliente';
+    
+  title = this.tipoTela === 'cliente' ? 'Menu do Cliente' : 'Menu do Gerente';  
   menuItems = [
     { label: 'Depósito', icon: 'account_balance', action: TipoMovimentacao.DEPOSITO },
     { label: 'Saque', icon: 'payments', action: TipoMovimentacao.SAQUE },

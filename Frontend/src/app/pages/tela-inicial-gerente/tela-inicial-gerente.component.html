@@ -1,0 +1,32 @@
+<div class="home-container">
+<app-sidebar (actionSelected)="onActionSelected($event)" [tipoTela]="'gerente'"></app-sidebar>
+  <div class="gerente-container">
+    <h1>Contas para Aprovação</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Número da Conta</th>
+          <th>Nome do Cliente</th>
+          <th>CPF</th>
+          <th>Salário</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let conta of contasParaAprovar">
+          <td>{{ conta.numConta }}</td>
+          <td>{{ conta.cliente?.nome }}</td>
+          <td>{{ conta.cliente?.cpf }}</td>
+          <td>R$ {{ conta.cliente?.salario }}</td>
+          <td>
+            <button (click)="aprovar(conta)">Aprovar</button>
+            <button (click)="recusar(conta)">Recusar</button>
+          </td>
+        </tr>      
+        <tr *ngIf="contasParaAprovar.length === 0">
+          <td colspan="5">Nenhuma conta pendente de aprovação.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

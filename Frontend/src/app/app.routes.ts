@@ -5,6 +5,7 @@ import { ConsultaExtratoComponent } from './pages/consulta-extrato/consulta-extr
 import { TelaInicialClienteComponent } from './pages/tela-inicial-cliente/tela-inicial-cliente.component';
 import { LoginComponent } from './pages/login/login.component';
 import { TransferenciaComponent } from './pages/transferencia/transferencia.component';
+import { TelaInicialGerenteComponent } from './pages/tela-inicial-gerente/tela-inicial-gerente.component';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent},
@@ -13,4 +14,5 @@ export const routes: Routes = [
     { path: 'consultaExtrato/:id', component: ConsultaExtratoComponent},
     { path: 'cliente/:id', component: TelaInicialClienteComponent},
     { path: 'transferencia', component: TransferenciaComponent},
+    { path: 'gerente/:id', component: TelaInicialGerenteComponent},
 ];

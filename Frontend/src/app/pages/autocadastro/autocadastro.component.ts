@@ -7,6 +7,7 @@ import { GerenteService } from '../../services/gerente/gerente.service';
 import { ToastrService } from 'ngx-toastr';
 import { EnderecoFormComponent } from './formularios/endereco-form/endereco-form.component';
 import { PessoaFormComponent } from "./formularios/pessoa-form/pessoa-form.component";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-autocadastro',
@@ -43,11 +44,13 @@ export class AutocadastroComponent{
     }
   };
 
-
-
   public etapaAtual: number = 1;
 
-  constructor(private readonly customerService: ClienteService, private readonly managerService: GerenteService) {
+  constructor(
+    private readonly customerService: ClienteService, 
+    private readonly managerService: GerenteService,
+    private readonly router: Router
+  ) {
   }
 
   avancarEtapa() { this.etapaAtual++; }
@@ -86,5 +89,6 @@ export class AutocadastroComponent{
     }
 
     console.log(customer);
+    this.router.navigate(['/']);
   }
 }

@@ -1,41 +1,36 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
-import { NgxMaskDirective } from 'ngx-mask';
-import { Transacao } from '../../shared/models/transacao.model';
-import { TipoMovimentacao } from '../../shared/enums/TipoMovimentacao';
 import { ContaService } from '../../services/conta/conta.service';
 import { TransacaoService } from '../../services/transacao/transacao.service';
-import { User } from '../../shared/models/user.model';
-import { Cliente } from '../../shared/models/cliente.model';
 import { Router } from '@angular/router';
 import { Conta } from '../../shared/models/conta.model';
 import { ToastrService } from 'ngx-toastr';
+import { FormsModule, NgForm } from '@angular/forms';
+import { User } from '../../shared/models/user.model';
+import { Cliente } from '../../shared/models/cliente.model';
+import { Transacao } from '../../shared/models/transacao.model';
+import { TipoMovimentacao } from '../../shared/enums/TipoMovimentacao';
+import { CommonModule } from '@angular/common';
+import { NgxMaskDirective } from 'ngx-mask';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 import { UserService } from '../../services/auth/user.service';
 
 @Component({
-  selector: 'app-transferencia',
+  selector: 'app-deposito',
   standalone: true,
   imports: [CommonModule, FormsModule, NgxMaskDirective, SidebarComponent],
-  templateUrl: './transferencia.component.html',
-  styleUrl: './transferencia.component.css'
+  templateUrl: './deposito.component.html',
+  styleUrl: './deposito.component.css'
 })
-export class TransferenciaComponent implements OnInit{
-  @ViewChild('transferForm') transferForm!: NgForm;
+export class DepositoComponent implements OnInit{
+
+  @ViewChild('depositoForm') depositoForm!: NgForm;
   user: User | null | undefined;
   loading: boolean = false;
   private readonly toastr = inject(ToastrService);
-  
-  public saldo: number = 0; 
-  public saldoVisivel: boolean = false;
 
-  contaOrigem: Conta | undefined;
+  conta: Conta | undefined;
 
-  public transferencia = {
-    contaDestino: "",
-    valor: ""
-  }
+  valor: string = ''
   
   onActionSelected(action: string) {    
   }
@@ -48,6 +43,7 @@ export class TransferenciaComponent implements OnInit{
     private readonly userService: UserService
   ){
   }
+
   ngOnInit(): void {
     const temp = this.userService.findLoggedUser();
 
@@ -61,21 +57,16 @@ export class TransferenciaComponent implements OnInit{
       this.router.navigate(['/']);
     }
     else{
-      this.contaOrigem = tempAccount;
-      this.saldo = this.contaOrigem.saldo;
+      this.conta = tempAccount;
     }
   }
 
-  toggleVisibilidadeSaldo(): void {
-    this.saldoVisivel = !this.saldoVisivel;
-  }
-
   onSubmit() {
-    Object.values(this.transferForm.controls).forEach(control => {
+    Object.values(this.depositoForm.controls).forEach(control => {
       control.markAsTouched();
     });
 
-    if (this.transferForm.invalid) {
+    if (this.depositoForm.invalid) {
       this.toastr.error('Corrija os erros do formulário', 'Erro');
       return;
     }
@@ -85,20 +76,14 @@ export class TransferenciaComponent implements OnInit{
 
     setTimeout(() => {
       try {
-        const contaDestino = this.accountService.getAccountByNum(this.transferencia.contaDestino);
-        
-        if (!contaDestino) {
-          this.toastr.error('A conta informada não existe', 'Erro');
-          return;
-        }
-
-        const valor = +this.transferencia.valor;
-        const transacao = new Transacao(new Date(), TipoMovimentacao.TRANSFERENCIA, this.user?.usuario as Cliente, contaDestino.cliente, valor);
+  
+        const valor = +this.valor;
+        const transacao = new Transacao(new Date(), TipoMovimentacao.DEPOSITO, this.user?.usuario as Cliente, null, valor);
         const result = this.transactionService.registerNewTransaction(transacao);
         
         if (result.success) {
-          this.toastr.success(result.message, 'Sucesso');
-          console.log("Transação foi cadastrada");
+          this.toastr.success('Valor depositado com sucesso', 'Sucesso');
+          console.log("Depósito efetuado com sucesso");
           this.router.navigate(['cliente/', this.user?.usuario?.id])
         } else {
           this.toastr.error(result.message, 'Erro');
@@ -115,3 +100,4 @@ export class TransferenciaComponent implements OnInit{
 
   }
 }
+

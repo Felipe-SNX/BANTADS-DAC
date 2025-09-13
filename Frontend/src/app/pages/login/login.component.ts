@@ -45,7 +45,9 @@ export class LoginComponent {
         this.router.navigate(['/cliente/', user.usuario?.id])
       }
       else if(this.login.tipoUsuario === TipoUsuario.GERENTE){
-        //Tela Gerente
+        const user = this.login;
+        localStorage.setItem('usuarioLogado', JSON.stringify(user));
+        this.router.navigate(['/gerente/', user.usuario?.id]);
       }
       else{
         //Tela Admin

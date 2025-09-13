@@ -1,11 +1,16 @@
-.input-date{
+.input-date {
     background-color: #DEE1E6FF;
 }
 
-.linha-azul{
+.linha-azul {
     background-color: blue;
 }
 
-.linha-vermelha{
+.linha-vermelha {
     background-color: red;
+}
+
+.conteudo-principal-container {
+    min-width: 0;
+    overflow-x: auto; 
 }

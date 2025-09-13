@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { Transacao } from '../../shared/models/transacao.model';
 import { FormsModule } from '@angular/forms';
 import { TipoMovimentacao } from '../../shared/enums/TipoMovimentacao';
 import { TransacaoService } from '../../services/transacao/transacao.service';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
+import { Conta } from '../../shared/models/conta.model';
+import { User } from '../../shared/models/user.model';
+import { UserService } from '../../services/auth/user.service';
 
 @Component({
   selector: 'app-consulta-extrato',
@@ -15,29 +18,38 @@ import { SidebarComponent } from '../../shared/components/sidebar/sidebar.compon
   styleUrl: './consulta-extrato.component.css'
 })
 export class ConsultaExtratoComponent implements OnInit{
-  public id: number = 0;
   public transacoes: Transacao[] = [];
   public dataInicio: string | null = null;
   public dataFim: string | null = null;
-
+  
+  user: User | null | undefined;
+  conta: Conta | undefined;
+  id: number = 0;
+  
   constructor(
-    private readonly route: ActivatedRoute, 
-    private readonly transactionService: TransacaoService
+    private readonly transactionService: TransacaoService,
+    private readonly router: Router,
+    private readonly userService: UserService,
   ){}
 
   onActionSelected(action: string) {    
   }
 
   ngOnInit(): void {
-    this.id = +this.route.snapshot.params['id']; 
+    const temp = this.userService.findLoggedUser();
 
-    if(this.id === 0){
-      console.log("Erro");
+    if(!temp) this.router.navigate(['/']);
+
+    this.user = temp; 
+
+    if(this.user?.usuario?.id){
+      this.id = this.user?.usuario?.id;
+      this.transacoes = this.transactionService.listCustomerTransactions(this.id);
+      this.transacoes = this.processTransactions(this.transacoes);
     }
-
-    this.transacoes = this.transactionService.listCustomerTransactions(this.id);
-
-    this.transacoes = this.processTransactions(this.transacoes);
+    else{
+      this.router.navigate(['/']);
+    }
   }
 
   processTransactions(transactions: Transacao[]): Transacao[]{

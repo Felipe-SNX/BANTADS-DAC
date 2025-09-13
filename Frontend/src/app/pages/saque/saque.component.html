@@ -1,14 +1,19 @@
 <main class="d-flex flex-row w-100" style="max-height: 100vh;">
-    <app-sidebar (actionSelected)="onActionSelected($event)" [tipoTela]="'cliente'"></app-sidebar>
+    <app-sidebar [tipoTela]="'cliente'"></app-sidebar>
 
     <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;">
-        <h2 class="mb-0">Saque</h2>
+        <h2 class="mb-0 align-self-start">Saque</h2>
 
         <div class="card shadow-sm">
             <div class="card-body p-4">
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="h5 mb-0">Seu resumo financeiro</h4>
+                    
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="fas fa-money-bill-wave text-primary fa-2x"></i>
+                        <h4 class="h5 mb-0">Seu resumo financeiro</h4>
+                    </div>
+
                     <i
                        (click)="toggleVisibilidadeSaldo()"
                        class="fas eye-icon"

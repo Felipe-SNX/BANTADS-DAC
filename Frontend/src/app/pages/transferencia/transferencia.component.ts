@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { Conta } from '../../shared/models/conta.model';
 import { ToastrService } from 'ngx-toastr';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
+import { UserService } from '../../services/auth/user.service';
 
 @Component({
   selector: 'app-transferencia',
@@ -43,26 +44,24 @@ export class TransferenciaComponent implements OnInit{
     private readonly accountService: ContaService, 
     private readonly transactionService: TransacaoService,
     private readonly router: Router,
-    private readonly cd: ChangeDetectorRef
+    private readonly cd: ChangeDetectorRef,
+    private readonly userService: UserService
   ){
   }
   ngOnInit(): void {
-    const usuarioString = localStorage.getItem('usuarioLogado');
-    if (usuarioString) {
-      const usuarioLogado = JSON.parse(usuarioString);
-      this.user = usuarioLogado;
-    }
-    else{
-      this.router.navigate(['/']);
-    }
+    const temp = this.userService.findLoggedUser();
 
-    const temp = this.accountService.getAccountByCustomer(this.user?.usuario as Cliente);
+    if(!temp) this.router.navigate(['/']);
 
-    if(!temp){
+    this.user = temp; 
+
+    const tempAccount = this.accountService.getAccountByCustomer(this.user?.usuario as Cliente);
+
+    if(!tempAccount){
       this.router.navigate(['/']);
     }
     else{
-      this.contaOrigem = temp;
+      this.contaOrigem = tempAccount;
       this.saldo = this.contaOrigem.saldo;
     }
   }

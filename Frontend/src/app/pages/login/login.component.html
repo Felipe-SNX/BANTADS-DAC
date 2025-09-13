@@ -1,72 +1,59 @@
-<body class="d-flex align-items-center justify-content-center min-vh-100">
+<main class="d-flex align-items-center justify-content-center min-vh-100 bg-light">
 
     <div class="card shadow-lg border-0 rounded-4 p-4" style="max-width: 400px; width: 100%;">
     
         <div class="text-center mb-4">
-            <img width="100px" height="100px" src="logo.png" alt="Logo BanTADS">
+            <img width="80px" height="80px" src="logo.png" alt="Logo BanTADS">
+            <h1 class="h3 fw-bold mt-3 mb-2">BANTADS</h1>
+            <p class="text-muted">Acessar sua conta</p>
         </div>
 
-        <h2 class="h5 fw-semibold text-center mb-4 text-secondary">Acessar sua conta</h2>
-
-        <!-- form -->
         <form #meuForm="ngForm" (ngSubmit)="onSubmit()" id="loginForm">
             <div class="mb-3">
-                <label for="email" class="form-label labels">E-mail</label>
-                <input 
-                    aria-describedby="email-warning"
-                    type="email" 
-                    class="form-control" 
+                <label for="email" class="form-label">E-mail</label>
+                <input
+                    type="email"
+                    class="form-control"
                     id="email"
                     name="email"
                     #emailInput="ngModel"
-                    [(ngModel)]="login.login" 
-                    placeholder="nome@exemplo.com" 
+                    [(ngModel)]="login.login"
+                    placeholder="nome@exemplo.com"
                     [class.is-invalid]="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
-                    required    
+                    required
                 >
-                <div 
-                    id="email-warning"
-                    *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
-                    class="invalid-feedback">
-                >
-                    <small *ngIf="emailInput.errors?.['required']">Digite um e-mail válido</small>
+                <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)" class="invalid-feedback">
+                    <small *ngIf="emailInput.errors?.['required']">Digite um e-mail válido.</small>
                 </div>
             </div>
 
-            <div class="mb-2">
-                <label for="password" class="form-label labels">Senha</label>
-                <input 
-                    aria-describedby="password-warning"
-                    type="password" 
-                    class="form-control" 
+            <div class="mb-3">
+                <label for="password" class="form-label">Senha</label>
+                <input
+                    type="password"
+                    class="form-control"
                     id="password"
-                    name="password" 
-                    placeholder="Digite sua senha" 
+                    name="password"
+                    placeholder="Digite sua senha"
                     #passwordInput="ngModel"
-                    [(ngModel)]="login.senha" 
-                    required   
-                    [class.is-invalid]="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" 
+                    [(ngModel)]="login.senha"
+                    required
+                    [class.is-invalid]="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)"
                 >
-                <div 
-                    id="password-warning"
-                    *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)"
-                    class="invalid-feedback">
-                >
-                    <small *ngIf="passwordInput.errors?.['required']">É necessário informar a senha</small>
-                    <small *ngIf="passwordInput.errors?.['incorrect']"> Usuário ou senha incorretos </small>
-                </div>
-            </div>
-            <div class="buttons">
-                <div class="text-end mb-3">
-                    <a href="#" class="text-primary text-decoration-none">Esqueci minha senha</a>
-                </div>
-                <div class="text-end mb-3">
-                    <a href="/autocadastro" class="text-primary text-decoration-none">Realizar cadastro</a>
+                <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="invalid-feedback">
+                    <small *ngIf="passwordInput.errors?.['required']">É necessário informar a senha.</small>
+                    <small *ngIf="passwordInput.errors?.['incorrect']">Usuário ou senha incorretos.</small>
                 </div>
             </div>
 
-            <button type="submit" [disabled]="meuForm.invalid" class="btn btn-primary w-100 fw-semibold py-2">Entrar</button>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <a href="/autocadastro" class="small text-decoration-none">Criar conta</a>
+                <a class="small text-decoration-none">Esqueci a senha</a>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" [disabled]="meuForm.invalid" class="btn btn-primary fw-semibold py-2">Entrar</button>
+            </div>
         </form>
     </div>
-</body>
-
+</main>

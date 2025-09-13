@@ -6,8 +6,10 @@ import { PessoaFormComponent } from '../autocadastro/formularios/pessoa-form/pes
 import { ToastrService } from 'ngx-toastr';
 import { Cliente } from '../../shared/models/cliente.model';
 import { ClienteService, SaveResult } from '../../services/cliente/cliente.service';
-import { GerenteService } from '../../services/gerente/gerente.service';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
+import { UserService } from '../../services/auth/user.service';
+import { User } from '../../shared/models/user.model';
+import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-atualizar-cadastro',
@@ -16,7 +18,8 @@ import { ActivatedRoute } from '@angular/router';
     FormsModule,
     CommonModule,
     EnderecoFormComponent,
-    PessoaFormComponent
+    PessoaFormComponent,
+    SidebarComponent
   ],
   templateUrl: './atualizar-cadastro.component.html',
   styleUrl: './atualizar-cadastro.component.css'
@@ -24,74 +27,65 @@ import { ActivatedRoute } from '@angular/router';
 export class AtualizarCadastroComponent implements OnInit{
 
   @ViewChild('meuForm') meuForm!: NgForm;
-    private readonly toastr = inject(ToastrService);
+  private readonly toastr = inject(ToastrService);
   
-    public cliente = {
-      dadosPessoais: {
-        nome: '',
-        cpf: '',
-        email: '',
-        telefone: '',
-        salario: 0,
-      },
-      endereco: {
-        tipo: '',
-        logradouro: '',
-        numero: 0,
-        complemento: '',
-        cep: '',
-        cidade: '',
-        estado: ''
-      }
-    };
+  public cliente = {
+    dadosPessoais: {
+      nome: '',
+      cpf: '',
+      email: '',
+      telefone: '',
+      salario: 0,
+    },
+    endereco: {
+      tipo: '',
+      logradouro: '',
+      numero: 0,
+      complemento: '',
+      cep: '',
+      cidade: '',
+      estado: ''
+    }
+  };
   
-    public etapaAtual: number = 1;
+  public etapaAtual: number = 1;
+  user: User | null | undefined;
   
-    constructor(
-      private readonly customerService: ClienteService,
-      private readonly managerService: GerenteService,
-      private readonly route: ActivatedRoute
-    ) {}
+  constructor(
+    private readonly customerService: ClienteService,
+    private readonly userService: UserService,
+    private readonly router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.loadClienteData();
+    const temp = this.userService.findLoggedUser();
+
+    if(!temp) this.router.navigate(['/']);
+
+    this.user = temp;
+
+    this.loadClienteData(this.user?.usuario as Cliente);
   }
 
-  loadClienteData(): void{
-
-    const idDoClienteParaEditar = +this.route.snapshot.paramMap.get('id')!;
-
-    if (!idDoClienteParaEditar) {
-      this.toastr.error('ID do cliente não encontrado na URL.', 'Erro de Rota');
-      return;
-    }
-
-    const arrayDeClientesString = localStorage.getItem('clientes');
-    
-    if (!arrayDeClientesString) {
-        this.toastr.error('A lista de clientes não foi encontrada no localStorage.', 'Erro');
-        return;
-    }
-
-    const todosOsClientes = JSON.parse(arrayDeClientesString);
-
-        const clienteEncontrado = todosOsClientes.find((c: { id: number; }) => c.id === idDoClienteParaEditar);
-
-    if (!clienteEncontrado) {
-        this.toastr.error(`O cliente com o ID ${idDoClienteParaEditar} não foi encontrado na lista.`, 'Erro');
-        return;
-    }
-
+  loadClienteData(customer: Cliente): void{
     const clienteTransformado = {
       dadosPessoais: {
-        nome: clienteEncontrado.nome,
-        cpf: clienteEncontrado.cpf,
-        email: clienteEncontrado.email,
-        telefone: clienteEncontrado.telefone,
-        salario: clienteEncontrado.salario
+        nome: customer.nome,
+        cpf: customer.cpf,
+        email: customer.email,
+        telefone: customer.telefone,
+        salario: customer.salario
       },
   
-      endereco: clienteEncontrado.endereco 
+      endereco: {
+        tipo: customer.endereco.tipo,
+        logradouro: customer.endereco.logradouro,
+        numero: customer.endereco.numero,
+        complemento: customer.endereco.complemento,
+        cep: customer.endereco.cep,
+        cidade: customer.endereco.cidade,
+        estado: customer.endereco.estado
+      }
     };
 
     this.cliente = clienteTransformado;
@@ -99,7 +93,6 @@ export class AtualizarCadastroComponent implements OnInit{
     console.log('Cliente encontrado e transformado para o formulário:', this.cliente);
   }
 
- 
     avancarEtapa() { this.etapaAtual++; }
     voltarEtapa() { this.etapaAtual--; }
   
@@ -127,20 +120,20 @@ export class AtualizarCadastroComponent implements OnInit{
       this.cliente.endereco = formValue.endereco;
       
       const updateCustomer = new Cliente(
-        0,
+        this.user?.usuario?.id,
         formValue.dadosPessoais.name,
         formValue.dadosPessoais.email,
         formValue.dadosPessoais.CPF,
         formValue.endereco,
         formValue.dadosPessoais.telefone,
-        formValue.dadosPessoais.salario);
+        formValue.dadosPessoais.salario
+      );
   
-      const result: SaveResult = this.customerService.saveClient(updateCustomer);
+      const result: SaveResult = this.customerService.updateClient(updateCustomer);
   
       if(result.success){
-        this.managerService.addCustomerToManager(updateCustomer);
-        this.toastr.success('A solicitação foi enviada com sucesso!', 'Sucesso');
-        localStorage.setItem('clientes', JSON.stringify(this.cliente));
+        this.userService.updateUserCustomerData(this.user, updateCustomer);
+        this.userService.updateLoggedUser(this.user);
       }else{
         console.log(result.message);
         this.toastr.warning('Já existe um cliente com CPF informado!', 'Erro');

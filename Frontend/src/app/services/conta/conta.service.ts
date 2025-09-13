@@ -42,7 +42,21 @@ export class ContaService {
     };
   }
 
-  updateAccount(account: Conta){
+  updateAccountLimit(customer: Cliente){
+    const accounts = this.listAccounts();
+
+    accounts.forEach((conta) => {
+      if(conta.cliente.id === customer.id){
+        let limite = this.calculateLimit(customer.salario);
+        if(conta.saldo + limite < 0) limite = conta.saldo * -1;
+        conta.limite = limite;
+      }
+    });
+
+    localStorage[LS_CHAVE_CONTAS] = JSON.stringify(accounts);
+  }
+
+  updateAccountBalance(account: Conta){
     const accounts = this.listAccounts();
 
     accounts.forEach((conta) => {

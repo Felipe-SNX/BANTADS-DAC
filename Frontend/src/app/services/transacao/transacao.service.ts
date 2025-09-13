@@ -112,13 +112,13 @@ export class TransacaoService {
       return { success: false, message: 'Saldo insuficiente para realizar o saque.' };
     }
     conta.saldo -= transacao.valor;
-    this.accountService.updateAccount(conta);
+    this.accountService.updateAccountBalance(conta);
     return { success: true, message: 'Saque efetuado.' };
   }
 
   private executeDeposito(transacao: Transacao, conta: Conta): SaveResult {
     conta.saldo += transacao.valor;
-    this.accountService.updateAccount(conta);
+    this.accountService.updateAccountBalance(conta);
     return { success: true, message: 'Depósito efetuado.' };
   }
 
@@ -128,8 +128,8 @@ export class TransacaoService {
     }
     origem.saldo -= transacao.valor;
     destino.saldo += transacao.valor;
-    this.accountService.updateAccount(origem);
-    this.accountService.updateAccount(destino);
+    this.accountService.updateAccountBalance(origem);
+    this.accountService.updateAccountBalance(destino);
     return { success: true, message: 'Transferência efetuada.' };
   }
 

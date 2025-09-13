@@ -2,11 +2,16 @@
   <div class="sidebar-header">
     <h3>{{ title }}</h3>
   </div>
-  <nav class="sidebar-nav">
-    <button *ngFor="let item of menuItems" 
-            class="menu-item" 
-            (click)="onMenuItemClick(item.action)">
-      <span class="material-icons">{{ item.label }}</span>      
+  <div class="d-flex flex-column justify-content-between">
+    <nav class="sidebar-nav">
+      <button *ngFor="let item of menuSelecionado" 
+              class="menu-item" 
+              (click)="onMenuItemClick(item.action)">
+        <span class="material-icons">{{ item.label }}</span>
+      </button>
+    </nav>
+    <button class="logout-button" (click)="logout()">
+      Logout
     </button>
-  </nav>
+  </div>
 </div>

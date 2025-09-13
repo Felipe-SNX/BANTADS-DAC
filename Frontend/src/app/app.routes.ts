@@ -12,13 +12,12 @@ import { DepositoComponent } from './pages/deposito/deposito.component';
 export const routes: Routes = [
     { path: '', component: LoginComponent},
     { path: 'autocadastro', component: AutocadastroComponent},
-    { path: 'atualizarcadastro/:id', component: AtualizarCadastroComponent},
-    
+
     { path: 'cliente/deposito', component: DepositoComponent},
     { path: 'cliente/saque', component: SaqueComponent},
     { path: 'cliente/transferencia', component: TransferenciaComponent},
-    { path: 'cliente/consultaExtrato/:id', component: ConsultaExtratoComponent},
-    { path: 'cliente/:id', component: TelaInicialClienteComponent}, 
-
+    { path: 'cliente/atualizarCadastro', component: AtualizarCadastroComponent},    
+    { path: 'cliente/consultaExtrato', component: ConsultaExtratoComponent},
+    { path: 'cliente/:id', component: TelaInicialClienteComponent},
     { path: 'gerente/:id', component: TelaInicialGerenteComponent},
 ];

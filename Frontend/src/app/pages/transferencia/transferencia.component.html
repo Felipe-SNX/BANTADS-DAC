@@ -1,14 +1,22 @@
 <main class="d-flex flex-row w-100" style="max-height: 100vh;">
-    <app-sidebar (actionSelected)="onActionSelected($event)" [tipoTela]="'cliente'"></app-sidebar>
+    <app-sidebar [tipoTela]="'cliente'"></app-sidebar>
 
     <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;">
-        <h2 class="mb-0">Transferência</h2>
+        <h2 class="mb-0 align-self-start">Transferência</h2>
 
         <div class="card shadow-sm">
             <div class="card-body p-4">
 
+                <!-- Seção de Saldo (com ícone e título alinhado à esquerda) -->
                 <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
-                    <p class="h5 mb-0 text-muted">Saldo disponível</p>
+                    
+                    <!-- Contêiner para agrupar ícone e título -->
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="fas fa-wallet text-primary fa-2x"></i>
+                        <p class="h5 mb-0 text-muted">Saldo disponível</p>
+                    </div>
+                    
+                    <!-- Valor e ícone de visibilidade à direita -->
                     <div class="saldo-valor d-flex align-items-center gap-2">
                         <span *ngIf="saldoVisivel" class="h4 mb-0">
                             {{ saldo | currency:'BRL' }}
@@ -27,9 +35,10 @@
                     </div>
                 </div>
 
+                <!-- Formulário de Transferência -->
                 <form #transferForm="ngForm" (ngSubmit)="onSubmit()">
                     <div class="mb-3">
-                        <label for="contaDestino" class="form-label">Número da conta de destino</label>
+                        <label for="contaDestino" class="form-label fw-bold">Número da conta de destino</label>
                         <input 
                             type="text" 
                             class="form-control"
@@ -47,7 +56,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="valor" class="form-label">Valor da transferência</label>
+                        <label for="valor" class="form-label fw-bold">Valor da transferência</label>
                         <input 
                             type="text" 
                             class="form-control"

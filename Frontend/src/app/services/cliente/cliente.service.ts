@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Cliente } from '../../shared/models/cliente.model';
+import { ContaService } from '../conta/conta.service';
 
 const LS_CHAVE = "clientes";
 
@@ -13,7 +14,7 @@ export interface SaveResult {
 })
 export class ClienteService {
 
-  constructor() { }
+  constructor(private readonly accountService: ContaService) { }
 
   validClient(client: Cliente): boolean{
     const customers = this.listClient();
@@ -58,7 +59,6 @@ export class ClienteService {
   updateClient(updatedClient: Cliente):SaveResult{
     let customers = this.listClient();
     const index = customers.findIndex((c:Cliente) => c.id == updatedClient.id);
-
     
     if(index === -1){
       return{
@@ -69,26 +69,12 @@ export class ClienteService {
 
     //Não permite a alteração do CPF
     updatedClient.cpf = customers[index].cpf;
+    updatedClient.gerente = customers[index].gerente;
 
     //Verifica se o salário foi alterado
-    /*if(updatedClient.salario !== customers[index].salario){
-
-      //Placeholder para calculo de novo limite, deve ser movido para o gerente?
-      //O Cliente tem direito a limite se o salario for >= R$2000,00
-      //O limite do Cliente é igual a metade do seu salario
-      if (updatedClient.salario >= 2000){
-        let novoLimite = updatedClient.salario * 0.5
-        
-        if (novoLimite < updatedClient.saldo) {
-          novoLimite = updatedClient.saldo; //Ajusta limite ao saldo negativo
-        }
-        updatedClient.limite = novoLimite;
-      }
-      
-    } else {
-      //Se o salário não mudou o limite permanece o mesmo
-      updatedClient.limite = customers[index].limite; 
-    }*/
+    if(updatedClient.salario !== customers[index].salario){
+      this.accountService.updateAccountLimit(updatedClient);
+    }
 
     customers[index] = updatedClient;
     localStorage[LS_CHAVE] = JSON.stringify(customers);

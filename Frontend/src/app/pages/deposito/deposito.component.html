@@ -1,1 +1,62 @@
-<p>deposito works!</p>
+<main class="d-flex flex-row w-100" style="max-height: 100vh;">
+    <app-sidebar [tipoTela]="'cliente'"></app-sidebar>
+
+    <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;">
+        <h2 class="mb-0">Realizar Depósito</h2>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+
+                <div class="text-center mb-4">
+                    <i class="fas fa-piggy-bank text-primary fa-3x mb-3"></i>
+                    
+                    <h4 class="h5">Depósito em Conta</h4>
+                    <p class="text-muted">
+                        Insira o valor que deseja depositar. O montante será creditado em sua conta instantaneamente.
+                    </p>
+                </div>
+
+                <hr class="mb-4">
+
+                <form #depositoForm="ngForm" (ngSubmit)="onSubmit()">
+                    <div class="mb-3">
+                        <label for="valor" class="form-label fw-bold">Valor do depósito</label>
+                        <input 
+                            type="text" 
+                            class="form-control form-control-lg text-center"
+                            id="valor" 
+                            name="valor"
+                            #saldoInput="ngModel"
+                            [(ngModel)]="valor"
+                            mask="separator.2" 
+                            thousandSeparator="."
+                            decimalMarker=","
+                            prefix="R$ "
+                            [class.is-invalid]="saldoInput.invalid && (saldoInput.dirty || saldoInput.touched)" 
+                            required 
+                        >
+                        <div *ngIf="saldoInput.invalid && (saldoInput.dirty || saldoInput.touched)" class="invalid-feedback text-center">
+                            <small *ngIf="saldoInput.errors?.['required']">É necessário informar um valor para depositar.</small>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button
+                            type="submit"
+                            class="btn btn-primary btn-lg"
+                            [disabled]="!depositoForm.valid || loading">
+                            <span *ngIf="loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                Depositando...
+                            </span>
+                            <span *ngIf="!loading">
+                                Confirmar Depósito
+                            </span>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</main>

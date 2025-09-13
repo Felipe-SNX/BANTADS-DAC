@@ -12,6 +12,7 @@ import { TransacaoService } from '../../services/transacao/transacao.service';
 import { TipoMovimentacao } from '../../shared/enums/TipoMovimentacao';
 import { Transacao } from '../../shared/models/transacao.model';
 import { NgxMaskDirective } from 'ngx-mask';
+import { UserService } from '../../services/auth/user.service';
 
 @Component({
   selector: 'app-saque',
@@ -39,7 +40,8 @@ export class SaqueComponent implements OnInit{
     private readonly accountService: ContaService,  
     private readonly transactionService: TransacaoService, 
     private readonly router: Router,
-    private readonly cd: ChangeDetectorRef
+    private readonly cd: ChangeDetectorRef,
+    private readonly userService: UserService
   ){}
 
   toggleVisibilidadeSaldo(): void {
@@ -47,22 +49,19 @@ export class SaqueComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    const usuarioString = localStorage.getItem('usuarioLogado');
-    if (usuarioString) {
-      const usuarioLogado = JSON.parse(usuarioString);
-      this.user = usuarioLogado;
-    }
-    else{
-      this.router.navigate(['/']);
-    }
+    const temp = this.userService.findLoggedUser();
 
-    const temp = this.accountService.getAccountByCustomer(this.user?.usuario as Cliente);
+    if(!temp) this.router.navigate(['/']);
+
+    this.user = temp; 
+
+    const tempAccount = this.accountService.getAccountByCustomer(this.user?.usuario as Cliente);
   
-    if(!temp){
+    if(!tempAccount){
       this.router.navigate(['/']);
     }
     else{
-      this.conta = temp;
+      this.conta = tempAccount;
       this.saldo = this.conta.saldo;
       this.limite = this.conta.limite;
     }

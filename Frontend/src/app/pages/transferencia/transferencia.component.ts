@@ -11,11 +11,12 @@ import { Cliente } from '../../shared/models/cliente.model';
 import { Router } from '@angular/router';
 import { Conta } from '../../shared/models/conta.model';
 import { ToastrService } from 'ngx-toastr';
+import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-transferencia',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxMaskDirective],
+  imports: [CommonModule, FormsModule, NgxMaskDirective, SidebarComponent],
   templateUrl: './transferencia.component.html',
   styleUrl: './transferencia.component.css'
 })
@@ -33,6 +34,9 @@ export class TransferenciaComponent implements OnInit{
   public transferencia = {
     contaDestino: "",
     valor: ""
+  }
+  
+  onActionSelected(action: string) {    
   }
 
   constructor(

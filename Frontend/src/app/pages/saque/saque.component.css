@@ -1,0 +1,101 @@
+.container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+}
+
+h2, h3 {
+  text-align: center;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+hr {
+  margin: 30px 0;
+  border: 0;
+  border-top: 1px solid #eee;
+}
+
+.saldo-container {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  padding: 15px;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  font-family: sans-serif;
+  width: 100%; 
+}
+
+.saldo-container p {
+  margin: 0;
+  font-size: 16px;
+  color: #555;
+}
+
+.saldo-valor {
+  display: flex;
+  align-items: center;
+  gap: 12px; 
+}
+
+.valor-visivel, .valor-oculto {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.eye-icon {
+  cursor: pointer; 
+  font-size: 20px;
+  color: #666;
+  transition: color 0.2s ease-in-out;
+}
+
+.eye-icon:hover {
+  color: #000; 
+}

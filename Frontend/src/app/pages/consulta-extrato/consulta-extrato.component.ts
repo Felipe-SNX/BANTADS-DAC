@@ -5,11 +5,12 @@ import { Transacao } from '../../shared/models/transacao.model';
 import { FormsModule } from '@angular/forms';
 import { TipoMovimentacao } from '../../shared/enums/TipoMovimentacao';
 import { TransacaoService } from '../../services/transacao/transacao.service';
+import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-consulta-extrato',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SidebarComponent],
   templateUrl: './consulta-extrato.component.html',
   styleUrl: './consulta-extrato.component.css'
 })
@@ -23,6 +24,9 @@ export class ConsultaExtratoComponent implements OnInit{
     private readonly route: ActivatedRoute, 
     private readonly transactionService: TransacaoService
   ){}
+
+  onActionSelected(action: string) {    
+  }
 
   ngOnInit(): void {
     this.id = +this.route.snapshot.params['id']; 

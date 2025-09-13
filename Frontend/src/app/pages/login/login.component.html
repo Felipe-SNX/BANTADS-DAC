@@ -3,10 +3,7 @@
     <div class="card shadow-lg border-0 rounded-4 p-4" style="max-width: 400px; width: 100%;">
     
         <div class="text-center mb-4">
-            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 shadow" style="width: 64px; height: 64px;">
-                <i class="bi bi-info-lg fs-3"></i>
-            </div>
-            <h1 class="h3 fw-bold text-dark">BanTADS</h1>
+            <img width="100px" height="100px" src="logo.png" alt="Logo BanTADS">
         </div>
 
         <h2 class="h5 fw-semibold text-center mb-4 text-secondary">Acessar sua conta</h2>
@@ -14,7 +11,7 @@
         <!-- form -->
         <form #meuForm="ngForm" (ngSubmit)="onSubmit()" id="loginForm">
             <div class="mb-3">
-                <label for="email" class="form-label">E-mail</label>
+                <label for="email" class="form-label labels">E-mail</label>
                 <input 
                     aria-describedby="email-warning"
                     type="email" 
@@ -37,7 +34,7 @@
             </div>
 
             <div class="mb-2">
-                <label for="password" class="form-label">Senha</label>
+                <label for="password" class="form-label labels">Senha</label>
                 <input 
                     aria-describedby="password-warning"
                     type="password" 
@@ -59,12 +56,13 @@
                     <small *ngIf="passwordInput.errors?.['incorrect']"> Usuário ou senha incorretos </small>
                 </div>
             </div>
-
-            <div class="text-end mb-3">
-                <a href="#" class="text-primary text-decoration-none">Esqueci minha senha</a>
-            </div>
-            <div class="text-end mb-3">
-                <a href="/autocadastro" class="text-primary text-decoration-none">Realizar cadastro</a>
+            <div class="buttons">
+                <div class="text-end mb-3">
+                    <a href="#" class="text-primary text-decoration-none">Esqueci minha senha</a>
+                </div>
+                <div class="text-end mb-3">
+                    <a href="/autocadastro" class="text-primary text-decoration-none">Realizar cadastro</a>
+                </div>
             </div>
 
             <button type="submit" [disabled]="meuForm.invalid" class="btn btn-primary w-100 fw-semibold py-2">Entrar</button>

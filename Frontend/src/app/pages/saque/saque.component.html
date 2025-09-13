@@ -1,0 +1,86 @@
+<main class="d-flex flex-row w-100" style="max-height: 100vh;">
+    <app-sidebar (actionSelected)="onActionSelected($event)" [tipoTela]="'cliente'"></app-sidebar>
+
+    <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;">
+        <h2 class="mb-0">Saque</h2>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="h5 mb-0">Seu resumo financeiro</h4>
+                    <i
+                       (click)="toggleVisibilidadeSaldo()"
+                       class="fas eye-icon"
+                       [class.fa-eye]="!saldoVisivel"
+                       [class.fa-eye-slash]="saldoVisivel"
+                       style="cursor: pointer;"
+                       title="Clique para {{ saldoVisivel ? 'ocultar' : 'mostrar' }} o saldo">
+                    </i>
+                </div>
+
+                <div class="d-flex flex-column gap-2 mb-4">
+                    <div class="d-flex justify-content-between align-items-center text-muted">
+                        <span>Saldo em conta</span>
+                        <span *ngIf="saldoVisivel">{{ saldo | currency:'BRL' }}</span>
+                        <span *ngIf="!saldoVisivel">R$ ••••••</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center text-muted">
+                        <span>Limite de crédito</span>
+                        <span *ngIf="saldoVisivel">{{ limite | currency:'BRL' }}</span>
+                        <span *ngIf="!saldoVisivel">R$ ••••••</span>
+                    </div>
+
+                    <hr class="my-2">
+
+                    <div class="d-flex justify-content-between align-items-center fw-bold h5">
+                        <span>Disponível para saque</span>
+                        <span *ngIf="saldoVisivel">{{ (limite + saldo) | currency:'BRL' }}</span>
+                        <span *ngIf="!saldoVisivel">R$ ••••••</span>
+                    </div>
+                </div>
+
+
+                <form #saqueForm="ngForm" (ngSubmit)="onSubmit()">
+                    <div class="mb-3">
+                        <label for="valor" class="form-label fw-bold">Digite o valor para saque</label>
+                        <input 
+                            type="text" 
+                            class="form-control form-control-lg"
+                            id="valor" 
+                            name="valor"
+                            #saldoInput="ngModel"
+                            [(ngModel)]="valorSaque"
+                            mask="separator.2" 
+                            thousandSeparator="."
+                            decimalMarker=","
+                            prefix="R$ "
+                            [class.is-invalid]="saldoInput.invalid && (saldoInput.dirty || saldoInput.touched)" 
+                            required 
+                        >
+                        <div *ngIf="saldoInput.invalid && (saldoInput.dirty || saldoInput.touched)" class="invalid-feedback">
+                            <small *ngIf="saldoInput.errors?.['required']">É necessário informar um valor para sacar.</small>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button
+                            type="submit"
+                            class="btn btn-primary btn-lg"
+                            [disabled]="!saqueForm.valid || loading">
+                            <span *ngIf="loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                Sacando...
+                            </span>
+                            <span *ngIf="!loading">
+                                Sacar
+                            </span>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</main>

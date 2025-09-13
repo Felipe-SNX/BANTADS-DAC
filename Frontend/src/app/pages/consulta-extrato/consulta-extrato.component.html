@@ -1,46 +1,70 @@
-<main class="d-flex flex-column align-items-center gap-2 w-100 vh-100 p-4 w-100">
-    <h1>Extrato da Conta</h1>
-    <section class="d-flex flex-row flex-wrap justify-content-center w-50 gap-5">
-        <div class="mb-3 gap-2 w-25">
-            <label for="dataInicio">Data Início</label>
-            <input [(ngModel)]="dataInicio" id="dataInicio" class="form-control w-100 input-date" type="date" placeholder="DD/MM/AAAA"/>
+<main class="d-flex flex-row w-100" style="max-height: 100vh;">
+    <app-sidebar (actionSelected)="onActionSelected($event)" [tipoTela]="'cliente'"></app-sidebar>
+
+    <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;">
+        <h2 class="mb-0">Extrato da Conta</h2>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-5 col-sm-12">
+                        <label for="dataInicio" class="form-label">Data Início</label>
+                        <input [(ngModel)]="dataInicio" id="dataInicio" class="form-control input-date" type="date" />
+                    </div>
+                    <div class="col-md-5 col-sm-12">
+                        <label for="dataFim" class="form-label">Data Fim</label>
+                        <input [(ngModel)]="dataFim" id="dataFim" class="form-control input-date" type="date" />
+                    </div>
+                    <div class="col-md-2 col-sm-12 d-grid">
+                        <button (click)="filterCustomerTransactionsForDate()" class="btn btn-primary">Buscar</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="mb-3 ms-2 gap-2 w-25">
-            <label for="dataFim">Data Fim</label>
-            <input [(ngModel)]="dataFim" id="dataFim" class="form-control w-100 input-date" type="date" placeholder="DD/MM/AAAA"/>
+
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h3 class="h5 mb-0">Detalhes das Transações e Saldo Diário</h3>
+            </div>
+            <div class="card-body p-0">
+                <ng-container *ngIf="transacoes && transacoes.length > 0; else noData">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped mb-0">
+                            <thead class="table-secondary">
+                                <tr>
+                                    <th>Data/Hora</th>
+                                    <th>Tipo de Operação</th>
+                                    <th>Cliente Origem</th>
+                                    <th>Cliente Destino</th>
+                                    <th class="text-end">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr 
+                                    *ngFor="let transacao of transacoes"
+                                    [ngClass]="{
+                                        'table-primary': transacao.tipo === 'DEPÓSITO' || (transacao.tipo === 'TRANSFERÊNCIA' && (transacao.clienteDestino?.id === id)),
+                                        'table-danger': transacao.tipo === 'SAQUE' || (transacao.tipo === 'TRANSFERÊNCIA' && (transacao.clienteOrigem?.id === id)),
+                                        'table-light': transacao.tipo === 'SALDO' 
+                                    }"
+                                >
+                                    <td>{{transacao.data | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+                                    <td>{{transacao.tipo}}</td>
+                                    <td>{{transacao.clienteOrigem?.nome}}</td>
+                                    <td>{{transacao.clienteDestino?.nome}}</td>
+                                    <td class="text-end">{{transacao.valor | currency:'BRL'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </ng-container>
+                
+                <ng-template #noData>
+                    <div class="text-center p-5">
+                        <p class="text-muted">Nenhuma transação encontrada para o período selecionado.</p>
+                    </div>
+                </ng-template>
+            </div>
         </div>
-    </section>
-    <div class="d-flex justify-content-center w-25">
-        <button (click)="filterCustomerTransactionsForDate()" class="btn btn-primary w-25">Buscar</button>
     </div>
-    <section class="d-flex flex-column w-100 gap-3 p-2">
-        <h3>Detalhes das Transações e Saldo Diário</h3>
-        <table class="table table-hover border">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Data/Hora</th>
-                    <th>Tipo de Operação</th>
-                    <th>Cliente Origem</th>
-                    <th>Cliente Destino</th>
-                    <th>Valor</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr 
-                    *ngFor="let transacao of transacoes"
-                    [ngClass]="{
-                        'table-primary': transacao.tipo === 'DEPÓSITO' || (transacao.tipo === 'TRANSFERÊNCIA' && (transacao.clienteDestino?.id === id)),
-                        'table-danger': transacao.tipo === 'SAQUE' || (transacao.tipo === 'TRANSFERÊNCIA' && (transacao.clienteOrigem?.id === id)),
-                        'table-secondary': transacao.tipo === 'SALDO'
-                    }"
-                >
-                    <td>{{transacao.data | date:'dd/MM/yyyy HH:mm:ss'}}</td>
-                    <td>{{transacao.tipo}}</td>
-                    <td>{{transacao.clienteOrigem?.nome}}</td>
-                    <td>{{transacao.clienteDestino?.nome}}</td>
-                    <td>{{transacao.valor | currency:'BRL'}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
 </main>

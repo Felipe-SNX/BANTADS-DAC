@@ -1,89 +1,89 @@
-<div class="container">
-  <h2>Transferência</h2>
+<main class="d-flex flex-row w-100" style="max-height: 100vh;">
+    <app-sidebar (actionSelected)="onActionSelected($event)" [tipoTela]="'cliente'"></app-sidebar>
 
-  <div class="saldo-container">
-    <p>Saldo Atual:</p>
-    
-    <div class="saldo-valor">
-      <span *ngIf="saldoVisivel" class="valor-visivel">
-        {{ saldo | currency:'BRL' }}
-      </span>
+    <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;">
+        <h2 class="mb-0">Transferência</h2>
 
-      <span *ngIf="!saldoVisivel" class="valor-oculto">
-        R$ ••••••
-      </span>
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
 
-      <i
-        (click)="toggleVisibilidadeSaldo()"
-        class="eye-icon fas"
-        [class.fa-eye]="!saldoVisivel"
-        [class.fa-eye-slash]="saldoVisivel"
-        title="Clique para {{ saldoVisivel ? 'ocultar' : 'mostrar' }} o saldo">
-      </i>
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                    <p class="h5 mb-0 text-muted">Saldo disponível</p>
+                    <div class="saldo-valor d-flex align-items-center gap-2">
+                        <span *ngIf="saldoVisivel" class="h4 mb-0">
+                            {{ saldo | currency:'BRL' }}
+                        </span>
+                        <span *ngIf="!saldoVisivel" class="h4 mb-0">
+                            R$ ••••••
+                        </span>
+                        <i
+                           (click)="toggleVisibilidadeSaldo()"
+                           class="fas eye-icon"
+                           [class.fa-eye]="!saldoVisivel"
+                           [class.fa-eye-slash]="saldoVisivel"
+                           style="cursor: pointer;"
+                           title="Clique para {{ saldoVisivel ? 'ocultar' : 'mostrar' }} o saldo">
+                        </i>
+                    </div>
+                </div>
+
+                <form #transferForm="ngForm" (ngSubmit)="onSubmit()">
+                    <div class="mb-3">
+                        <label for="contaDestino" class="form-label">Número da conta de destino</label>
+                        <input 
+                            type="text" 
+                            class="form-control"
+                            id="contaDestino" 
+                            name="contaDestino" 
+                            mask="0*"
+                            #contaDestinoInput="ngModel"
+                            [(ngModel)]="transferencia.contaDestino"
+                            [class.is-invalid]="contaDestinoInput.invalid && (contaDestinoInput.dirty || contaDestinoInput.touched)" 
+                            required
+                        >
+                        <div *ngIf="contaDestinoInput.invalid && (contaDestinoInput.dirty || contaDestinoInput.touched)" class="invalid-feedback">
+                            <small *ngIf="contaDestinoInput.errors?.['required']">É necessário informar uma conta de destino.</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="valor" class="form-label">Valor da transferência</label>
+                        <input 
+                            type="text" 
+                            class="form-control"
+                            id="valor" 
+                            name="valor"
+                            #saldoInput="ngModel"
+                            [(ngModel)]="transferencia.valor"
+                            mask="separator.2" 
+                            thousandSeparator="."
+                            decimalMarker=","
+                            prefix="R$ "
+                            [class.is-invalid]="saldoInput.invalid && (saldoInput.dirty || saldoInput.touched)" 
+                            required 
+                        >
+                        <div *ngIf="saldoInput.invalid && (saldoInput.dirty || saldoInput.touched)" class="invalid-feedback">
+                             <small *ngIf="saldoInput.errors?.['required']">É necessário informar um valor para transferir.</small>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button
+                            type="submit"
+                            class="btn btn-primary btn-lg"
+                            [disabled]="!transferForm.valid || loading">
+                            <span *ngIf="loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                Transferindo...
+                            </span>
+                            <span *ngIf="!loading">
+                                Transferir
+                            </span>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
     </div>
-  </div>
-
-  <form #transferForm="ngForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="contaDestino">Número da conta de destino:</label>
-      <input 
-        type="text" 
-        id="contaDestino" 
-        name="contaDestino" 
-        mask="0*"
-        #contaDestinoInput="ngModel"
-        [(ngModel)]="transferencia.contaDestino"
-        [class.is-invalid]="contaDestinoInput.invalid && (contaDestinoInput.dirty || contaDestinoInput.touched)" 
-        required
-      >
-      <div 
-        id="password-warning"
-        *ngIf="contaDestinoInput.invalid && (contaDestinoInput.dirty || contaDestinoInput.touched)"
-        class="invalid-feedback">
-      >
-        <small *ngIf="contaDestinoInput.errors?.['required']">É necessário informar uma conta de destino</small>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="saldo">Valor:</label>
-      <input 
-        type="text" 
-        id="saldo" 
-        name="saldo"
-        #saldoInput="ngModel"
-        [(ngModel)]="transferencia.valor"
-        mask="separator.2" 
-        thousandSeparator="."
-        decimalMarker=","
-        prefix="R$ "
-        [class.is-invalid]="saldoInput.invalid && (saldoInput.dirty || saldoInput.touched)" 
-        required 
-      >
-      <div 
-        id="saldo-warning"
-        *ngIf="saldoInput.invalid && (saldoInput.dirty || saldoInput.touched)"
-        class="invalid-feedback">
-      >
-        <small *ngIf="saldoInput.errors?.['required']">É necessário informar um valor para transferir</small>
-      </div>
-    </div>
-
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [disabled]="!transferForm.valid || loading">
-
-      <span *ngIf="loading">
-        <i class="fas fa-spinner fa-spin"></i>
-        Transferindo...
-      </span>
-
-      <span *ngIf="!loading">
-        Transferir
-      </span>
-
-    </button>
-  </form>
-
-</div>
+</main>

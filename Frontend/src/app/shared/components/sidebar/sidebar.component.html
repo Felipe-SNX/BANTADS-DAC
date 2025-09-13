@@ -6,7 +6,7 @@
     <button *ngFor="let item of menuItems" 
             class="menu-item" 
             (click)="onMenuItemClick(item.action)">
-      <span class="material-icons">{{ item.icon }}</span>      
+      <span class="material-icons">{{ item.label }}</span>      
     </button>
   </nav>
 </div>

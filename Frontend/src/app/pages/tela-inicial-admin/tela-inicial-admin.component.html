@@ -1,6 +1,21 @@
-<div class = 'home-container'>
-  <app-sidebar></app-sidebar>
-  <div class="content">
-    <h1>Bem-vindo, Administrador!</h1>
-    <p>Use o menu lateral para navegar pelas opções de administração.</p>
-  </div>
+<h2>Dashboard</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Email</th>
+      <th>Clientes</th>
+      <th>Soma Saldos Positivos</th>
+      <th>Soma Saldos Negativos</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let gerente of AdminDashboard">
+      <td>{{ gerente.nome }}</td>
+      <td>{{ gerente.email }}</td>
+      <td>{{ gerente.totalClientes }}</td>
+      <td>{{ gerente.saldoPositivo | currency:'BRL' }}</td>
+      <td>{{ gerente.saldoNegativo | currency:'BRL' }}</td>
+    </tr>
+  </tbody>
+</table>

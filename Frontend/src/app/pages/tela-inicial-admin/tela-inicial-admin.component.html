@@ -1,21 +1,43 @@
-<h2>Dashboard</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Nome</th>
-      <th>Email</th>
-      <th>Clientes</th>
-      <th>Soma Saldos Positivos</th>
-      <th>Soma Saldos Negativos</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let gerente of AdminDashboard">
-      <td>{{ gerente.nome }}</td>
-      <td>{{ gerente.email }}</td>
-      <td>{{ gerente.totalClientes }}</td>
-      <td>{{ gerente.saldoPositivo | currency:'BRL' }}</td>
-      <td>{{ gerente.saldoNegativo | currency:'BRL' }}</td>
-    </tr>
-  </tbody>
-</table>
+<div class="home-container">
+  <app-sidebar [tipoTela]="'admin'"></app-sidebar>
+
+  <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;">
+    <h2 class="mb-0">Olá,</h2>
+
+    <div class="card shadow-sm">
+      <div class="card-header">
+        <h3 class="h5 mb-0">Gerentes Cadastrados</h3>
+      </div>
+      <div class="card-body p-0">
+        <ng-container *ngIf="AdminDashboard && AdminDashboard.length > 0; else noData">
+          <div class="table-responsive">
+            <table class="table table-hover table-striped mb-0">
+              <thead class="table-secondary">
+                <tr>
+                  <th class="tex-start">Nome</th>
+                  <th class="tex-start">Clientes</th>
+                  <th class="tex-start">Soma Saldos Positivos</th>
+                  <th class="tex-start">Soma Saldos Negativos</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let gerente of AdminDashboard">
+                  <td class="text-start">{{ gerente.nome }}</td>
+                  <td class="text-start">{{ gerente.totalClientes }}</td>
+                  <td class="text-start">{{ gerente.saldoPositivo | currency:'BRL':'symbol' }}</td>
+                  <td class="text-start">{{ gerente.saldoNegativo | currency:'BRL':'symbol' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
+
+        <ng-template #noData>
+          <div class="text-center p-5">
+            <p class="text-muted">Nenhum gerente encontrado.</p>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

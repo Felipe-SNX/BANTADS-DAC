@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 import { CommonModule } from '@angular/common';
+import { Admin } from '../../shared/models/admin.model';
 
 interface AdminDashboard {
   id: number;
@@ -27,7 +28,6 @@ export class TelaInicialAdminComponent implements OnInit {
 
   ngOnInit(): void {
     const gerentes  = JSON.parse(localStorage.getItem('gerentes') || '[]');
-    const clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
     const contas = JSON.parse(localStorage.getItem('contas') || '[]');
     
     this.AdminDashboard = gerentes.map((gerente: any) => {
@@ -56,7 +56,7 @@ export class TelaInicialAdminComponent implements OnInit {
     });
 
     // Ordena os gerentes pelo maior saldo positivo
-    //this.gerentesDashboard.sort((a, b) => b.saldoPositivo - a.saldoNegativo);
+    this.AdminDashboard.sort((a, b) => b.saldoPositivo - a.saldoPositivo);
 
   }
 }

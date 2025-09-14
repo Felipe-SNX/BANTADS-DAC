@@ -20,16 +20,19 @@ interface IMenu{
   ]
 })
 export class SidebarComponent implements OnInit{
-  @Input() tipoTela: 'cliente' | 'gerente' = 'cliente';
+  @Input() tipoTela!: 'cliente' | 'gerente' | 'admin';
 
   menuSelecionado: IMenu[] = [];
   constructor(private readonly router: Router, private readonly userService: UserService){}
 
+  title: string = '';
+
   ngOnInit(): void {
     this.menuSelecionado = this.menuItems.filter((menu) => menu.type === this.tipoTela);
+    this.title = this.tipoTela === 'cliente' ? 'Menu do Cliente'
+      : this.tipoTela === 'gerente' ? 'Menu do Gerente'
+      : 'Menu do Administrador';
   }
-    
-  title = this.tipoTela === 'cliente' ? 'Menu do Cliente' : 'Menu do Gerente';  
 
   menuItems: IMenu[] = [
     { label: 'Alterar Perfil', icon: 'person', action: 'alterarPerfil', type: 'cliente' },
@@ -37,6 +40,8 @@ export class SidebarComponent implements OnInit{
     { label: 'Saque', icon: 'payments', action: 'Saque', type: 'cliente' },
     { label: 'Transferência', icon: 'swap_horiz', action: 'Transferência', type: 'cliente' },
     { label: 'Extrato', icon: 'person', action: 'Extrato', type: 'cliente' },
+    { label: 'Novo Gerente', icon: 'person', action: 'adicionarGerente', type: 'admin' },
+    { label: 'Relatório de Clientes', icon: 'person', action: 'listarClientes', type: 'admin' },
   ];
 
   onMenuItemClick(action: string) {

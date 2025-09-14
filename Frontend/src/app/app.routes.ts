@@ -8,6 +8,7 @@ import { TransferenciaComponent } from './pages/transferencia/transferencia.comp
 import { TelaInicialGerenteComponent } from './pages/tela-inicial-gerente/tela-inicial-gerente.component';
 import { SaqueComponent } from './pages/saque/saque.component';
 import { DepositoComponent } from './pages/deposito/deposito.component';
+import { TelaInicialAdminComponent } from './pages/tela-inicial-admin/tela-inicial-admin.component';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent},
@@ -20,4 +21,5 @@ export const routes: Routes = [
     { path: 'cliente/consultaExtrato', component: ConsultaExtratoComponent},
     { path: 'cliente/:id', component: TelaInicialClienteComponent},
     { path: 'gerente/:id', component: TelaInicialGerenteComponent},
+    { path: 'admin/:id', component: TelaInicialAdminComponent}
 ];

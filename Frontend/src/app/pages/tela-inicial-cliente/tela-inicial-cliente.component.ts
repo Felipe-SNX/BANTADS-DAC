@@ -5,6 +5,12 @@ import { Conta } from '../../shared/models/conta.model';
 import { Transacao } from '../../shared/models/transacao.model';
 import { ActivatedRoute } from '@angular/router';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
+import { ClienteService } from '../../services/cliente/cliente.service';
+import { User } from '../../shared/models/user.model';
+import { UserService } from '../../services/auth/user.service';
+import { ContaService } from '../../services/conta/conta.service';
+import { GerenteService } from '../../services/gerente/gerente.service';
+import { Gerente } from '../../shared/models/gerente.model';
 
 @Component({
   selector: 'app-tela-inicial-cliente',
@@ -18,49 +24,38 @@ export class TelaInicialClienteComponent implements OnInit {
   conta: Conta = new Conta();
   transacoesRecentes: Transacao[] = [];
   saldoNegativo: boolean = false;
+  gerente: Gerente = new Gerente();
 
 
   constructor
   (private mockDataService: MockDataService,
     private route: ActivatedRoute,
+    private clienteService: ClienteService,
+    private userService: UserService,
+    private accountService: ContaService,
+    private managerService: GerenteService   
   ) {
 
    }
 
   ngOnInit(): void {        
-    this.mockDataService.loadMockData();
-
-    this.route.paramMap.subscribe(params => {
-    const clienteId = Number(params.get('id'));
-
-    if (clienteId)
-        this.loadClienteData(clienteId);
-    });
-    
-    const clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
-    const contas = JSON.parse(localStorage.getItem('contas') || '[]');
-    const movimentacoes = JSON.parse(localStorage.getItem('movimentacoes') || '[]');
-    
-    if (clientes.length > 0) {       
-            
-      this.conta = contas.find((conta: any) => conta.cliente.id === this.cliente.id);
-            
-      this.saldoNegativo = this.conta && this.conta.saldo < 0;                  
-    }
+    const cliente = this.userService.findLoggedUser()?.usuario;    
+    if(cliente){
+      this.loadClienteData(cliente.id as number);
+    }             
   }
 
-  onActionSelected(action: string) {    
-  }
-
-   loadClienteData(clienteId: number): void {    
-      const clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
-      const contas = JSON.parse(localStorage.getItem('contas') || '[]');
-      const movimentacoes = JSON.parse(localStorage.getItem('movimentacoes') || '[]');
-
-      this.cliente = clientes.find((c: any) => c.id === clienteId);      
-            
-      this.conta = contas.find((conta: any) => conta.cliente.id === clienteId);            
-          
+  loadClienteData(clienteId: number): void {    
+    const cliente = this.clienteService.getClientById(clienteId);
+    if (cliente) {
+      this.cliente = cliente;
       this.saldoNegativo = this.conta.saldo < 0;    
-  }
+      const conta = this.accountService.getAccountByCustomer(this.cliente);
+      if (conta) {
+        this.conta = conta;        
+        this.saldoNegativo = this.conta.saldo < 0;   
+        this.gerente = this.conta.gerente;
+      }          
+    }                        
+}
 }

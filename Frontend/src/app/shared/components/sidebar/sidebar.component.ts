@@ -66,6 +66,12 @@ export class SidebarComponent implements OnInit{
     }
   }
 
+  onHomeClick(){
+    if(this.tipoTela === 'cliente'){
+      this.router.navigate(['cliente']);
+    }
+  }
+
   logout(){
     this.userService.deleteLoggedUser();
     this.router.navigate(['/']);

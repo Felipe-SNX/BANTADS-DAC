@@ -11,6 +11,7 @@
     padding: 1.5rem;
     text-align: center;
     border-bottom: 1px solid #495057;
+    cursor: pointer;
 }
 
 .sidebar .d-flex.flex-column {

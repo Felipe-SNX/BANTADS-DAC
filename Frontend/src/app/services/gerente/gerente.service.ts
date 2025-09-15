@@ -15,7 +15,7 @@ export class GerenteService {
   listManagers(): Gerente[] {
     const managers = localStorage[LS_CHAVE];
     return managers ? JSON.parse(managers) : [];
-  }
+  }  
   
   addCustomerToManager(customer: Cliente): void {
     const managers = this.listManagers();

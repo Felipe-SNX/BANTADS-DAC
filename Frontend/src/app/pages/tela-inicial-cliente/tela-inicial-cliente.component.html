@@ -10,6 +10,7 @@
       <div class="welcome-card">
         <h2>Olá, {{ cliente?.nome }}!</h2>
         <p>Número da conta: {{ conta?.numConta }}</p>
+        <p>Gerente responsável: {{ gerente?.nome }}</p>
         <div class="balance">
           <h3>Saldo disponível</h3>
           <p class="balance-value" [class.negative]="saldoNegativo">

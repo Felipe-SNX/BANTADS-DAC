@@ -1,18 +1,18 @@
 import { ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
-import { ContaService } from '../../services/conta/conta.service';
-import { TransacaoService } from '../../services/transacao/transacao.service';
 import { Router } from '@angular/router';
-import { Conta } from '../../shared/models/conta.model';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule, NgForm } from '@angular/forms';
-import { User } from '../../shared/models/user.model';
-import { Cliente } from '../../shared/models/cliente.model';
-import { Transacao } from '../../shared/models/transacao.model';
-import { TipoMovimentacao } from '../../shared/enums/TipoMovimentacao';
 import { CommonModule } from '@angular/common';
 import { NgxMaskDirective } from 'ngx-mask';
-import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
-import { UserService } from '../../services/auth/user.service';
+import { UserService } from '../../../services/auth/user.service';
+import { ContaService } from '../../../services/conta/conta.service';
+import { TransacaoService } from '../../../services/transacao/transacao.service';
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
+import { TipoMovimentacao } from '../../../shared/enums/TipoMovimentacao';
+import { Cliente } from '../../../shared/models/cliente.model';
+import { Conta } from '../../../shared/models/conta.model';
+import { Transacao } from '../../../shared/models/transacao.model';
+import { User } from '../../../shared/models/user.model';
 
 @Component({
   selector: 'app-deposito',

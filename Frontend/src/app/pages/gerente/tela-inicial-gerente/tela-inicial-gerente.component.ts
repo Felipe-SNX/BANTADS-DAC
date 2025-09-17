@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Conta } from '../../shared/models/conta.model';
-import { MockDataService } from '../../services/mock/mock-data.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
-
+import { MockDataService } from '../../../services/mock/mock-data.service';
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
+import { Conta } from '../../../shared/models/conta.model';
 
 @Component({
   selector: 'app-tela-inicial-gerente',

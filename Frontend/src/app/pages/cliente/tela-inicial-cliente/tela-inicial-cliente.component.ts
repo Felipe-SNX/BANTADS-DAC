@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { MockDataService } from '../../services/mock/mock-data.service';
-import { Cliente } from '../../shared/models/cliente.model';
-import { Conta } from '../../shared/models/conta.model';
-import { Transacao } from '../../shared/models/transacao.model';
 import { ActivatedRoute } from '@angular/router';
-import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
-import { ClienteService } from '../../services/cliente/cliente.service';
-import { User } from '../../shared/models/user.model';
-import { UserService } from '../../services/auth/user.service';
-import { ContaService } from '../../services/conta/conta.service';
-import { GerenteService } from '../../services/gerente/gerente.service';
-import { Gerente } from '../../shared/models/gerente.model';
+import { UserService } from '../../../services/auth/user.service';
+import { ClienteService } from '../../../services/cliente/cliente.service';
+import { ContaService } from '../../../services/conta/conta.service';
+import { GerenteService } from '../../../services/gerente/gerente.service';
+import { MockDataService } from '../../../services/mock/mock-data.service';
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
+import { Cliente } from '../../../shared/models/cliente.model';
+import { Conta } from '../../../shared/models/conta.model';
+import { Gerente } from '../../../shared/models/gerente.model';
+import { Transacao } from '../../../shared/models/transacao.model';
 
 @Component({
   selector: 'app-tela-inicial-cliente',

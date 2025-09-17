@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 import { CommonModule } from '@angular/common';
-import { Admin } from '../../shared/models/admin.model';
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 
 interface AdminDashboard {
   id: number;

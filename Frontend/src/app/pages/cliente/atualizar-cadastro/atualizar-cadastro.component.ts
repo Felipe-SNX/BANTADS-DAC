@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormsModule, NgForm } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { Cliente } from '../../../shared/models/cliente.model';
+import { ClienteService, SaveResult } from '../../../services/cliente/cliente.service';
+import { Router } from '@angular/router';
+import { UserService } from '../../../services/auth/user.service';
+import { User } from '../../../shared/models/user.model';
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { EnderecoFormComponent } from '../autocadastro/formularios/endereco-form/endereco-form.component';
 import { PessoaFormComponent } from '../autocadastro/formularios/pessoa-form/pessoa-form.component';
-import { ToastrService } from 'ngx-toastr';
-import { Cliente } from '../../shared/models/cliente.model';
-import { ClienteService, SaveResult } from '../../services/cliente/cliente.service';
-import { Router } from '@angular/router';
-import { UserService } from '../../services/auth/user.service';
-import { User } from '../../shared/models/user.model';
-import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-atualizar-cadastro',

@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Transacao } from '../../shared/models/transacao.model';
 import { FormsModule } from '@angular/forms';
-import { TipoMovimentacao } from '../../shared/enums/TipoMovimentacao';
-import { TransacaoService } from '../../services/transacao/transacao.service';
-import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
-import { Conta } from '../../shared/models/conta.model';
-import { User } from '../../shared/models/user.model';
-import { UserService } from '../../services/auth/user.service';
+import { UserService } from '../../../services/auth/user.service';
+import { TransacaoService } from '../../../services/transacao/transacao.service';
+import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
+import { TipoMovimentacao } from '../../../shared/enums/TipoMovimentacao';
+import { Conta } from '../../../shared/models/conta.model';
+import { Transacao } from '../../../shared/models/transacao.model';
+import { User } from '../../../shared/models/user.model';
+
 
 @Component({
   selector: 'app-consulta-extrato',

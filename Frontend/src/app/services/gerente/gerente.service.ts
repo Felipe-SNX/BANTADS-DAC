@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Gerente } from '../../shared/models/gerente.model';
 import { Cliente } from '../../shared/models/cliente.model';
 import { ContaService } from '../conta/conta.service';
+import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
 
 const LS_CHAVE = "gerentes";
 
@@ -16,6 +17,52 @@ export class GerenteService {
     const managers = localStorage[LS_CHAVE];
     return managers ? JSON.parse(managers) : [];
   }  
+
+  createManager(manager: Gerente): LocalStorageResult {
+    const managers = this.listManagers();
+
+    const checkManager = managers.find((currentManager) => currentManager.cpf === manager.cpf);
+
+    if(checkManager){
+      return {
+        success: false,
+        message: `Erro: O CPF ${manager.cpf} já está cadastrado.`
+      };
+    }
+
+    managers.push(manager);
+    localStorage[LS_CHAVE] = JSON.stringify(managers);
+
+    return {
+      success: true,
+      message: 'Gerente cadastrado com sucesso!'
+    };
+  }
+
+  updateManager(manager: Gerente): LocalStorageResult {
+    const managers = this.listManagers();
+
+    const checkManager = managers.findIndex((currentManager) => currentManager.cpf === manager.cpf);
+
+    if(!checkManager){
+      return {
+        success: false,
+        message: `Erro: Não foi encontrado nenhum gerente com o CPF ${manager.cpf}`
+      };
+    }
+
+    manager.id = managers[checkManager].id;
+    manager.cpf = managers[checkManager].cpf;
+    manager.clientes = managers[checkManager].clientes;
+
+    managers[checkManager] = manager;
+    localStorage[LS_CHAVE] = JSON.stringify(managers);
+
+    return {
+      success: true,
+      message: 'Gerente cadastrado com sucesso!'
+    };
+  }
   
   addCustomerToManager(customer: Cliente): void {
     const managers = this.listManagers();

@@ -1,13 +1,13 @@
 import { Component, inject, ViewChild } from '@angular/core';
 import { FormGroup, FormsModule, NgForm } from '@angular/forms';
-import { Cliente } from '../../shared/models/cliente.model';
 import { CommonModule } from '@angular/common';
-import { ClienteService, SaveResult } from '../../services/cliente/cliente.service';
-import { GerenteService } from '../../services/gerente/gerente.service';
 import { ToastrService } from 'ngx-toastr';
 import { EnderecoFormComponent } from './formularios/endereco-form/endereco-form.component';
 import { PessoaFormComponent } from "./formularios/pessoa-form/pessoa-form.component";
 import { Router } from '@angular/router';
+import { ClienteService, SaveResult } from '../../../services/cliente/cliente.service';
+import { GerenteService } from '../../../services/gerente/gerente.service';
+import { Cliente } from '../../../shared/models/cliente.model';
 
 @Component({
   selector: 'app-autocadastro',

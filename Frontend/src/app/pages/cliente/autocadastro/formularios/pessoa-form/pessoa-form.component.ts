@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import { NgxMaskDirective } from 'ngx-mask';
-import { CpfValidatorDirective } from '../../../../shared/directives/cpf-validator.directive';
-import { InputGreaterThanZeroDirective } from '../../../../shared/directives/input-greater-than-zero.directive';
+import { CpfValidatorDirective } from '../../../../../shared/directives/cpf-validator.directive';
+import { InputGreaterThanZeroDirective } from '../../../../../shared/directives/input-greater-than-zero.directive';
 
 @Component({  
   selector: 'pessoa-form',

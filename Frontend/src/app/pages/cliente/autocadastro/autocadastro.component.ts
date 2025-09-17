@@ -5,9 +5,10 @@ import { ToastrService } from 'ngx-toastr';
 import { EnderecoFormComponent } from './formularios/endereco-form/endereco-form.component';
 import { PessoaFormComponent } from "./formularios/pessoa-form/pessoa-form.component";
 import { Router } from '@angular/router';
-import { ClienteService, SaveResult } from '../../../services/cliente/cliente.service';
+import { ClienteService } from '../../../services/cliente/cliente.service';
 import { GerenteService } from '../../../services/gerente/gerente.service';
 import { Cliente } from '../../../shared/models/cliente.model';
+import { LocalStorageResult } from '../../../shared/utils/LocalStorageResult';
 
 @Component({
   selector: 'app-autocadastro',
@@ -78,7 +79,7 @@ export class AutocadastroComponent{
     const formValue = this.meuForm.value;
     const customer = new Cliente(0, formValue.dadosPessoais.name , formValue.dadosPessoais.email, formValue.dadosPessoais.CPF, formValue.endereco, formValue.dadosPessoais.telefone, formValue.dadosPessoais.salario);
 
-    const result: SaveResult = this.customerService.saveClient(customer);
+    const result: LocalStorageResult = this.customerService.saveClient(customer);
 
     if(result.success){
       this.managerService.addCustomerToManager(customer);

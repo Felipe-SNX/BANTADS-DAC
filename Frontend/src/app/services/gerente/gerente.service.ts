@@ -16,7 +16,13 @@ export class GerenteService {
   listManagers(): Gerente[] {
     const managers = localStorage[LS_CHAVE];
     return managers ? JSON.parse(managers) : [];
-  }  
+  }
+  
+  listManagerById(id: number): Gerente | undefined {
+    const managers: Gerente[] = this.listManagers();
+    const manager: Gerente | undefined = managers.find((currentManager) => currentManager.id === id)
+    return manager;
+  }
 
   createManager(manager: Gerente): LocalStorageResult {
     const managers = this.listManagers();
@@ -44,7 +50,7 @@ export class GerenteService {
 
     const checkManager = managers.findIndex((currentManager) => currentManager.cpf === manager.cpf);
 
-    if(!checkManager){
+    if(checkManager === -1){
       return {
         success: false,
         message: `Erro: Não foi encontrado nenhum gerente com o CPF ${manager.cpf}`
@@ -60,8 +66,28 @@ export class GerenteService {
 
     return {
       success: true,
-      message: 'Gerente cadastrado com sucesso!'
+      message: 'Gerente Atualizado com sucesso!'
     };
+  }
+
+  deleteManager(id: number): LocalStorageResult{
+    const managers = this.listManagers();
+    const findIndex = managers.findIndex((manager) => manager.id === id);
+
+    if(findIndex === -1){
+      return {
+        success: false,
+        message: `Erro: Não foi encontrado nenhum gerente com o id ${id}`
+      };
+    }
+    
+    managers.splice(findIndex, 1);
+    localStorage[LS_CHAVE] = JSON.stringify(managers);
+
+    return {
+      success: true,
+      message: 'Gerente deletado com sucesso!' 
+    }
   }
   
   addCustomerToManager(customer: Cliente): void {

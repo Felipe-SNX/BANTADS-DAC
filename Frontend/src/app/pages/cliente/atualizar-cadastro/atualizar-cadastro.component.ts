@@ -3,13 +3,14 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormsModule, NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Cliente } from '../../../shared/models/cliente.model';
-import { ClienteService, SaveResult } from '../../../services/cliente/cliente.service';
+import { ClienteService } from '../../../services/cliente/cliente.service';
 import { Router } from '@angular/router';
 import { UserService } from '../../../services/auth/user.service';
 import { User } from '../../../shared/models/user.model';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { EnderecoFormComponent } from '../autocadastro/formularios/endereco-form/endereco-form.component';
 import { PessoaFormComponent } from '../autocadastro/formularios/pessoa-form/pessoa-form.component';
+import { LocalStorageResult } from '../../../shared/utils/LocalStorageResult';
 
 @Component({
   selector: 'app-atualizar-cadastro',
@@ -129,7 +130,7 @@ export class AtualizarCadastroComponent implements OnInit{
         formValue.dadosPessoais.salario
       );
   
-      const result: SaveResult = this.customerService.updateClient(updateCustomer);
+      const result: LocalStorageResult = this.customerService.updateClient(updateCustomer);
   
       if(result.success){
         this.userService.updateUserCustomerData(this.user, updateCustomer);

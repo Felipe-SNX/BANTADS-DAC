@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Cliente } from '../../shared/models/cliente.model';
 import { ContaService } from '../conta/conta.service';
+import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
 
 const LS_CHAVE = "clientes";
-
-export interface SaveResult {
-  success: boolean;
-  message: string;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +31,7 @@ export class ClienteService {
     return customer;
   }
 
-  saveClient(newClient: Cliente): SaveResult{
+  saveClient(newClient: Cliente): LocalStorageResult{
     if(!this.validClient(newClient)){
       return {
         success: false,
@@ -56,7 +52,7 @@ export class ClienteService {
   
 
   //Método para atualizar dados do perfil Cliente
-  updateClient(updatedClient: Cliente):SaveResult{
+  updateClient(updatedClient: Cliente): LocalStorageResult{
     let customers = this.listClient();
     const index = customers.findIndex((c:Cliente) => c.id == updatedClient.id);
     

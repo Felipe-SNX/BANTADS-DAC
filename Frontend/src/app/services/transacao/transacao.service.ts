@@ -5,14 +5,9 @@ import { ContaService } from '../conta/conta.service';
 import { TipoMovimentacao } from '../../shared/enums/TipoMovimentacao';
 import { Conta } from '../../shared/models/conta.model';
 import { Cliente } from '../../shared/models/cliente.model';
+import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
 
 const LS_CHAVE_MOV = "movimentacoes";
-
-export interface SaveResult {
-  success: boolean;
-  message: string;
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -36,7 +31,7 @@ export class TransacaoService {
     return customerTransactions;
   }
 
-  public registerNewTransaction(transacao: Transacao): SaveResult {
+  public registerNewTransaction(transacao: Transacao): LocalStorageResult {
 
     //Valida
     const validationResult = this.validateTransactionInput(transacao);
@@ -74,7 +69,7 @@ export class TransacaoService {
     return { success: true, message: 'Transação registrada com sucesso!' };
   }
 
-  private validateTransactionInput(transacao: Transacao): SaveResult {
+  private validateTransactionInput(transacao: Transacao): LocalStorageResult {
     if (!transacao.valor || transacao.valor <= 0) {
       return { success: false, message: 'O valor da transação deve ser um número positivo.' };
     }
@@ -90,7 +85,7 @@ export class TransacaoService {
     return { success: true, message: '' };
   }
 
-  private executeTransactionUpdate(transacao: Transacao, contaOrigem: Conta, contaDestino: Conta | null): SaveResult {
+  private executeTransactionUpdate(transacao: Transacao, contaOrigem: Conta, contaDestino: Conta | null): LocalStorageResult {
     switch (transacao.tipo) {
       case TipoMovimentacao.SAQUE:
         return this.executeSaque(transacao, contaOrigem);
@@ -107,7 +102,7 @@ export class TransacaoService {
     return (conta.saldo + conta.limite) >= valor;
   }
 
-  private executeSaque(transacao: Transacao, conta: Conta): SaveResult {
+  private executeSaque(transacao: Transacao, conta: Conta): LocalStorageResult {
     if (!this.hasSaldoSuficiente(conta, transacao.valor)) {
       return { success: false, message: 'Saldo insuficiente para realizar o saque.' };
     }
@@ -116,13 +111,13 @@ export class TransacaoService {
     return { success: true, message: 'Saque efetuado.' };
   }
 
-  private executeDeposito(transacao: Transacao, conta: Conta): SaveResult {
+  private executeDeposito(transacao: Transacao, conta: Conta): LocalStorageResult {
     conta.saldo += transacao.valor;
     this.accountService.updateAccountBalance(conta);
     return { success: true, message: 'Depósito efetuado.' };
   }
 
-  private executeTransferencia(transacao: Transacao, origem: Conta, destino: Conta): SaveResult {
+  private executeTransferencia(transacao: Transacao, origem: Conta, destino: Conta): LocalStorageResult {
     if (!this.hasSaldoSuficiente(origem, transacao.valor)) {
       return { success: false, message: 'Saldo insuficiente para realizar a transferência.' };
     }

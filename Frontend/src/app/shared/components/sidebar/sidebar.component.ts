@@ -40,6 +40,7 @@ export class SidebarComponent implements OnInit{
     { label: 'Saque', icon: 'payments', action: 'Saque', type: 'cliente' },
     { label: 'Transferência', icon: 'swap_horiz', action: 'Transferência', type: 'cliente' },
     { label: 'Extrato', icon: 'person', action: 'Extrato', type: 'cliente' },
+    { label: 'Listar Gerentes', icon: 'person', action: 'listarGerentes', type: 'admin' },
     { label: 'Novo Gerente', icon: 'person', action: 'adicionarGerente', type: 'admin' },
     { label: 'Relatório de Clientes', icon: 'person', action: 'listarClientes', type: 'admin' },
   ];

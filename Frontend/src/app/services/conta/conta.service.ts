@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Conta } from '../../shared/models/conta.model';
 import { Cliente } from '../../shared/models/cliente.model';
 import { Gerente } from '../../shared/models/gerente.model';
+import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
 
 const LS_CHAVE_CONTAS = "contas";
 
@@ -29,7 +30,7 @@ export class ContaService {
     return account;
   }
 
-  createAccount(customer: Cliente, manager: Gerente){
+  createAccount(customer: Cliente, manager: Gerente): LocalStorageResult{
     const newAccount: Conta = new Conta(this.generateAccountNumber(), customer, new Date(), 0.00, this.calculateLimit(customer.salario), manager);
 
     const accounts = this.listAccounts();

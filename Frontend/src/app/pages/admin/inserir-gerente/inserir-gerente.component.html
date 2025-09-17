@@ -1,1 +1,148 @@
-<p>inserir-gerente works!</p>
+<main>
+    <app-sidebar [tipoTela]="'admin'"></app-sidebar>
+    <div class="container-main">
+        <h1>Criar Novo Gerente</h1>
+        <form #meuForm="ngForm" class="shadow-lg container-form" (ngSubmit)="onSubmit()">
+            <div class="container-page">
+                <div class="form-group col-md-12 container-field">
+                    <label class="col-sm-2 col-form-label labels" for="name">Nome</label>
+                    <input
+                        type="text" 
+                        class="form-control" 
+                        id="name" 
+                        name="name"
+                        aria-describedby="name-warning"
+                        #nameInput="ngModel"
+                        [(ngModel)]="gerente.nome"
+                        required
+                    />
+                    <div
+                        id="name-warning"
+                        class="text-danger mt-1"
+                        *ngIf="nameInput.invalid && (nameInput.dirty || nameInput.touched)"
+                    >
+                        <small *ngIf="nameInput.errors?.['required']">O campo nome é obrigatório</small>
+                    </div>
+                </div>
+                <div class="form-group col-md-12 container-field">
+                    <label class="col-sm-2 col-form-label labels" for="name">CPF</label>
+                    <input
+                        type="text" 
+                        class="form-control" 
+                        id="CPF" 
+                        placeholder="XXX.XXX.XXX-XX" 
+                        mask="000.000.000-00"
+                        name="CPF"
+                        aria-describedby="cpf-warning"
+                        #CPFInput="ngModel"
+                        [(ngModel)]="gerente.cpf"
+                        cpfValidator
+                        required
+                        [readonly]="tipoTela === 'editar'"
+                    />
+                    <div 
+                        id="cpf-warning"
+                        *ngIf="CPFInput.invalid && (CPFInput.dirty || CPFInput.touched)"
+                        class="text-danger mt-1"
+                    >
+                        <small *ngIf="CPFInput.errors?.['required']">O campo CPF é obrigatório</small>
+                        <small *ngIf="CPFInput.errors?.['cpfInvalido']">O CPF digitado é inválido</small>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="col-sm-2 col-form-label labels" for="email">Email</label>
+                    <input 
+                        type="email" 
+                        class="form-control" 
+                        id="email" 
+                        name="email"
+                        placeholder="exemplo@email.com"
+                        ngModel
+                        aria-describedby="email-warning"
+                        #emailInput="ngModel"
+                        [(ngModel)]="gerente.email"
+                        email
+                        required
+                    />
+                    <div
+                        id="email-warning"
+                        class="text-danger mt-1"
+                        *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
+                    >
+                        <small *ngIf="emailInput.errors?.['required']">O campo email é obrigatório</small>
+                        <small *ngIf="emailInput.errors?.['email']">O email digitado é inválido</small>
+                    </div>
+                </div>
+                <div class="form-group col-md-5">
+                    <label class="col-sm-2 col-form-label labels" for="telefone">Telefone</label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        id="telefone" 
+                        name="telefone"
+                        mask="(00) 0000-0000||(00) 00000-0000"
+                        ngModel
+                        aria-describedby="telefone-warning"
+                        #telefoneInput="ngModel"
+                        minlength="10"
+                        [(ngModel)]="gerente.telefone"
+                        required
+                    />
+                    <div
+                        id="telefone-warning"
+                        class="text-danger mt-1"
+                        *ngIf="telefoneInput.invalid && (telefoneInput.dirty || telefoneInput.touched)"
+                    >
+                        <small *ngIf="telefoneInput.errors?.['required']">O campo Telefone é obrigatório</small>
+                        <small *ngIf="telefoneInput.errors?.['minlength']">O Telefone deve ter no mínimo o DDD mais 8 dígitos</small>
+                    </div>
+                </div>
+                <div class="form-group col-md-5">
+                    <label class="col-sm-2 col-form-label labels" for="senha">Senha</label>
+                    <input 
+                        type="password" 
+                        class="form-control" 
+                        id="senha" 
+                        name="senha"
+                        ngModel
+                        aria-describedby="senha-warning"
+                        #senhaInput="ngModel"
+                        [(ngModel)]="user.senha"
+                        required
+                    />
+                </div>
+                <div class="form-group col-md-5">
+                    <label class="col-sm-2 col-form-label labels" for="confirmaSenha">Confirme a Senha</label>
+                    <input 
+                        type="password" 
+                        class="form-control" 
+                        id="confirmaSenha" 
+                        name="confirmaSenha"
+                        ngModel
+                        aria-describedby="senha-warning"
+                        #confirmaSenhaInput="ngModel"
+                        [(ngModel)]="confereSenha"
+                        required
+                    />
+                    <div
+                        id="senha-warning"
+                        class="text-danger mt-1"
+                        *ngIf="confereSenha != user.senha && confirmaSenhaInput.touched"
+                    >
+                        <small>As senhas não conferem</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-container">
+                <button 
+                    type="button" 
+                    class="btn btn-secondary"
+                >
+                    <a href="/" >Cancelar</a>
+                </button>
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </div>
+        </form>
+    </div>
+</main>

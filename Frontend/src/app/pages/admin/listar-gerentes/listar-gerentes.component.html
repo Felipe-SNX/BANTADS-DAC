@@ -1,0 +1,51 @@
+<main class="d-flex flex-row w-100" style="max-height: 100vh;">
+    <app-sidebar [tipoTela]="'admin'"></app-sidebar>
+
+    <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;">
+        <h2 class="mb-0">Gerentes Cadastrados</h2>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <ng-container *ngIf="gerentes && gerentes.length > 0; else noData">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped mb-0">
+                            <thead class="table-secondary">
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>CPF</th>
+                                    <th>Email</th>
+                                    <th>Telefone</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr 
+                                    *ngFor="let gerente of gerentes"
+                                >
+                                    <td>{{gerente.nome}}</td>
+                                    <td>{{gerente.cpf}}</td>
+                                    <td>{{gerente.email}}</td>
+                                    <td>{{gerente.telefone}}</td>
+                                    <td>
+                                        <button>
+                                            <span class="material-icons">Editar</span>
+                                        </button>
+                                        <button>
+                                            <span class="material-icons">Deletar</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </ng-container>
+                
+                <ng-template #noData>
+                    <div class="text-center p-5">
+                        <p class="text-muted">Nenhum gerente cadastrado</p>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</main>

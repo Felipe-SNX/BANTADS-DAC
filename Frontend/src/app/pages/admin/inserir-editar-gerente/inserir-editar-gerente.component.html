@@ -7,7 +7,8 @@
             <form #meuForm="ngForm" (ngSubmit)="onSubmit()">
                 
                 <div class="card-header text-center p-3">
-                    <h2 class="h4 mb-0">Inserir Novo Gerente</h2>
+                    <h2 class="h4 mb-0" *ngIf="!editMode">Inserir Novo Gerente</h2>
+                    <h2 class="h4 mb-0" *ngIf="editMode">Editar Gerente</h2>
                 </div>
 
                 <div class="card-body p-4">
@@ -23,7 +24,19 @@
 
                         <div class="col-md-6">
                             <label for="CPF" class="form-label">CPF</label>
-                            <input type="text" class="form-control" id="CPF" name="CPF" mask="000.000.000-00" #CPFInput="ngModel" [(ngModel)]="gerente.cpf" cpfValidator required [class.is-invalid]="CPFInput.invalid && (CPFInput.dirty || CPFInput.touched)">
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="CPF" 
+                                name="CPF" 
+                                mask="000.000.000-00" 
+                                #CPFInput="ngModel" 
+                                [(ngModel)]="gerente.cpf" 
+                                cpfValidator 
+                                required 
+                                disabled="{{editMode}}"
+                                [class.is-invalid]="CPFInput.invalid && (CPFInput.dirty || CPFInput.touched)"
+                            >
                             <div *ngIf="CPFInput.invalid && (CPFInput.dirty || CPFInput.touched)" class="invalid-feedback">
                                 <small *ngIf="CPFInput.errors?.['required']">O campo CPF é obrigatório.</small>
                                 <small *ngIf="CPFInput.errors?.['cpfInvalido']">O CPF digitado é inválido.</small>
@@ -66,7 +79,8 @@
 
                 <div class="card-footer p-3 d-flex justify-content-end gap-2">
                     <a href="/" class="btn btn-outline-secondary">Cancelar</a>
-                    <button type="submit" class="btn btn-primary">Salvar Gerente</button>
+                    <button type="submit" class="btn btn-primary" *ngIf="!editMode">Salvar Gerente</button>
+                    <button type="submit" class="btn btn-primary" *ngIf="editMode">Atualizar Gerente</button>
                 </div>
 
             </form>

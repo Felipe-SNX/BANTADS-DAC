@@ -3,6 +3,7 @@ import { User } from '../../shared/models/user.model';
 import { ContaService } from '../conta/conta.service';
 import { Cliente } from '../../shared/models/cliente.model';
 import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
+import { BehaviorSubject } from 'rxjs';
 
 const LS_CHAVE = "users";
 

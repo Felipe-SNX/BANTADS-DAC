@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Transacao } from '../../shared/models/transacao.model';
 import { ClienteService } from '../cliente/cliente.service';
 import { ContaService } from '../conta/conta.service';
-import { TipoMovimentacao } from '../../shared/enums/TipoMovimentacao';
 import { Conta } from '../../shared/models/conta.model';
 import { Cliente } from '../../shared/models/cliente.model';
 import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
+import { TipoMovimentacao } from '../../shared/enums/TipoMovimentacao';
 
 const LS_CHAVE_MOV = "movimentacoes";
 @Injectable({

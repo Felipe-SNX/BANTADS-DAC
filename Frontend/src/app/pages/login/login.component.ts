@@ -38,6 +38,7 @@ export class LoginComponent {
     if(temp){
       this.login = temp;
       this.loginError = null;
+      
 
       if(this.login.tipoUsuario === TipoUsuario.CLIENTE){
         const user = this.login;

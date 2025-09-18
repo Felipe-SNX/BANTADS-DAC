@@ -116,18 +116,15 @@ export class AtualizarCadastroComponent implements OnInit{
       }
   
       //Transforma os campos no objeto cliente
-      const formValue = this.meuForm.value;
-      this.cliente.dadosPessoais = formValue.dadosPessoais;
-      this.cliente.endereco = formValue.endereco;
       
       const updateCustomer = new Cliente(
         this.user?.usuario?.id,
-        formValue.dadosPessoais.name,
-        formValue.dadosPessoais.email,
-        formValue.dadosPessoais.CPF,
-        formValue.endereco,
-        formValue.dadosPessoais.telefone,
-        formValue.dadosPessoais.salario
+        this.cliente.dadosPessoais.nome,
+        this.cliente.dadosPessoais.email,
+        this.cliente.dadosPessoais.cpf,
+        this.cliente.endereco,
+        this.cliente.dadosPessoais.telefone,
+        this.cliente.dadosPessoais.salario
       );
   
       const result: LocalStorageResult = this.customerService.updateClient(updateCustomer);

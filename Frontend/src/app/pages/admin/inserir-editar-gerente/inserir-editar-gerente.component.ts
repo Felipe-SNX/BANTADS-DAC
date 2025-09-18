@@ -23,7 +23,7 @@ export class InserirGerenteComponent implements OnInit{
   private readonly toastr = inject(ToastrService);
 
   id: number = 0;
-  tipoTela: string = 'Novo';
+  editMode: boolean = false;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -53,8 +53,8 @@ export class InserirGerenteComponent implements OnInit{
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
 
-    if(this.id !== 0){
-      this.tipoTela = 'Editar';
+    if(this.id !== 0 && this.id !== undefined){
+      this.editMode = true;
       const manager = this.managerService.listManagerById(this.id);
 
       if(!manager){
@@ -84,10 +84,9 @@ export class InserirGerenteComponent implements OnInit{
       return;
     }
 
-    if(this.tipoTela === 'Novo'){
+    if(!this.editMode){
       this.newManager();
     }
-
     else{
       this.updateManager()
     }

@@ -19,8 +19,9 @@ export class GerenteService {
   }
   
   listManagerById(id: number): Gerente | undefined {
+    const idNumerico = Number(id); 
     const managers: Gerente[] = this.listManagers();
-    const manager: Gerente | undefined = managers.find((currentManager) => currentManager.id === id)
+    const manager: Gerente | undefined = managers.find((currentManager) => currentManager.id === idNumerico)
     return manager;
   }
 

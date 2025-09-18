@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, ViewChild, inject } from "@angular/core";
+import { Component, OnInit, ViewChild, inject } from "@angular/core";
 import { FormsModule, NgForm } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { NgxMaskDirective } from "ngx-mask";
@@ -15,12 +15,15 @@ import { User } from "../../../shared/models/user.model";
   selector: 'app-inserir-gerente',
   standalone: true,
   imports: [FormsModule, CommonModule, NgxMaskDirective, SidebarComponent],
-  templateUrl: './inserir-gerente.component.html',
-  styleUrl: './inserir-gerente.component.css'
+  templateUrl: './inserir-editar-gerente.component.html',
+  styleUrl: './inserir-editar-gerente.component.css'
 })
-export class InserirGerenteComponent{
+export class InserirGerenteComponent implements OnInit{
   @ViewChild('meuForm') meuForm!: NgForm;
   private readonly toastr = inject(ToastrService);
+
+  id: number = 0;
+  tipoTela: string = 'Novo';
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -47,6 +50,30 @@ export class InserirGerenteComponent{
 
   confereSenha: string = '';
 
+  ngOnInit(): void {
+    this.id = this.route.snapshot.params['id'];
+
+    if(this.id !== 0){
+      this.tipoTela = 'Editar';
+      const manager = this.managerService.listManagerById(this.id);
+
+      if(!manager){
+        console.error('Gerente não encontrado');
+        return;
+      }
+
+      const usuario = this.userService.findUserByLogin(manager.email);
+
+      if(!usuario){
+        console.error('Usuário não encontrado');
+        return;
+      }
+
+      this.user = usuario;
+      this.gerente = manager;
+    }
+  }
+
   onSubmit(){
     Object.values(this.meuForm.controls).forEach(control => {
       control.markAsTouched();
@@ -57,7 +84,13 @@ export class InserirGerenteComponent{
       return;
     }
 
-    this.newManager();
+    if(this.tipoTela === 'Novo'){
+      this.newManager();
+    }
+
+    else{
+      this.updateManager()
+    }
   }
 
   newManager(){

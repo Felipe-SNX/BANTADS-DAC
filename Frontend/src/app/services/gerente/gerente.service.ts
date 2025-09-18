@@ -36,6 +36,8 @@ export class GerenteService {
       };
     }
 
+    this.balanceCustomersToNewManager(manager, managers);
+
     managers.push(manager);
     localStorage[LS_CHAVE] = JSON.stringify(managers);
 
@@ -43,6 +45,57 @@ export class GerenteService {
       success: true,
       message: 'Gerente cadastrado com sucesso!'
     };
+  }
+
+  private balanceCustomersToNewManager(newManager: Gerente, managers: Gerente[]){
+
+    if(managers.length === 0 || (managers.length === 1 && managers[0].clientes.length === 1)){
+      return;
+    }
+
+    const chosenManager = managers.reduce((managerMoreCustomers, currentManager) => {
+      if(managerMoreCustomers.clientes.length < currentManager.clientes.length){
+        return currentManager;
+      }
+      else if(managerMoreCustomers.clientes.length === currentManager.clientes.length){
+        return this.calculateManagerBalance(managerMoreCustomers, currentManager);
+      }
+      else{
+        return managerMoreCustomers;
+      }
+    });
+
+    if(chosenManager.clientes.length === 1) return;
+    
+    this.moveCustomerToNewManager(newManager, chosenManager);
+  }
+
+  private moveCustomerToNewManager(newManager: Gerente, oldManager: Gerente){
+    const customer = oldManager.clientes.pop();
+    newManager.clientes.push(customer!);
+  }
+
+  private calculateManagerBalance(manager1: Gerente, manager2: Gerente): Gerente{
+    const manager1Balance = this.calculateManagerTotalBalance(manager1);
+    const manager2Balance = this.calculateManagerTotalBalance(manager2);
+
+    if(manager1Balance < manager2Balance){
+      return manager1;
+    }
+    else {
+      return manager2;
+    }
+  }
+
+  private calculateManagerTotalBalance(manager: Gerente){
+    let total = 0;
+
+    manager.clientes.forEach((currentCustomer) => {
+      const customerBalance = this.accountService.getAccountByCustomer(currentCustomer);
+      if(customerBalance) total += customerBalance.saldo;
+    });
+
+    return total;
   }
 
   updateManager(manager: Gerente): LocalStorageResult {
@@ -80,9 +133,21 @@ export class GerenteService {
         message: `Erro: Não foi encontrado nenhum gerente com o id ${id}`
       };
     }
+
+    if(managers.length === 1){
+      return {
+        success: false,
+        message: `Erro: Não é possível excluir o último gerente cadastrado`
+      }
+    }
     
+    const customers = managers[findIndex].clientes;
     managers.splice(findIndex, 1);
     localStorage[LS_CHAVE] = JSON.stringify(managers);
+
+    customers.forEach((customer) => {
+      this.addCustomerToManager(customer);
+    });
 
     return {
       success: true,

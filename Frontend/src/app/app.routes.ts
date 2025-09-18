@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { AtualizarCadastroComponent } from './pages/cliente/atualizar-cadastro/atualizar-cadastro.component';
 import { LoginComponent } from './pages/login/login.component';
-import { InserirGerenteComponent } from './pages/admin/inserir-gerente/inserir-gerente.component';
+import { InserirGerenteComponent } from './pages/admin/inserir-editar-gerente/inserir-editar-gerente.component';
 import { AutocadastroComponent } from './pages/cliente/autocadastro/autocadastro.component';
 import { DepositoComponent } from './pages/cliente/deposito/deposito.component';
 import { SaqueComponent } from './pages/cliente/saque/saque.component';
@@ -23,5 +23,6 @@ export const routes: Routes = [
     { path: 'cliente', component: TelaInicialClienteComponent},
     { path: 'gerente/:id', component: TelaInicialGerenteComponent},
     { path: 'admin/adicionarGerente', component: InserirGerenteComponent},
+    { path: 'admin/editarGerente/:id', component: InserirGerenteComponent},
     { path: 'admin/:id', component: TelaInicialAdminComponent},
 ];

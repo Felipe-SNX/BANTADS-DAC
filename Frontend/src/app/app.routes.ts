@@ -1,14 +1,15 @@
 import { Routes } from '@angular/router';
-import { AutocadastroComponent } from './pages/autocadastro';
 import { AtualizarCadastroComponent } from './pages/cliente/atualizar-cadastro/atualizar-cadastro.component';
-import { ConsultaExtratoComponent } from './pages/consulta-extrato/consulta-extrato.component';
-import { TelaInicialClienteComponent } from './pages/tela-inicial-cliente/tela-inicial-cliente.component';
 import { LoginComponent } from './pages/login/login.component';
-import { TransferenciaComponent } from './pages/transferencia/transferencia.component';
-import { TelaInicialGerenteComponent } from './pages/tela-inicial-gerente/tela-inicial-gerente.component';
-import { SaqueComponent } from './pages/saque/saque.component';
-import { DepositoComponent } from './pages/deposito/deposito.component';
-import { TelaInicialAdminComponent } from './pages/tela-inicial-admin/tela-inicial-admin.component';
+import { InserirGerenteComponent } from './pages/admin/inserir-gerente/inserir-gerente.component';
+import { AutocadastroComponent } from './pages/cliente/autocadastro/autocadastro.component';
+import { DepositoComponent } from './pages/cliente/deposito/deposito.component';
+import { SaqueComponent } from './pages/cliente/saque/saque.component';
+import { TransferenciaComponent } from './pages/cliente/transferencia/transferencia.component';
+import { ConsultaExtratoComponent } from './pages/cliente/consulta-extrato/consulta-extrato.component';
+import { TelaInicialClienteComponent } from './pages/cliente/tela-inicial-cliente/tela-inicial-cliente.component';
+import { TelaInicialGerenteComponent } from './pages/gerente/tela-inicial-gerente/tela-inicial-gerente.component';
+import { TelaInicialAdminComponent } from './pages/admin/tela-inicial-admin/tela-inicial-admin.component';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent},
@@ -21,5 +22,6 @@ export const routes: Routes = [
     { path: 'cliente/consultaExtrato', component: ConsultaExtratoComponent},
     { path: 'cliente', component: TelaInicialClienteComponent},
     { path: 'gerente/:id', component: TelaInicialGerenteComponent},
-    { path: 'admin/:id', component: TelaInicialAdminComponent}
+    { path: 'admin/adicionarGerente', component: InserirGerenteComponent},
+    { path: 'admin/:id', component: TelaInicialAdminComponent},
 ];

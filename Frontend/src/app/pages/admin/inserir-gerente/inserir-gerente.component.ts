@@ -1,15 +1,15 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { NgxMaskDirective } from 'ngx-mask';
-import { GerenteService } from '../../../services/gerente/gerente.service';
-import { Gerente } from '../../../shared/models/gerente.model';
-import { User } from '../../../shared/models/user.model';
-import { TipoUsuario } from '../../../shared/enums/TipoUsuario';
-import { UserService } from '../../../services/auth/user.service';
-import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
-import { ToastrService } from 'ngx-toastr';
+import { CommonModule } from "@angular/common";
+import { Component, ViewChild, inject } from "@angular/core";
+import { FormsModule, NgForm } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
+import { NgxMaskDirective } from "ngx-mask";
+import { ToastrService } from "ngx-toastr";
+import { UserService } from "../../../services/auth/user.service";
+import { GerenteService } from "../../../services/gerente/gerente.service";
+import { SidebarComponent } from "../../../shared/components/sidebar/sidebar.component";
+import { TipoUsuario } from "../../../shared/enums/TipoUsuario";
+import { Gerente } from "../../../shared/models/gerente.model";
+import { User } from "../../../shared/models/user.model";
 
 @Component({
   selector: 'app-inserir-gerente',
@@ -18,60 +18,34 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './inserir-gerente.component.html',
   styleUrl: './inserir-gerente.component.css'
 })
-export class InserirGerenteComponent implements OnInit{
+export class InserirGerenteComponent{
   @ViewChild('meuForm') meuForm!: NgForm;
   private readonly toastr = inject(ToastrService);
-  
-  id: number = 0;
-  tipoTela: string = 'Novo';
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly managerService: GerenteService,
     private readonly userService: UserService
   ){
-    this.gerente = {
-      id: 0,
-      nome: '',
-      cpf: '',
-      email: '',
-      telefone: '',
-      clientes: []
-    }
-    this.user = {
-      login: '',
-      senha: '',
-      tipoUsuario: TipoUsuario.GERENTE,
-      usuario: null
-    }
   }
 
-  gerente: Gerente;
-  user: User;
+  gerente: Gerente = {
+    id: 0,
+    nome: '',
+    cpf: '',
+    email: '',
+    telefone: '',
+    clientes: []
+  }
+
+  user: User = {
+    login: '',
+    senha: '',
+    tipoUsuario: TipoUsuario.GERENTE,
+    usuario: null
+  };
+
   confereSenha: string = '';
-
-  ngOnInit(): void {
-    this.id = this.route.snapshot.params['id'];
-
-    if(this.id !== 0){
-      this.tipoTela = 'Editar';
-      const manager = this.managerService.listManagerById(this.id);
-
-      if(!manager){
-        console.error('Gerente não encontrado');
-        return;
-      }
-
-      const usuario = this.userService.findUserByLogin(manager.email);
-
-      if(!usuario){
-        console.error('Usuário não encontrado');
-        return;
-      }
-
-      this.user = usuario;
-      this.gerente = manager;
-    }
-  }
 
   onSubmit(){
     Object.values(this.meuForm.controls).forEach(control => {
@@ -83,16 +57,14 @@ export class InserirGerenteComponent implements OnInit{
       return;
     }
 
-    if(this.tipoTela === 'Novo'){
-      this.newManager();
-    }
-    else{
-      this.updateManager()
-    }
+    this.newManager();
   }
 
   newManager(){
-    const result = this.managerService.createManager(this.gerente);      
+    const result = this.managerService.createManager(this.gerente);
+    this.user.login = this.gerente.email;
+    this.user.usuario = this.gerente;
+
     const userResult = this.userService.createUserAccount(this.user);
 
     if(userResult.success && result.success){
@@ -105,6 +77,7 @@ export class InserirGerenteComponent implements OnInit{
 
   updateManager(){
     const result = this.managerService.updateManager(this.gerente);
+    this.user.usuario = this.gerente;
     const userResult = this.userService.updateUserPassword(this.user, this.user.senha);
 
     if(result.success && userResult.success){

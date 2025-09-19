@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from '../../shared/models/user.model';
-import { ContaService } from '../conta/conta.service';
-import { Cliente } from '../../shared/models/cliente.model';
 import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
-import { BehaviorSubject } from 'rxjs';
 
 const LS_CHAVE = "users";
 
@@ -12,7 +9,7 @@ const LS_CHAVE = "users";
 })
 export class UserService {
 
-  constructor(private readonly accountService: ContaService) { }
+  constructor() { }
 
   //Método usado inicialmente apenas para o localStorage
   listUsers(): User[] {
@@ -53,7 +50,7 @@ export class UserService {
   }
 
   findLoggedUser(): User | undefined{
-    const usuarioString = localStorage.getItem('usuarioLogado');
+    const usuarioString = sessionStorage.getItem('usuarioLogado');
     
     if (usuarioString) {
       const usuarioLogado = JSON.parse(usuarioString);
@@ -64,31 +61,20 @@ export class UserService {
     }
   }
 
-  updateUserCustomerData(user: User | null | undefined, customer: Cliente): LocalStorageResult{
-    if(user === null || user === undefined) return {success: false, message: 'O Usuário não pode ser vazio'};
-
-    const users = this.listUsers();
-    const index = users.findIndex((currentUser) => currentUser.usuario?.id === user.usuario?.id);
-
-    users[index].usuario = customer;
-
-    localStorage[LS_CHAVE] = JSON.stringify(users);
-
-    return {success: true, message: "Usuario atualizado"}
-  }
-
   updateLoggedUser(userLogged: User | null | undefined): LocalStorageResult{
     if(userLogged === null || userLogged === undefined) return {success: false, message: 'O Usuário não pode ser vazio'};
 
-    localStorage.removeItem('usuarioLogado');
+    sessionStorage.removeItem('usuarioLogado');
     console.log('apagando user')
 
     const users: User[] = this.listUsers();
-    const user: User | undefined = users.find((currentUser) => currentUser.login === userLogged?.login && currentUser.usuario?.id === userLogged?.usuario?.id)
+    const user: User | undefined = users.find((currentUser) => currentUser.login === userLogged?.login 
+                                                            && currentUser.idPerfil === userLogged?.idPerfil
+                                                            && currentUser.tipoUsuario === userLogged?.tipoUsuario)
     
     if(user){
       console.log('setando user')
-      localStorage['usuarioLogado'] = JSON.stringify(user);
+      sessionStorage['usuarioLogado'] = JSON.stringify(user);
       return {success: true, message: 'Usuario atualizado com sucesso'}
     }
     else{
@@ -117,6 +103,6 @@ export class UserService {
   }
 
   deleteLoggedUser(){
-    localStorage.removeItem('usuarioLogado');
+    sessionStorage.removeItem('usuarioLogado');
   }
 }

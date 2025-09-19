@@ -65,7 +65,13 @@ export class AtualizarCadastroComponent implements OnInit{
 
     this.user = temp;
 
-    this.loadClienteData(this.user?.usuario as Cliente);
+    const customer = this.customerService.getClientById(this.user?.idPerfil as number);
+
+    if(!customer){
+      this.router.navigate(['/']);
+    }
+
+    this.loadClienteData(customer as Cliente);
   }
 
   loadClienteData(customer: Cliente): void{
@@ -118,7 +124,7 @@ export class AtualizarCadastroComponent implements OnInit{
       //Transforma os campos no objeto cliente
       
       const updateCustomer = new Cliente(
-        this.user?.usuario?.id,
+        this.user?.idPerfil,
         this.cliente.dadosPessoais.nome,
         this.cliente.dadosPessoais.email,
         this.cliente.dadosPessoais.cpf,
@@ -130,8 +136,8 @@ export class AtualizarCadastroComponent implements OnInit{
       const result: LocalStorageResult = this.customerService.updateClient(updateCustomer);
   
       if(result.success){
-        this.userService.updateUserCustomerData(this.user, updateCustomer);
-        this.userService.updateLoggedUser(this.user);
+        this.toastr.success('Cliente atualizado com sucesso!', 'Sucesso');
+        this.router.navigate(['/cliente/', this.user?.idPerfil]);
       }else{
         console.log(result.message);
         this.toastr.warning('Já existe um cliente com CPF informado!', 'Erro');

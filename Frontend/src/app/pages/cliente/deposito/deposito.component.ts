@@ -13,6 +13,7 @@ import { Cliente } from '../../../shared/models/cliente.model';
 import { Conta } from '../../../shared/models/conta.model';
 import { Transacao } from '../../../shared/models/transacao.model';
 import { User } from '../../../shared/models/user.model';
+import { ClienteService } from '../../../services/cliente/cliente.service';
 
 @Component({
   selector: 'app-deposito',
@@ -29,7 +30,7 @@ export class DepositoComponent implements OnInit{
   private readonly toastr = inject(ToastrService);
 
   conta: Conta | undefined;
-
+  customer: Cliente | undefined;
   valor: string = ''
   
   onActionSelected(action: string) {    
@@ -40,7 +41,8 @@ export class DepositoComponent implements OnInit{
     private readonly transactionService: TransacaoService,
     private readonly router: Router,
     private readonly cd: ChangeDetectorRef,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly customerService: ClienteService
   ){
   }
 
@@ -51,12 +53,14 @@ export class DepositoComponent implements OnInit{
 
     this.user = temp; 
 
-    const tempAccount = this.accountService.getAccountByCustomer(this.user?.usuario as Cliente);
+    const tempCustomer = this.customerService.getClientById(this.user?.idPerfil as number);
+    const tempAccount = this.accountService.getAccountByCustomer(tempCustomer as Cliente);
 
     if(!tempAccount){
       this.router.navigate(['/']);
     }
     else{
+      this.customer = tempCustomer;
       this.conta = tempAccount;
     }
   }
@@ -78,13 +82,13 @@ export class DepositoComponent implements OnInit{
       try {
   
         const valor = +this.valor;
-        const transacao = new Transacao(new Date(), TipoMovimentacao.DEPOSITO, this.user?.usuario as Cliente, null, valor);
+        const transacao = new Transacao(new Date(), TipoMovimentacao.DEPOSITO, this.customer as Cliente, null, valor);
         const result = this.transactionService.registerNewTransaction(transacao);
         
         if (result.success) {
           this.toastr.success('Valor depositado com sucesso', 'Sucesso');
           console.log("Depósito efetuado com sucesso");
-          this.router.navigate(['cliente/', this.user?.usuario?.id])
+          this.router.navigate(['cliente/', this.user?.idPerfil])
         } else {
           this.toastr.error(result.message, 'Erro');
         }

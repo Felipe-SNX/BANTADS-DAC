@@ -2,39 +2,44 @@
     <app-sidebar [tipoTela]="'cliente'"></app-sidebar>
 
     <div class="w-100 p-4 d-flex flex-column align-items-center justify-content-center bg-light" style="overflow-y: auto;">
-        <div class="card-header text-center p-3">
-            <h2 class="h4 mb-0">Atualizar Cadastro</h2>
+        <div class="card shadow-sm" style="width: 100%; max-width: 800px;">
+            <form #meuForm="ngForm" (ngSubmit)="onSubmit()">
+                <div class="card-header text-center p-3">
+                    <h2 class="h4 mb-0">Atualizar Cadastro</h2>
+                </div>
+
+                <div class="card-body p-4" [hidden]="etapaAtual !== 1">
+                    <div class="row g-3">
+                        <pessoa-form [dadosPessoais]="cliente.dadosPessoais" [isEditMode]="true"></pessoa-form>
+                    </div>
+                </div>
+
+                <div class="card-body p-4" [hidden]="etapaAtual !== 2">
+                    <div class="row g-3">
+                        <endereco-form [endereco]="cliente.endereco"></endereco-form>
+                    </div>
+                </div>
+
+                <div class="card-footer p-3 d-flex justify-content-end gap-2" *ngIf="etapaAtual === 1">
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        (click)="avancarEtapa()"
+                    >
+                        Avançar
+                    </button>
+                </div>
+                <div class="card-footer p-3 d-flex justify-content-end gap-2" *ngIf="etapaAtual === 2">
+                    <button
+                        type="button"
+                        (click)="voltarEtapa()"
+                        class="btn btn-secondary"
+                    >
+                        Voltar
+                    </button>
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </div>
+            </form>
         </div>
-
-        <form #meuForm="ngForm" class="shadow-lg container-form" (ngSubmit)="onSubmit()">
-
-            <div class="container-page" [hidden]="etapaAtual !== 1">
-                <pessoa-form [dadosPessoais]="cliente.dadosPessoais" [isEditMode]="true"></pessoa-form>
-            </div>
-
-            <div class="container-page" [hidden]="etapaAtual !== 2">
-                <endereco-form [endereco]="cliente.endereco"></endereco-form>
-            </div>
-
-            <div class="button-container" *ngIf="etapaAtual === 1">
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    (click)="avancarEtapa()"
-                >
-                    Avançar
-                </button>
-            </div>
-            <div class="button-container"  *ngIf="etapaAtual === 2">
-                <button
-                    type="button"
-                    (click)="voltarEtapa()"
-                    class="btn btn-secondary"
-                >
-                    Voltar
-                </button>
-                <button type="submit" class="btn btn-primary">Enviar</button>
-            </div>
-        </form>
     </div>
 </main>

@@ -45,7 +45,7 @@ export class InserirGerenteComponent implements OnInit{
     login: '',
     senha: '',
     tipoUsuario: TipoUsuario.GERENTE,
-    usuario: null
+    idPerfil: 0
   };
 
   confereSenha: string = '';
@@ -95,7 +95,7 @@ export class InserirGerenteComponent implements OnInit{
   newManager(){
     const result = this.managerService.createManager(this.gerente);
     this.user.login = this.gerente.email;
-    this.user.usuario = this.gerente;
+    this.user.idPerfil = this.gerente.id;
 
     const userResult = this.userService.createUserAccount(this.user);
 
@@ -109,7 +109,6 @@ export class InserirGerenteComponent implements OnInit{
 
   updateManager(){
     const result = this.managerService.updateManager(this.gerente);
-    this.user.usuario = this.gerente;
     const userResult = this.userService.updateUserPassword(this.user, this.user.senha);
 
     if(result.success && userResult.success){

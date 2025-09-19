@@ -10,7 +10,6 @@ import { Conta } from '../../../shared/models/conta.model';
 import { Transacao } from '../../../shared/models/transacao.model';
 import { User } from '../../../shared/models/user.model';
 
-
 @Component({
   selector: 'app-consulta-extrato',
   standalone: true,
@@ -33,9 +32,6 @@ export class ConsultaExtratoComponent implements OnInit{
     private readonly userService: UserService,
   ){}
 
-  onActionSelected(action: string) {    
-  }
-
   ngOnInit(): void {
     const temp = this.userService.findLoggedUser();
 
@@ -43,8 +39,8 @@ export class ConsultaExtratoComponent implements OnInit{
 
     this.user = temp; 
 
-    if(this.user?.usuario?.id){
-      this.id = this.user?.usuario?.id;
+    if(this.user?.idPerfil){
+      this.id = this.user.idPerfil;
       this.transacoes = this.transactionService.listCustomerTransactions(this.id);
       this.transacoes = this.processTransactions(this.transacoes);
     }
@@ -109,6 +105,11 @@ export class ConsultaExtratoComponent implements OnInit{
 
       const balanceDate = new Date(transactionsDate);
       balanceDate.setDate(transactionsDate.getDate() + 1);
+
+      //isso é para não aparecer o balanço do fim do dia antes do final
+      if(balanceDate.getTime() > endDate.getTime()){
+        break;
+      }
 
       finalResult.push({
         tipo: TipoMovimentacao.SALDO,

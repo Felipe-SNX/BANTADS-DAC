@@ -13,6 +13,7 @@ import { Cliente } from '../../../shared/models/cliente.model';
 import { Conta } from '../../../shared/models/conta.model';
 import { Transacao } from '../../../shared/models/transacao.model';
 import { User } from '../../../shared/models/user.model';
+import { ClienteService } from '../../../services/cliente/cliente.service';
 
 @Component({
   selector: 'app-transferencia',
@@ -31,6 +32,7 @@ export class TransferenciaComponent implements OnInit{
   public saldoVisivel: boolean = false;
 
   contaOrigem: Conta | undefined;
+  clienteOrigem: Cliente | undefined;
 
   public transferencia = {
     contaDestino: "",
@@ -45,7 +47,8 @@ export class TransferenciaComponent implements OnInit{
     private readonly transactionService: TransacaoService,
     private readonly router: Router,
     private readonly cd: ChangeDetectorRef,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly customerService: ClienteService
   ){
   }
   ngOnInit(): void {
@@ -55,12 +58,14 @@ export class TransferenciaComponent implements OnInit{
 
     this.user = temp; 
 
-    const tempAccount = this.accountService.getAccountByCustomer(this.user?.usuario as Cliente);
+    const tempCliente = this.customerService.getClientById(this.user?.idPerfil as number);
+    const tempAccount = this.accountService.getAccountByCustomer(tempCliente as Cliente);
 
     if(!tempAccount){
       this.router.navigate(['/']);
     }
     else{
+      this.clienteOrigem = tempCliente
       this.contaOrigem = tempAccount;
       this.saldo = this.contaOrigem.saldo;
     }
@@ -92,14 +97,14 @@ export class TransferenciaComponent implements OnInit{
           return;
         }
 
-        const valor = +this.transferencia.valor;
-        const transacao = new Transacao(new Date(), TipoMovimentacao.TRANSFERENCIA, this.user?.usuario as Cliente, contaDestino.cliente, valor);
+        const valor = + this.transferencia.valor;
+        const transacao = new Transacao(new Date(), TipoMovimentacao.TRANSFERENCIA, this.clienteOrigem, contaDestino.cliente, valor);
         const result = this.transactionService.registerNewTransaction(transacao);
         
         if (result.success) {
           this.toastr.success(result.message, 'Sucesso');
           console.log("Transação foi cadastrada");
-          this.router.navigate(['cliente/', this.user?.usuario?.id])
+          this.router.navigate(['cliente/', this.user?.idPerfil])
         } else {
           this.toastr.error(result.message, 'Erro');
         }

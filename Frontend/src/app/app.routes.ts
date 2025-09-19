@@ -20,7 +20,7 @@ export const routes: Routes = [
     { path: 'cliente/transferencia', component: TransferenciaComponent},
     { path: 'cliente/atualizarCadastro', component: AtualizarCadastroComponent},    
     { path: 'cliente/consultaExtrato', component: ConsultaExtratoComponent},
-    { path: 'cliente', component: TelaInicialClienteComponent},
+    { path: 'cliente/:id', component: TelaInicialClienteComponent},
     { path: 'gerente/:id', component: TelaInicialGerenteComponent},
     { path: 'admin/adicionarGerente', component: InserirGerenteComponent},
     { path: 'admin/editarGerente/:id', component: InserirGerenteComponent},

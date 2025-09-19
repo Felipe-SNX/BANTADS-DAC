@@ -3,6 +3,10 @@ import { Gerente } from '../../shared/models/gerente.model';
 import { Cliente } from '../../shared/models/cliente.model';
 import { ContaService } from '../conta/conta.service';
 import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
+import { UserService } from '../auth/user.service';
+import { User } from '../../shared/models/user.model';
+import { TipoUsuario } from '../../shared/enums/TipoUsuario';
+import { ClienteService } from '../cliente/cliente.service';
 
 const LS_CHAVE = "gerentes";
 
@@ -11,7 +15,11 @@ const LS_CHAVE = "gerentes";
 })
 export class GerenteService {
 
-  constructor(private readonly accountService: ContaService) { }
+  constructor(
+    private readonly accountService: ContaService,
+    private readonly userService: UserService,
+    private readonly customerService: ClienteService
+  ) { }
 
   listManagers(): Gerente[] {
     const managers = localStorage[LS_CHAVE];
@@ -182,10 +190,32 @@ export class GerenteService {
   }
 
   approveCustomer(customer: Cliente, manager: Gerente): void{
-    this.accountService.createAccount(customer, manager);
+
+    customer.statusConta.status = true;
+    customer.statusConta.motivo = null;
+    customer.statusConta.dataAvaliacao = new Date();
+    customer.statusConta.gerenteAvaliador = manager;
+    this.customerService.updateClient(customer);
+
+    const result = this.accountService.createAccount(customer, manager);
+    
+    if(result.success){
+      const user: User = new User(TipoUsuario.CLIENTE, customer.email, customer.cpf, customer.id);
+      this.userService.createUserAccount(user);
+    }
+    else{
+      console.error(result.message);
+    }
   }
 
-  rejectCustomer(customer: Cliente, rejectionReason: string){
+  rejectCustomer(customer: Cliente, manager: Gerente, rejectionReason: string){
+
+    customer.statusConta.status = false;
+    customer.statusConta.motivo = rejectionReason;
+    customer.statusConta.dataAvaliacao = new Date();
+    customer.statusConta.gerenteAvaliador = manager;
+    this.customerService.updateClient(customer);
     
+    console.log(rejectionReason);
   }
 }

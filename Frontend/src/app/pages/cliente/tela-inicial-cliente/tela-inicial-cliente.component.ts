@@ -27,20 +27,18 @@ export class TelaInicialClienteComponent implements OnInit {
 
 
   constructor
-  (private mockDataService: MockDataService,
-    private route: ActivatedRoute,
-    private clienteService: ClienteService,
-    private userService: UserService,
-    private accountService: ContaService,
-    private managerService: GerenteService   
-  ) {
+  (
+    private readonly mockDataService: MockDataService,
+    private readonly clienteService: ClienteService,
+    private readonly userService: UserService,
+    private readonly accountService: ContaService  ) {
 
    }
 
   ngOnInit(): void {        
-    const cliente = this.userService.findLoggedUser()?.usuario;    
-    if(cliente){
-      this.loadClienteData(cliente.id as number);
+    const user = this.userService.findLoggedUser();    
+    if(user){
+      this.loadClienteData(user.idPerfil);
     }             
   }
 

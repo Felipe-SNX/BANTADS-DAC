@@ -10,6 +10,7 @@ import { ConsultaExtratoComponent } from './pages/cliente/consulta-extrato/consu
 import { TelaInicialClienteComponent } from './pages/cliente/tela-inicial-cliente/tela-inicial-cliente.component';
 import { TelaInicialGerenteComponent } from './pages/gerente/tela-inicial-gerente/tela-inicial-gerente.component';
 import { TelaInicialAdminComponent } from './pages/admin/tela-inicial-admin/tela-inicial-admin.component';
+import { ListarGerentesComponent } from './pages/admin/listar-gerentes/listar-gerentes.component';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent},
@@ -22,6 +23,7 @@ export const routes: Routes = [
     { path: 'cliente/consultaExtrato', component: ConsultaExtratoComponent},
     { path: 'cliente/:id', component: TelaInicialClienteComponent},
     { path: 'gerente/:id', component: TelaInicialGerenteComponent},
+    { path: 'admin/listarGerentes', component: ListarGerentesComponent},
     { path: 'admin/adicionarGerente', component: InserirGerenteComponent},
     { path: 'admin/editarGerente/:id', component: InserirGerenteComponent},
     { path: 'admin/:id', component: TelaInicialAdminComponent},

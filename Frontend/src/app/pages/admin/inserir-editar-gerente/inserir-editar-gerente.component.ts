@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, OnInit, ViewChild, inject } from "@angular/core";
 import { FormsModule, NgForm } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { NgxMaskDirective } from "ngx-mask";
 import { ToastrService } from "ngx-toastr";
 import { UserService } from "../../../services/auth/user.service";
@@ -14,7 +14,7 @@ import { User } from "../../../shared/models/user.model";
 @Component({
   selector: 'app-inserir-gerente',
   standalone: true,
-  imports: [FormsModule, CommonModule, NgxMaskDirective, SidebarComponent],
+  imports: [FormsModule, CommonModule, NgxMaskDirective, SidebarComponent, RouterLink],
   templateUrl: './inserir-editar-gerente.component.html',
   styleUrl: './inserir-editar-gerente.component.css'
 })
@@ -28,7 +28,8 @@ export class InserirGerenteComponent implements OnInit{
   constructor(
     private readonly route: ActivatedRoute,
     private readonly managerService: GerenteService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly router: Router
   ){
   }
 
@@ -101,10 +102,12 @@ export class InserirGerenteComponent implements OnInit{
 
     if(userResult.success && result.success){
       this.toastr.success('Gerente cadastrado com sucesso!', 'Sucesso');
+      this.router.navigate(['admin/listarGerentes']);
     }
     else{
-      this.toastr.warning(result.message, 'Erro');
+      this.toastr.error(result.message, 'Erro');
     }
+
   }
 
   updateManager(){
@@ -113,6 +116,7 @@ export class InserirGerenteComponent implements OnInit{
 
     if(result.success && userResult.success){
       this.toastr.success('Gerente atualizado com sucesso!', 'Sucesso');
+      this.router.navigate(['admin/listarGerentes']);
     }
     else{
       this.toastr.warning(result.message, 'Erro');

@@ -202,6 +202,8 @@ export class GerenteService {
     if(result.success){
       const user: User = new User(TipoUsuario.CLIENTE, customer.email, customer.cpf, customer.id);
       this.userService.createUserAccount(user);
+
+      //aqui seria mandado um email para o cliente
     }
     else{
       console.error(result.message);
@@ -216,6 +218,7 @@ export class GerenteService {
     customer.statusConta.gerenteAvaliador = manager;
     this.customerService.updateClient(customer);
     
+    //Aqui seria mandado um e-mail para o cliente
     console.log(rejectionReason);
   }
 }

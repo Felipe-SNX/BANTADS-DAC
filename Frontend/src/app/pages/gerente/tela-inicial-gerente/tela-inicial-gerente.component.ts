@@ -4,13 +4,14 @@ import { CommonModule } from '@angular/common';
 import { MockDataService } from '../../../services/mock/mock-data.service';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { Conta } from '../../../shared/models/conta.model';
+import { ModalRejeitarClienteComponent } from '../../../shared/components/modal-rejeitar-cliente/modal-rejeitar-cliente.component';
 
 @Component({
   selector: 'app-tela-inicial-gerente',
   templateUrl: './tela-inicial-gerente.component.html',
   styleUrls: ['./tela-inicial-gerente.component.css'],
   standalone: true,
-  imports: [CommonModule, SidebarComponent]
+  imports: [CommonModule, SidebarComponent, ModalRejeitarClienteComponent]
 })
 export class TelaInicialGerenteComponent implements OnInit {
   contasParaAprovar: Conta[] = [];

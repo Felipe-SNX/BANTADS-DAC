@@ -23,15 +23,15 @@
                                     *ngFor="let gerente of gerentes"
                                 >
                                     <td>{{gerente.nome}}</td>
-                                    <td>{{gerente.cpf}}</td>
+                                    <td>{{gerente.cpf | mask: '000.000.000-00'}}</td>
                                     <td>{{gerente.email}}</td>
-                                    <td>{{gerente.telefone}}</td>
-                                    <td>
-                                        <button>
-                                            <span class="material-icons">Editar</span>
+                                    <td>{{gerente.telefone | mask: '(00) 00000-0000||(00) 0000-0000'}}</td>
+                                    <td class="d-flex gap-2">
+                                        <button class="btn btn-primary" (click)="editarGerente(gerente)">
+                                            <span><i class="fa-solid fa-pen-to-square"></i> Editar</span>
                                         </button>
-                                        <button>
-                                            <span class="material-icons">Deletar</span>
+                                        <button class="btn btn-danger" (click)="deletarGerente(gerente)">
+                                            <span><i class="fa-solid fa-trash"></i> Deletar</span>
                                         </button>
                                     </td>
                                 </tr>

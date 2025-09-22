@@ -13,25 +13,75 @@ import { TelaInicialAdminComponent } from './pages/admin/tela-inicial-admin/tela
 import { ListarGerentesComponent } from './pages/admin/listar-gerentes/listar-gerentes.component';
 import { ListarClientesComponent } from './pages/admin/listar-clientes/listar-clientes.component';
 import { RelatorioClientesComponent } from './pages/admin/relatorio-clientes/relatorio-clientes.component';
-
+import { AuthGuard } from './services/auth/AuthGuard';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent},
     { path: 'autocadastro', component: AutocadastroComponent},
 
-    { path: 'cliente/deposito', component: DepositoComponent},
-    { path: 'cliente/saque', component: SaqueComponent},
-    { path: 'cliente/transferencia', component: TransferenciaComponent},
-    { path: 'cliente/atualizarCadastro', component: AtualizarCadastroComponent},    
-    { path: 'cliente/consultaExtrato', component: ConsultaExtratoComponent},
-    { path: 'cliente/:id', component: TelaInicialClienteComponent},
-    { path: 'gerente/:id', component: TelaInicialGerenteComponent},
-    { path: 'admin/listarClientes', component: ListarClientesComponent},
-    { path: 'admin/listarGerentes', component: ListarGerentesComponent},
-    { path: 'admin/adicionarGerente', component: InserirGerenteComponent},
-    { path: 'admin/editarGerente/:id', component: InserirGerenteComponent},
-    { path: 'admin/relatorioClientes', component: RelatorioClientesComponent},
-    { path: 'admin/:id', component: TelaInicialAdminComponent},
-    { path: 'admin/:id/relatorioClientes', component: RelatorioClientesComponent },
-
+    { 
+        path: 'cliente/deposito', 
+        component: DepositoComponent,
+        canActivate: [AuthGuard]
+    },
+    { 
+        path: 'cliente/saque', 
+        component: SaqueComponent,
+        canActivate: [AuthGuard]
+    },
+    { 
+        path: 'cliente/transferencia', 
+        component: TransferenciaComponent,
+        canActivate: [AuthGuard]
+    },
+    { 
+        path: 'cliente/atualizarCadastro', 
+        component: AtualizarCadastroComponent,
+        canActivate: [AuthGuard]
+    },    
+    { 
+        path: 'cliente/consultaExtrato', 
+        component: ConsultaExtratoComponent, 
+        canActivate: [AuthGuard]
+    },
+    { 
+        path: 'cliente/:id', 
+        component: TelaInicialClienteComponent,
+        canActivate: [AuthGuard]
+    },
+    { 
+        path: 'gerente/:id', 
+        component: TelaInicialGerenteComponent,
+        canActivate: [AuthGuard]
+    },
+    { 
+        path: 'admin/listarClientes', 
+        component: ListarClientesComponent,
+        canActivate: [AuthGuard]
+    },
+    { 
+        path: 'admin/listarGerentes', 
+        component: ListarGerentesComponent,
+        canActivate: [AuthGuard]
+    },
+    { 
+        path: 'admin/adicionarGerente', 
+        component: InserirGerenteComponent,        
+        canActivate: [AuthGuard]
+    },
+    { 
+        path: 'admin/editarGerente/:id', 
+        component: InserirGerenteComponent,
+        canActivate: [AuthGuard]
+    },
+    { 
+        path: 'admin/:id/relatorioClientes', 
+        component: RelatorioClientesComponent,
+        canActivate: [AuthGuard]
+    },
+    { 
+        path: 'admin/:id', 
+        component: TelaInicialAdminComponent,
+        canActivate: [AuthGuard]
+    },
 ];

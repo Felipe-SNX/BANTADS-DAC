@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { UserService } from '../../../services/auth/user.service';
+import { UserService } from '../../../services/user/user.service';
 
 interface IMenu{
   label: string,
@@ -44,7 +44,6 @@ export class SidebarComponent implements OnInit{
     { label: 'Listar Gerentes', icon: 'person', action: 'listarGerentes', type: 'admin' },
     { label: 'Novo Gerente', icon: 'person', action: 'adicionarGerente', type: 'admin' },
     { label: 'Relatório de Clientes', icon: 'person', action: 'relatorioClientes', type: 'admin' },
-    
   ];
 
   onMenuItemClick(action: string) {

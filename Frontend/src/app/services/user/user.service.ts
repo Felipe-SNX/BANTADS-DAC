@@ -17,6 +17,15 @@ export class UserService {
     return users ? JSON.parse(users) : [];
   }
 
+  isLogged(): boolean {
+    if(sessionStorage.getItem('usuarioLogado')){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
   createUserAccount(user: User): LocalStorageResult{
     const users = this.listUsers();
     const checkUser = users.find((currentUser) => currentUser.login === user.login);

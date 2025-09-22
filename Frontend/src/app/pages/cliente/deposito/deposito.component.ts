@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgxMaskDirective } from 'ngx-mask';
-import { UserService } from '../../../services/auth/user.service';
+import { UserService } from '../../../services/user/user.service';
 import { ContaService } from '../../../services/conta/conta.service';
 import { TransacaoService } from '../../../services/transacao/transacao.service';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';

@@ -3,7 +3,7 @@ import { Gerente } from '../../shared/models/gerente.model';
 import { Cliente } from '../../shared/models/cliente.model';
 import { ContaService } from '../conta/conta.service';
 import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
-import { UserService } from '../auth/user.service';
+import { UserService } from '../user/user.service';
 import { User } from '../../shared/models/user.model';
 import { TipoUsuario } from '../../shared/enums/TipoUsuario';
 import { ClienteService } from '../cliente/cliente.service';

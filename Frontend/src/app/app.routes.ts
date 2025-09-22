@@ -13,7 +13,7 @@ import { TelaInicialAdminComponent } from './pages/admin/tela-inicial-admin/tela
 import { ListarGerentesComponent } from './pages/admin/listar-gerentes/listar-gerentes.component';
 import { ListarClientesComponent } from './pages/admin/listar-clientes/listar-clientes.component';
 import { RelatorioClientesComponent } from './pages/admin/relatorio-clientes/relatorio-clientes.component';
-import { AuthGuard } from './services/auth/authGuard';
+import { AuthGuard } from './services/auth/AuthGuard';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent},

@@ -44,6 +44,9 @@ export class SidebarComponent implements OnInit{
     { label: 'Listar Gerentes', icon: 'person', action: 'listarGerentes', type: 'admin' },
     { label: 'Novo Gerente', icon: 'person', action: 'adicionarGerente', type: 'admin' },
     { label: 'Relatório de Clientes', icon: 'person', action: 'relatorioClientes', type: 'admin' },
+    { label: 'Listar Clientes', icon: 'person', action: 'listarClientes', type: 'gerente' },
+    { label: 'Listar Melhores Clientes', icon: 'person', action: 'listarClientesTop', type: 'gerente' },
+    { label: 'Consultar Cliente', icon: 'person', action: 'consultarCliente', type: 'gerente' }
   ];
 
   onMenuItemClick(action: string) {

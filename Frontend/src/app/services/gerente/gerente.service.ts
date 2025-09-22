@@ -245,4 +245,16 @@ export class GerenteService {
     //Aqui seria mandado um e-mail para o cliente
     console.log(rejectionReason);
   }
+
+  findLoggedUser(): number | undefined{
+    const gerenteString = sessionStorage.getItem('usuarioLogado');
+    console.log(gerenteString);
+    if (gerenteString) {
+      const usuarioLogado = JSON.parse(gerenteString);
+      return usuarioLogado.idPerfil;
+    }
+    else{
+      return undefined;
+    }
+  }
 }

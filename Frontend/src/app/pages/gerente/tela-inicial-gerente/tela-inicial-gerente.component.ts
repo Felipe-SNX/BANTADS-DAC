@@ -30,9 +30,11 @@ export class TelaInicialGerenteComponent implements OnInit {
     @Inject(DOCUMENT) private readonly document: Document
   ) {}
 
-  ngOnInit(): void {
-    this.gerenteId = Number(this.route.snapshot.paramMap.get('id'));
-    this.gerente = this.managerService.listManagerById(this.gerenteId);
+  ngOnInit(): void {    
+    const gerenteId = this.managerService.findLoggedUser();
+    if(gerenteId) {
+      this.gerente = this.managerService.listManagerById(gerenteId);
+    }
     this.contasParaAprovar = this.managerService.listCustomersForApprove(this.gerente as Gerente);
   }
 

@@ -9,7 +9,6 @@ import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.com
 import { Cliente } from '../../../shared/models/cliente.model';
 import { Conta } from '../../../shared/models/conta.model';
 import { Gerente } from '../../../shared/models/gerente.model';
-import { Transacao } from '../../../shared/models/transacao.model';
 
 @Component({
   selector: 'app-tela-inicial-cliente',
@@ -20,8 +19,7 @@ import { Transacao } from '../../../shared/models/transacao.model';
 })
 export class TelaInicialClienteComponent implements OnInit {
   cliente: Cliente = new Cliente();
-  conta: Conta = new Conta();
-  transacoesRecentes: Transacao[] = [];
+  conta: Conta = new Conta();  
   saldoNegativo: boolean = false;
   gerente: Gerente = new Gerente();
 

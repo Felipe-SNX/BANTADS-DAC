@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { MockDataService } from '../../../services/mock/mock-data.service';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { Conta } from '../../../shared/models/conta.model';
 import { ModalRejeitarClienteComponent } from '../../../shared/components/modal-rejeitar-cliente/modal-rejeitar-cliente.component';
+import { Gerente } from '../../../shared/models/gerente.model';
+import { GerenteService } from '../../../services/gerente/gerente.service';
+import { Cliente } from '../../../shared/models/cliente.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-tela-inicial-gerente',
@@ -14,50 +17,46 @@ import { ModalRejeitarClienteComponent } from '../../../shared/components/modal-
   imports: [CommonModule, SidebarComponent, ModalRejeitarClienteComponent]
 })
 export class TelaInicialGerenteComponent implements OnInit {
+  @ViewChild('modalDeNegacao') modalComponent!: ModalRejeitarClienteComponent;
+  private readonly toastr = inject(ToastrService);
+
   contasParaAprovar: Conta[] = [];
   gerenteId: number = 0;
+  gerente: Gerente | undefined;
 
   constructor(
-    private mockDataService: MockDataService,
-    private route: ActivatedRoute
+    private readonly managerService: GerenteService,
+    private readonly route: ActivatedRoute,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {}
 
   ngOnInit(): void {
-    this.mockDataService.loadMockData();
-
-    this.route.paramMap.subscribe(params => {
-      this.gerenteId = Number(params.get('id'));
-      const contas = JSON.parse(localStorage.getItem('contas') || '[]');
-      this.contasParaAprovar = contas.filter(
-        (conta: any) => conta.gerente && conta.gerente.id === this.gerenteId
-      );
-    });
+    this.gerenteId = Number(this.route.snapshot.paramMap.get('id'));
+    this.gerente = this.managerService.listManagerById(this.gerenteId);
+    this.contasParaAprovar = this.managerService.listCustomersForApprove(this.gerente as Gerente);
   }
 
-  aprovar(conta: Conta) {
-    // conta.aprovada = true;
-    this.atualizarLocalStorage(conta);
-    this.contasParaAprovar = this.contasParaAprovar.filter(c => c.numConta !== conta.numConta);
+  aprovar(cliente: Cliente) {
+    const result = this.managerService.approveCustomer(cliente, this.gerente as Gerente);
+
+    if(result.success){
+      this.toastr.success('Cliente Aprovado com Sucesso!', 'Sucesso');
+      this.document.defaultView?.location.reload();
+    }
+    else{
+      this.toastr.error('Ocorreu um erro ao aprovar o cliente.', 'Erro');
+    }
   }
 
-  recusar(conta: Conta) {
-    this.contasParaAprovar = this.contasParaAprovar.filter(c => c.numConta !== conta.numConta);
-    let contas = JSON.parse(localStorage.getItem('contas') || '[]');
-    contas = contas.filter((c: any) => c.numConta !== conta.numConta);
-    localStorage.setItem('contas', JSON.stringify(contas));
+  chamarModal(cliente: Cliente) {
+    if(this.gerente){
+      this.modalComponent.abrir(cliente, this.gerente);
+    }
   }
-
-  private atualizarLocalStorage(contaAprovada: Conta) {
-    let contas = JSON.parse(localStorage.getItem('contas') || '[]');
-    contas = contas.map((c: any) => {
-      if (c.numConta === contaAprovada.numConta) {
-        // c.aprovada = true;
-      }
-      return c;
-    });
-    localStorage.setItem('contas', JSON.stringify(contas));
-  }
-
-  onActionSelected(action: string) {    
+  
+  onPedidoNegado(dados: any) {
+    console.log('O componente pai foi notificado!', dados);
+    this.toastr.success('Cliente rejeitado com sucesso!', 'Sucesso');
+    this.document.defaultView?.location.reload();
   }
 }

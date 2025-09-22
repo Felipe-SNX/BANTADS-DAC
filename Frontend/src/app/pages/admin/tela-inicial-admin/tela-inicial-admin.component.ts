@@ -3,6 +3,13 @@ import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { AdminService } from '../../../services/admin/admin.service';
 
+interface AdminData {
+  id: number;
+  nome: string;
+  email: string;
+  cpf: string;
+}
+
 interface AdminDashboard {
   id: number;
   nome: string;
@@ -25,12 +32,15 @@ interface AdminDashboard {
 
 export class TelaInicialAdminComponent implements OnInit {
   AdminDashboard: AdminDashboard[] = [];
+  admin: AdminData | null = null;
 
   constructor (
     private readonly adminService: AdminService
   ) {} 
 
   ngOnInit(): void {
+
+    this.admin = this.adminService.getAdminData();
     
     this.AdminDashboard = this.adminService.getAdminDashboardData();
 

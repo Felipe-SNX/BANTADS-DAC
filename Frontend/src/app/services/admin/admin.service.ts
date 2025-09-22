@@ -1,5 +1,12 @@
 import { Injectable } from '@angular/core';
 
+interface Admin {
+  id: number;
+  nome: string;
+  email: string;
+  cpf: string;
+}
+
 interface AdminDashboard {
   id: number;
   nome: string;
@@ -15,6 +22,20 @@ interface AdminDashboard {
 export class AdminService {
 
   constructor() { }
+
+  getAdminData(): Admin | null {
+    const adminData = localStorage.getItem('admin');
+    if (!adminData) {
+      return null;
+    }
+    const admin = JSON.parse(adminData);
+    return {
+      id: admin.id,
+      nome: admin.nome,
+      email: admin.email,
+      cpf: admin.cpf
+    };
+  }
 
   getAdminDashboardData(): AdminDashboard[] {
 

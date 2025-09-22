@@ -43,7 +43,7 @@ export class SidebarComponent implements OnInit{
     { label: 'Dashboard', icon: 'person', action: 'Dashboard', type: 'admin' },
     { label: 'Listar Gerentes', icon: 'person', action: 'listarGerentes', type: 'admin' },
     { label: 'Novo Gerente', icon: 'person', action: 'adicionarGerente', type: 'admin' },
-    { label: 'Relatório de Clientes', icon: 'person', action: 'listarClientes', type: 'admin' },
+    { label: 'Relatório de Clientes', icon: 'person', action: 'relatorioClientes', type: 'admin' },
     
   ];
 
@@ -72,6 +72,9 @@ export class SidebarComponent implements OnInit{
         break;
       case 'Dashboard':
         this.router.navigate(['admin/:id']);
+        break;
+      case 'relatorioClientes':
+        this.router.navigate(['admin/relatorioClientes']);
         break;
       default:
         return;

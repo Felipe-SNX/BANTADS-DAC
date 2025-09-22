@@ -18,8 +18,8 @@ export class TelaInicialGerenteComponent implements OnInit {
   gerenteId: number = 0;
 
   constructor(
-    private mockDataService: MockDataService,
-    private route: ActivatedRoute
+    private readonly mockDataService: MockDataService,
+    private readonly route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {

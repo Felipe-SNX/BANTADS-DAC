@@ -32,4 +32,6 @@ export const routes: Routes = [
     { path: 'admin/editarGerente/:id', component: InserirGerenteComponent},
     { path: 'admin/relatorioClientes', component: RelatorioClientesComponent},
     { path: 'admin/:id', component: TelaInicialAdminComponent},
+    { path: 'admin/:id/relatorioClientes', component: RelatorioClientesComponent },
+
 ];

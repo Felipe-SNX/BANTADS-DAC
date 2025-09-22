@@ -2,22 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { AdminService } from '../../../services/admin/admin.service';
+import { AdminData, AdminDashboard } from '../../../services/admin/admin.service';
 
-interface AdminData {
-  id: number;
-  nome: string;
-  email: string;
-  cpf: string;
-}
 
-interface AdminDashboard {
-  id: number;
-  nome: string;
-  email: string;
-  totalClientes: number;
-  saldoPositivo: number;
-  saldoNegativo: number;
-}
 
 @Component({
   selector: 'app-tela-inicial-admin',

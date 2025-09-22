@@ -2,8 +2,21 @@ import { Injectable } from '@angular/core';
 import { Cliente } from '../../shared/models/cliente.model';
 import { ContaService } from '../conta/conta.service';
 import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
+import { Gerente } from '../../shared/models/gerente.model';
 
 const LS_CHAVE = "clientes";
+
+export interface ClientData {
+  cpfCliente: string;
+  nomeCliente: string;
+  emailCliente: string;
+  salario: number;
+  numeroConta: string;
+  saldo: number;
+  limiteCliente: number;
+  cpfGerente: string;
+  nomeGerente: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -80,6 +93,37 @@ export class ClienteService {
       message: 'Cliente atualizado com sucesso!'
     };
 
+  }
+
+  listClientData(): ClientData[] {
+    const clientes = this.listClient();
+    const contas = JSON.parse(localStorage.getItem('contas') || '[]');
+    const gerentes: Gerente[] = JSON.parse(localStorage.getItem('gerentes') || '[]');
+
+    const allClientData: ClientData[] = [];
+
+    clientes.forEach(cliente => {
+      const conta = contas.find((c: any) => c.cliente.id === cliente.id);
+      const gerente = gerentes.find(g => g.id === cliente.gerente.id);
+
+      if (conta && gerente) {
+        allClientData.push({
+          cpfCliente: cliente.cpf,
+          nomeCliente: cliente.nome,
+          emailCliente: cliente.email,
+          salario: cliente.salario,
+          numeroConta: conta.numero,
+          saldo: conta.saldo,
+          limiteCliente: conta.limite,
+          cpfGerente: gerente.cpf,
+          nomeGerente: gerente.nome
+        });
+      }
+    });
+
+    allClientData.sort((a, b) => a.nomeCliente.localeCompare(b.nomeCliente));
+
+    return allClientData;
   }
   
 }

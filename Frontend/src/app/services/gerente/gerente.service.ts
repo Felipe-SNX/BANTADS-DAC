@@ -33,6 +33,21 @@ export class GerenteService {
     return manager;
   }
 
+  listCustomersForApprove(manager: Gerente){
+    const accounts = this.accountService.listAccounts();
+
+    const filteredAccounts = accounts.filter((account) => {
+      if(account.gerente.id === manager.id && !account.cliente.statusConta.status && account.cliente.statusConta.motivo === null){
+        return account;
+      }
+      else{
+        return;
+      }
+    })
+
+    return filteredAccounts;
+  }
+
   createManager(manager: Gerente): LocalStorageResult {
     const managers = this.listManagers();
 
@@ -189,7 +204,7 @@ export class GerenteService {
     localStorage.setItem(LS_CHAVE, JSON.stringify(updatedManagers));
   }
 
-  approveCustomer(customer: Cliente, manager: Gerente): void{
+  approveCustomer(customer: Cliente, manager: Gerente): LocalStorageResult{
 
     customer.statusConta.status = true;
     customer.statusConta.motivo = null;
@@ -202,11 +217,19 @@ export class GerenteService {
     if(result.success){
       const user: User = new User(TipoUsuario.CLIENTE, customer.email, customer.cpf, customer.id);
       this.userService.createUserAccount(user);
-
+      console.log(customer)
+      this.accountService.updateAccountCustomer(customer);
       //aqui seria mandado um email para o cliente
+      return {
+        success: true,
+        message: 'Cliente aprovado com sucesso!'
+      }
     }
     else{
-      console.error(result.message);
+      return {
+        success: false,
+        message: 'Ocorreu um erro ao aprovar o cliente.'
+      }
     }
   }
 
@@ -217,6 +240,7 @@ export class GerenteService {
     customer.statusConta.dataAvaliacao = new Date();
     customer.statusConta.gerenteAvaliador = manager;
     this.customerService.updateClient(customer);
+    this.accountService.updateAccountCustomer(customer);
     
     //Aqui seria mandado um e-mail para o cliente
     console.log(rejectionReason);

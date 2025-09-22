@@ -70,11 +70,14 @@ export class SidebarComponent implements OnInit{
       case 'listarGerentes':
         this.router.navigate(['admin/listarGerentes']);
         break;
-      case 'Dashboard':
-        this.router.navigate(['admin/:id']);
-        break;
+      case 'listarClientes':
+        this.router.navigate(['admin/listarClientes']);
+        break
       case 'relatorioClientes':
         this.router.navigate(['admin/:id/relatorioClientes']);
+        break;
+      case 'Dashboard':
+        this.router.navigate(['admin/:id']);
         break;
       default:
         return;

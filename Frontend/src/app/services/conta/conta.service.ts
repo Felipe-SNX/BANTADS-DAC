@@ -69,6 +69,23 @@ export class ContaService {
     localStorage[LS_CHAVE_CONTAS] = JSON.stringify(accounts);
   }
 
+  updateAccountCustomer(customer: Cliente){
+    const accounts = this.listAccounts();
+    const account = accounts.findIndex((conta) => conta.cliente.id === customer.id);
+    
+    if(account !== -1){
+      accounts[account].cliente = customer;
+    }
+
+    const updatedArray: Conta[] = [];
+
+    accounts.forEach((conta) => {
+      updatedArray.push(conta);
+    });
+
+    localStorage[LS_CHAVE_CONTAS] = JSON.stringify(updatedArray);
+  }
+
   private generateAccountNumber(): string{
     let accountNumber: number;
     let proceed: boolean = true;

@@ -12,6 +12,8 @@ import { TelaInicialGerenteComponent } from './pages/gerente/tela-inicial-gerent
 import { TelaInicialAdminComponent } from './pages/admin/tela-inicial-admin/tela-inicial-admin.component';
 import { ListarGerentesComponent } from './pages/admin/listar-gerentes/listar-gerentes.component';
 import { ListarClientesComponent } from './pages/admin/listar-clientes/listar-clientes.component';
+import { RelatorioClientesComponent } from './pages/admin/relatorio-clientes/relatorio-clientes.component';
+
 
 export const routes: Routes = [
     { path: '', component: LoginComponent},
@@ -28,5 +30,6 @@ export const routes: Routes = [
     { path: 'admin/listarGerentes', component: ListarGerentesComponent},
     { path: 'admin/adicionarGerente', component: InserirGerenteComponent},
     { path: 'admin/editarGerente/:id', component: InserirGerenteComponent},
+    { path: 'admin/relatorioClientes', component: RelatorioClientesComponent},
     { path: 'admin/:id', component: TelaInicialAdminComponent},
 ];

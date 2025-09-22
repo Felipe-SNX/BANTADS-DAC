@@ -75,7 +75,7 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
     },
     { 
-        path: 'admin/relatorioClientes', 
+        path: 'admin/:id/relatorioClientes', 
         component: RelatorioClientesComponent,
         canActivate: [AuthGuard]
     },

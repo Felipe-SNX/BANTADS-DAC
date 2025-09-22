@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 
-interface Admin {
+export interface AdminData {
   id: number;
   nome: string;
   email: string;
   cpf: string;
 }
 
-interface AdminDashboard {
+export interface AdminDashboard {
   id: number;
   nome: string;
   email: string;
@@ -23,7 +23,7 @@ export class AdminService {
 
   constructor() { }
 
-  getAdminData(): Admin | null {
+  getAdminData(): AdminData | null {
     const adminData = localStorage.getItem('admin');
     if (!adminData) {
       return null;

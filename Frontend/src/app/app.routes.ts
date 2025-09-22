@@ -29,5 +29,5 @@ export const routes: Routes = [
     { path: 'admin/adicionarGerente', component: InserirGerenteComponent},
     { path: 'admin/editarGerente/:id', component: InserirGerenteComponent},
     { path: 'admin/:id', component: TelaInicialAdminComponent},
-    { path: 'admin/relatorioClientes', component: RelatorioClientesComponent },
+    { path: 'admin/:id/relatorioClientes', component: RelatorioClientesComponent },
 ];

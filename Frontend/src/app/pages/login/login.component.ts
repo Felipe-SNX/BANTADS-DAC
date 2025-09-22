@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { User } from '../../shared/models/user.model';
-import { UserService } from '../../services/auth/user.service';
+import { UserService } from '../../services/user/user.service';
 import { Router } from '@angular/router';
 import { TipoUsuario } from '../../shared/enums/TipoUsuario';
 

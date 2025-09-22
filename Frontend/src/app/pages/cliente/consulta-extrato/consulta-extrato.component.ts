@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { UserService } from '../../../services/auth/user.service';
+import { UserService } from '../../../services/user/user.service';
 import { TransacaoService } from '../../../services/transacao/transacao.service';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { TipoMovimentacao } from '../../../shared/enums/TipoMovimentacao';

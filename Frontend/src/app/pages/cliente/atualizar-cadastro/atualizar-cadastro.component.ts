@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Cliente } from '../../../shared/models/cliente.model';
 import { ClienteService } from '../../../services/cliente/cliente.service';
 import { Router } from '@angular/router';
-import { UserService } from '../../../services/auth/user.service';
+import { UserService } from '../../../services/user/user.service';
 import { User } from '../../../shared/models/user.model';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { EnderecoFormComponent } from '../autocadastro/formularios/endereco-form/endereco-form.component';

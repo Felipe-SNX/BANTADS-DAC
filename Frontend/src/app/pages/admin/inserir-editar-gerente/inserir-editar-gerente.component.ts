@@ -4,7 +4,7 @@ import { FormsModule, NgForm } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { NgxMaskDirective } from "ngx-mask";
 import { ToastrService } from "ngx-toastr";
-import { UserService } from "../../../services/auth/user.service";
+import { UserService } from "../../../services/user/user.service";
 import { GerenteService } from "../../../services/gerente/gerente.service";
 import { SidebarComponent } from "../../../shared/components/sidebar/sidebar.component";
 import { TipoUsuario } from "../../../shared/enums/TipoUsuario";

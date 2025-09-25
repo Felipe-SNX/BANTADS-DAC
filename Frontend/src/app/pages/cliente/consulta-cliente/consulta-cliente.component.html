@@ -2,22 +2,38 @@
   <app-sidebar [tipoTela]="'gerente'"></app-sidebar>
 
   <div class="main-content">
-    <!-- <header class="content-header">
-      <h1>Bem-vindo ao BANTADS</h1>
-    </header> -->
-    
-
-    <div class="dashboard" *ngIf="">
-      <div class="welcome-card">
-        <h2>{{ cliente?.nome }}!</h2>
-        <p>Número da conta: {{ conta?.numConta }}</p>        
-        <div class="balance">
-          <h3>Saldo disponível</h3>
-          <p class="balance-value" [class.negative]="saldoNegativo">
-            R$ {{ conta?.saldo?.toFixed(2) }}
-          </p>
+    <div class="search-card">
+      <h2>Consulta de Cliente</h2>
+      <form (ngSubmit)="consultarCliente()" #consultaForm="ngForm" class="search-form">
+        <div class="form-group">
+          <label for="cpf">CPF do Cliente:</label>
+          <input
+            type="text"
+            id="cpf"
+            name="cpf"
+            [(ngModel)]="cpf"
+            required
+            pattern="\d{11}"
+            placeholder="Digite o CPF (apenas números)"
+            class="styled-input"
+          />
         </div>
-      </div>            
+        <button type="submit" [disabled]="!consultaForm.form.valid">Consultar</button>
+      </form>
+      <div *ngIf="erroMensagem" class="error-message">
+        {{ erroMensagem }}
+      </div>
+
+      <div class="client-info" *ngIf="clienteEncontrado && cliente">
+        <h3>Dados do Cliente</h3>
+        <div class="info-row"><span>Nome:</span> {{ cliente.nome }}</div>
+        <div class="info-row"><span>CPF:</span> {{ cliente.cpf }}</div>
+        <div class="info-row"><span>Email:</span> {{ cliente.email }}</div>
+        <div class="info-row"><span>Salário:</span> R$ {{ cliente.salario | number:'1.2-2' }}</div>
+        <div class="info-row"><span>Núm. da Conta:</span> {{ conta.numConta }}</div>
+        <div class="info-row"><span>Saldo:</span> R$ {{ conta.saldo | number:'1.2-2' }}</div>
+        <div class="info-row"><span>Limite:</span> R$ {{ conta.limite | number:'1.2-2' }}</div>
+      </div>
     </div>
   </div>
 </div>

@@ -125,5 +125,11 @@ export class ClienteService {
 
     return allClientData;
   }
+
+  getClientByCpf(cpf: string): Cliente | undefined {
+    const customers: Cliente[] = this.listClient();
+    const customer: Cliente | undefined = customers.find((currentCustomer) => currentCustomer.cpf === cpf)
+    return customer;
+  }
   
 }

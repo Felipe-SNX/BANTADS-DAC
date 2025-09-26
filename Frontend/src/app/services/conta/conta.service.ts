@@ -107,5 +107,11 @@ export class ContaService {
   private calculateLimit(salario: number){
       return salario/2;
   }
+
+  listAccountsByManager(managerId: number): Conta[]{
+    const accounts = localStorage[LS_CHAVE_CONTAS];
+    var accountsJson = accounts ? JSON.parse(accounts) : [];
+    return accountsJson.filter((account: Conta) => account.gerente.id === managerId);
+  }
 }
 

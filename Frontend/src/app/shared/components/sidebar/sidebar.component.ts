@@ -44,7 +44,7 @@ export class SidebarComponent implements OnInit{
     { label: 'Listar Gerentes', icon: 'person', action: 'listarGerentes', type: 'admin' },
     { label: 'Novo Gerente', icon: 'person', action: 'adicionarGerente', type: 'admin' },
     { label: 'Relatório de Clientes', icon: 'person', action: 'relatorioClientes', type: 'admin' },
-    { label: 'Listar Clientes', icon: 'person', action: 'listarClientes', type: 'gerente' },
+    { label: 'Listar Clientes', icon: 'person', action: 'listarClientesGerente', type: 'gerente' },
     { label: 'Listar Melhores Clientes', icon: 'person', action: 'listarClientesTop', type: 'gerente' },
     { label: 'Consultar Cliente', icon: 'person', action: 'consultarCliente', type: 'gerente' }
   ];
@@ -81,6 +81,15 @@ export class SidebarComponent implements OnInit{
       case 'Dashboard':
         this.router.navigate(['admin/:id']);
         break;
+      case 'consultarCliente':
+        this.router.navigate(['cliente/consulta/']);
+        break;
+      case 'listarClientesTop':
+        this.router.navigate(['gerente/listarClientes/3']);
+        break;
+      case 'listarClientesGerente':
+        this.router.navigate(['gerente/listarClientes/1']);
+        break;
       default:
         return;
     }
@@ -89,6 +98,9 @@ export class SidebarComponent implements OnInit{
   onHomeClick(){
     if(this.tipoTela === 'cliente'){
       this.router.navigate(['cliente']);
+    }
+    else if(this.tipoTela === 'gerente'){
+      this.router.navigate(['gerente']);
     }
   }
 

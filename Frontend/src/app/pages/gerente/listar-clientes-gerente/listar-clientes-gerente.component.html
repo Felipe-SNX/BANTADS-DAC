@@ -1,0 +1,61 @@
+<main class="d-flex flex-row w-100" style="max-height: 100vh;">
+    <app-sidebar [tipoTela]="'gerente'"></app-sidebar>
+
+    <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;">
+        <h2 class="mb-0">Clientes</h2>
+
+        <div class="card shadow-sm mb-3">
+            <div class="card-body d-flex flex-row gap-3 align-items-end">
+                <div class="flex-grow-1">
+                    <label for="filtroNome" class="form-label mb-1">Filtrar por Nome</label>
+                    <input id="filtroNome" type="text" class="form-control" [(ngModel)]="filtroNome" placeholder="Digite o nome do cliente">
+                </div>
+                <div class="flex-grow-1">
+                    <label for="filtroCpf" class="form-label mb-1">Filtrar por CPF</label>
+                    <input id="filtroCpf" type="text" class="form-control" [(ngModel)]="filtroCpf" placeholder="Digite o CPF do cliente">
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <ng-container *ngIf="contasFiltradas && contasFiltradas.length > 0; else noData">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped mb-0">
+                            <thead class="table-secondary">
+                                <tr>
+                                    <th>CPF</th>
+                                    <th>Nome</th>
+                                    <th>Cidade</th>
+                                    <th>Estado</th>
+                                    <th>Saldo da Conta</th>
+                                    <th>Limite da Conta</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr 
+                                    *ngFor="let conta of contasFiltradas"
+                                    style="cursor:pointer"
+                                    (click)="irParaConsulta(conta.cliente.id)"
+                                >
+                                    <td>{{conta.cliente.cpf | mask: '000.000.000-00'}}</td>
+                                    <td>{{conta.cliente.nome}}</td>
+                                    <td>{{conta.cliente.endereco.cidade}}</td>
+                                    <td>{{conta.cliente.endereco.estado}}</td>
+                                    <td>{{conta.saldo | currency:'BRL'}}</td>
+                                    <td>{{conta.limite | currency:'BRL'}}</td>                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </ng-container>
+                
+                <ng-template #noData>
+                    <div class="text-center p-5">
+                        <p class="text-muted">Nenhum cliente cadastrado</p>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</main>

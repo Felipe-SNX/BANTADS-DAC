@@ -56,16 +56,21 @@ export class ConsultaClienteComponent implements OnInit {
     }  
   }
 
-  consultarCliente(): void {
+  consultarCliente(): void {    
     const cliente = this.clienteService.getClientByCpf(this.cpf);
     if (cliente) {
       this.cliente = cliente;
+      this.clienteEncontrado = true;   
       this.saldoNegativo = this.conta.saldo < 0;    
       const conta = this.accountService.getAccountByCustomer(this.cliente);
       if (conta) {
         this.conta = conta;        
         this.saldoNegativo = this.conta.saldo < 0;           
       }
+    }
+    else {
+      this.erroMensagem = 'Cliente não encontrado. Verifique o CPF e tente novamente.';
+      this.clienteEncontrado = false;   
     }
   }
 }

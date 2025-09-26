@@ -15,6 +15,7 @@ import { ListarClientesComponent } from './pages/admin/listar-clientes/listar-cl
 import { RelatorioClientesComponent } from './pages/admin/relatorio-clientes/relatorio-clientes.component';
 import { AuthGuard } from './services/auth/AuthGuard';
 import { ConsultaClienteComponent } from './pages/cliente/consulta-cliente/consulta-cliente.component';
+import { ListarClientesGerenteComponent } from './pages/gerente/listar-clientes-gerente/listar-clientes-gerente.component';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent},
@@ -46,7 +47,7 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
     },
     { 
-        path: 'cliente/:id', 
+        path: 'cliente', 
         component: TelaInicialClienteComponent,
         canActivate: [AuthGuard]
     },
@@ -89,5 +90,15 @@ export const routes: Routes = [
         path: 'cliente/consulta/:id', 
         component: ConsultaClienteComponent,
         canActivate: [AuthGuard]
+    },
+    { 
+        path: 'cliente/consulta', 
+        component: ConsultaClienteComponent,
+        canActivate: [AuthGuard]
     },  
+    {
+        path: 'gerente/listarClientes/:id',
+        component: ListarClientesGerenteComponent,
+        canActivate: [AuthGuard]
+    }
 ];

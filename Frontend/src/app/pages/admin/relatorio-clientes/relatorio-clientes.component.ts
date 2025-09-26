@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ClienteService } from '../../../services/cliente/cliente.service';
 import { CommonModule } from '@angular/common';
-import { ClientData } from '../../../services/cliente/cliente.service';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
+import { ContaService } from '../../../services/conta/conta.service';
+import { Conta } from '../../../shared/models/conta.model';
 
 
 @Component({
@@ -18,14 +18,28 @@ import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.com
 })
 export class RelatorioClientesComponent implements OnInit {
 
-  clientes: ClientData[] = [];
+  clientes: any[] = [];
 
   constructor(
-    private readonly clienteService: ClienteService, 
+    private readonly contaService: ContaService, 
   ) { }
 
   ngOnInit(): void {
-    this.clientes = this.clienteService.listClientData();
+    
+    const contas: Conta[] = this.contaService.listAccounts();
+    this.clientes = contas.map((conta: Conta) => ({
+      nomeCliente: conta.cliente.nome,
+      cpfCliente: conta.cliente.cpf,
+      emailCliente: conta.cliente.email,
+      salario: conta.cliente.salario,
+      numeroConta: conta.numConta,
+      saldo: conta.saldo,
+      limiteCliente: conta.limite,
+      cpfGerente: conta.gerente.cpf,
+      nomeGerente: conta.gerente.nome,
+    }));
+
+    this.clientes.sort((a, b) => a.nomeCliente.localeCompare(b.nomeCliente));
   }
   
 }

@@ -47,7 +47,7 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
     },
     { 
-        path: 'cliente', 
+        path: 'cliente/:id', 
         component: TelaInicialClienteComponent,
         canActivate: [AuthGuard]
     },

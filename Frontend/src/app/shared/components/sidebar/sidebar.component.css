@@ -1,10 +1,21 @@
 .sidebar {
-    background-color: #212529; 
     color: white;
     width: 280px;
     height: 100vh; 
     display: flex;
     flex-direction: column;
+}
+
+.sidebar-cliente {
+    background-color: #0A2B5B; 
+}
+
+.sidebar-gerente{
+    background-color: #EAB308;
+}
+
+.sidebar-admin{
+    background-color: #8B5CF6;
 }
 
 .sidebar-header {
@@ -32,7 +43,7 @@
 }
 
 .menu-item:hover {
-    background-color: #343a40; 
+    background-color: #264c83; 
     color: white; 
     cursor: pointer;
 }

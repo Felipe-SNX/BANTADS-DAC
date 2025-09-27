@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { GerenteService } from '../../../services/gerente/gerente.service';
 import { Gerente } from '../../../shared/models/gerente.model';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
@@ -6,6 +6,7 @@ import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxMaskPipe } from 'ngx-mask';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-listar-gerentes',
@@ -15,6 +16,7 @@ import { Router } from '@angular/router';
   styleUrl: './listar-gerentes.component.css'
 })
 export class ListarGerentesComponent implements OnInit{
+  private readonly toastr = inject(ToastrService);
   gerentes: Gerente[] = [];
 
   constructor(
@@ -45,6 +47,7 @@ export class ListarGerentesComponent implements OnInit{
 
   deletarGerente(gerente: Gerente){
     this.managerService.deleteManager(gerente.id);
+    this.toastr.success('Gerente deletado com sucesso!', 'Sucesso');
     this.document.defaultView?.location.reload();
   }
 

@@ -137,7 +137,7 @@ export class AtualizarCadastroComponent implements OnInit{
   
       if(result.success){
         this.toastr.success('Cliente atualizado com sucesso!', 'Sucesso');
-        this.router.navigate(['/cliente/', this.user?.idPerfil]);
+        this.router.navigate(['/cliente']);
       }else{
         console.log(result.message);
         this.toastr.warning('Já existe um cliente com CPF informado!', 'Erro');

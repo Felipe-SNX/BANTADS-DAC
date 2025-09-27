@@ -2,17 +2,14 @@
   <app-sidebar [tipoTela]="'admin'"></app-sidebar>
 
   <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;">
-    <h2 class="mb-0" >Olá, {{ admin?.nome }}</h2>
+    <h2 class="mb-0" >Dashboard</h2>
 
     <div class="card shadow-sm">
-      <div class="card-header">
-        <h3 class="h5 mb-0">Dashboard</h3>
-      </div>
       <div class="card-body p-0">
         <ng-container *ngIf="AdminDashboard && AdminDashboard.length > 0; else noData">
           <div class="table-responsive">
             <table class="table table-hover table-striped mb-0">
-              <thead class="table-secondary">
+              <thead class="table-dark">
                 <tr>
                   <th class="tex-start">Nome</th>
                   <th class="tex-start">Clientes</th>

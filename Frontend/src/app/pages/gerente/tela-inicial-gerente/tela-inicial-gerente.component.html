@@ -5,7 +5,6 @@
     <table>
       <thead>
         <tr>
-          <th>Número da Conta</th>
           <th>Nome do Cliente</th>
           <th>CPF</th>
           <th>Salário</th>
@@ -13,17 +12,16 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let conta of contasParaAprovar">
-          <td>{{ conta.numConta }}</td>
-          <td>{{ conta.cliente?.nome }}</td>
-          <td>{{ conta.cliente?.cpf }}</td>
-          <td>R$ {{ conta.cliente?.salario }}</td>
+        <tr *ngFor="let cliente of clientesParaAprovar">
+          <td>{{ cliente.nome }}</td>
+          <td>{{ cliente.cpf | mask: '000.000.000-00' }}</td>
+          <td>{{ cliente.salario | currency:'BRL':'symbol' }}</td>
           <td>
-            <button (click)="aprovar(conta.cliente)">Aprovar</button>
-            <button (click)="chamarModal(conta.cliente)">Recusar</button>
+            <button (click)="aprovar(cliente)">Aprovar</button>
+            <button (click)="chamarModal(cliente)">Recusar</button>
           </td>
         </tr>      
-        <tr *ngIf="contasParaAprovar.length === 0">
+        <tr *ngIf="clientesParaAprovar.length === 0">
           <td colspan="5">Nenhuma conta pendente de aprovação.</td>
         </tr>
       </tbody>

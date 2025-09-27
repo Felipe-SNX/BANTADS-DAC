@@ -34,18 +34,18 @@ export class GerenteService {
   }
 
   listCustomersForApprove(manager: Gerente){
-    const accounts = this.accountService.listAccounts();
+    const customers = this.customerService.listClient();
 
-    const filteredAccounts = accounts.filter((account) => {
-      if(account.gerente.id === manager.id && !account.cliente.statusConta.status && account.cliente.statusConta.motivo === null){
-        return account;
+    const filteredCustomers = customers.filter((customer) => {
+      if(customer.gerente.id === manager.id && !customer.statusConta.status && customer.statusConta.motivo === null){
+        return customer;
       }
       else{
         return;
       }
     })
 
-    return filteredAccounts;
+    return filteredCustomers;
   }
 
   createManager(manager: Gerente): LocalStorageResult {
@@ -179,7 +179,7 @@ export class GerenteService {
     }
   }
   
-  addCustomerToManager(customer: Cliente): void {
+  addCustomerToManager(customer: Cliente): Gerente {
     const managers = this.listManagers();
 
     const chosenManager = managers.reduce((managerLessCustomers, currentManager) => {
@@ -202,6 +202,7 @@ export class GerenteService {
     });
 
     localStorage.setItem(LS_CHAVE, JSON.stringify(updatedManagers));
+    return chosenManager;
   }
 
   approveCustomer(customer: Cliente, manager: Gerente): LocalStorageResult{

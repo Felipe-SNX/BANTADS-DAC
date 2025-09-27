@@ -1,21 +1,10 @@
 .sidebar {
-    color: white;
+    background-color: #4682B4; 
+    color: #262627;
     width: 280px;
     height: 100vh; 
     display: flex;
     flex-direction: column;
-}
-
-.sidebar-cliente {
-    background-color: #0A2B5B; 
-}
-
-.sidebar-gerente{
-    background-color: #EAB308;
-}
-
-.sidebar-admin{
-    background-color: #8B5CF6;
 }
 
 .sidebar-header {
@@ -33,7 +22,7 @@
 .menu-item {
     background-color: transparent;
     border: none;
-    color: #adb5bd;
+    color: #262627;
     display: flex;
     align-items: center;
     width: 100%;
@@ -43,24 +32,23 @@
 }
 
 .menu-item:hover {
-    background-color: #264c83; 
-    color: white; 
+    background-color: #E0FFFF; 
+    color: black; 
     cursor: pointer;
 }
 
 .logout-button {
     background-color: transparent;
     border: none;
-    color: #adb5bd;
+    color: #262627;
     width: 100%;
     padding: 1.25rem 1.5rem;
     text-align: center;
-    font-weight: bold;
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
 .logout-button:hover {
     background-color: #c92a2a;
-    color: white;
+    color: black;
     cursor: pointer;
 }

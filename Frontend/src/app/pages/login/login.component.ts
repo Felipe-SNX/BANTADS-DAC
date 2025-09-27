@@ -43,17 +43,17 @@ export class LoginComponent {
       if(this.login.tipoUsuario === TipoUsuario.CLIENTE){
         const user = this.login;
         sessionStorage.setItem('usuarioLogado', JSON.stringify(user));
-        this.router.navigate(['/cliente/', user.idPerfil])
+        this.router.navigate(['/cliente'])
       }
       else if(this.login.tipoUsuario === TipoUsuario.GERENTE){
         const user = this.login;
         sessionStorage.setItem('usuarioLogado', JSON.stringify(user));
-        this.router.navigate(['/gerente/', user.idPerfil]);
+        this.router.navigate(['/gerente']);
       }
       else if(this.login.tipoUsuario === TipoUsuario.ADMIN){
         const user = this.login;
         sessionStorage.setItem('usuarioLogado', JSON.stringify(user));
-        this.router.navigate(['/admin/', user.idPerfil]);          
+        this.router.navigate(['/admin']);          
       }
     }
     else{

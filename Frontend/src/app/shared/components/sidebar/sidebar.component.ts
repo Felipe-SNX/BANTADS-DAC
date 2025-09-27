@@ -35,18 +35,20 @@ export class SidebarComponent implements OnInit{
   }
 
   menuItems: IMenu[] = [
+    { label: 'Início', icon: 'person', action: 'inicio-cliente', type: 'cliente' },
+    { label: 'Início', icon: 'person', action: 'inicio-gerente', type: 'gerente' },
+    { label: 'Início', icon: 'person', action: 'inicio-admin', type: 'admin' },
     { label: 'Alterar Perfil', icon: 'person', action: 'alterarPerfil', type: 'cliente' },
     { label: 'Depósito', icon: 'account_balance', action: 'Depósito', type: 'cliente'},
     { label: 'Saque', icon: 'payments', action: 'Saque', type: 'cliente' },
     { label: 'Transferência', icon: 'swap_horiz', action: 'Transferência', type: 'cliente' },
     { label: 'Extrato', icon: 'person', action: 'Extrato', type: 'cliente' },
-    { label: 'Dashboard', icon: 'person', action: 'Dashboard', type: 'admin' },
     { label: 'Listar Gerentes', icon: 'person', action: 'listarGerentes', type: 'admin' },
     { label: 'Novo Gerente', icon: 'person', action: 'adicionarGerente', type: 'admin' },
     { label: 'Relatório de Clientes', icon: 'person', action: 'relatorioClientes', type: 'admin' },
     { label: 'Listar Clientes', icon: 'person', action: 'listarClientesGerente', type: 'gerente' },
     { label: 'Listar Melhores Clientes', icon: 'person', action: 'listarClientesTop', type: 'gerente' },
-    { label: 'Consultar Cliente', icon: 'person', action: 'consultarCliente', type: 'gerente' }
+    { label: 'Consultar Cliente', icon: 'person', action: 'consultarCliente', type: 'gerente' },
   ];
 
   onMenuItemClick(action: string) {
@@ -78,9 +80,6 @@ export class SidebarComponent implements OnInit{
       case 'relatorioClientes':
         this.router.navigate(['admin/:id/relatorioClientes']);
         break;
-      case 'Dashboard':
-        this.router.navigate(['admin/:id']);
-        break;
       case 'consultarCliente':
         this.router.navigate(['cliente/consulta/']);
         break;
@@ -89,6 +88,15 @@ export class SidebarComponent implements OnInit{
         break;
       case 'listarClientesGerente':
         this.router.navigate(['gerente/listarClientes/1']);
+        break;
+      case 'inicio-cliente':
+        this.router.navigate(['cliente']);
+        break;
+      case 'inicio-gerente':
+        this.router.navigate(['gerente']);
+        break;
+      case 'inicio-admin':
+        this.router.navigate(['admin']);
         break;
       default:
         return;

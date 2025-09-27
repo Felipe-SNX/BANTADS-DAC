@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
-import { AdminService } from '../../../services/admin/admin.service';
-import { AdminData, AdminDashboard } from '../../../services/admin/admin.service';
+import { AdminData, AdminDashboard, AdminService } from '../../../services/admin/admin.service';
 
 
 

@@ -2,25 +2,25 @@ import { Component, Inject, inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
-import { Conta } from '../../../shared/models/conta.model';
 import { ModalRejeitarClienteComponent } from '../../../shared/components/modal-rejeitar-cliente/modal-rejeitar-cliente.component';
 import { Gerente } from '../../../shared/models/gerente.model';
 import { GerenteService } from '../../../services/gerente/gerente.service';
 import { Cliente } from '../../../shared/models/cliente.model';
 import { ToastrService } from 'ngx-toastr';
+import { NgxMaskPipe } from 'ngx-mask';
 
 @Component({
   selector: 'app-tela-inicial-gerente',
   templateUrl: './tela-inicial-gerente.component.html',
   styleUrls: ['./tela-inicial-gerente.component.css'],
   standalone: true,
-  imports: [CommonModule, SidebarComponent, ModalRejeitarClienteComponent]
+  imports: [CommonModule, SidebarComponent, ModalRejeitarClienteComponent, NgxMaskPipe]
 })
 export class TelaInicialGerenteComponent implements OnInit {
   @ViewChild('modalDeNegacao') modalComponent!: ModalRejeitarClienteComponent;
   private readonly toastr = inject(ToastrService);
 
-  contasParaAprovar: Conta[] = [];
+  clientesParaAprovar: Cliente[] = [];
   gerenteId: number = 0;
   gerente: Gerente | undefined;
 
@@ -35,7 +35,7 @@ export class TelaInicialGerenteComponent implements OnInit {
     if(gerenteId) {
       this.gerente = this.managerService.listManagerById(gerenteId);
     }
-    this.contasParaAprovar = this.managerService.listCustomersForApprove(this.gerente as Gerente);
+    this.clientesParaAprovar = this.managerService.listCustomersForApprove(this.gerente as Gerente);
   }
 
   aprovar(cliente: Cliente) {

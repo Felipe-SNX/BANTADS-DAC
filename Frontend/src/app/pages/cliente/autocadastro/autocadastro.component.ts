@@ -79,10 +79,11 @@ export class AutocadastroComponent{
     const formValue = this.meuForm.value;
     const customer = new Cliente(0, formValue.dadosPessoais.name , formValue.dadosPessoais.email, formValue.dadosPessoais.CPF, formValue.endereco, formValue.dadosPessoais.telefone, formValue.dadosPessoais.salario);
 
+    const manager = this.managerService.addCustomerToManager(customer);
+    customer.gerente = manager;
     const result: LocalStorageResult = this.customerService.saveClient(customer);
 
     if(result.success){
-      this.managerService.addCustomerToManager(customer);
       this.toastr.success('A solicitação foi enviada com sucesso!', 'Sucesso');
     }else{
       console.log(result.message);

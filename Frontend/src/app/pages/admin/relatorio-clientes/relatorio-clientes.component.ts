@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { ContaService } from '../../../services/conta/conta.service';
 import { Conta } from '../../../shared/models/conta.model';
+import { NgxMaskPipe } from 'ngx-mask';
 
 
 @Component({
@@ -11,7 +12,7 @@ import { Conta } from '../../../shared/models/conta.model';
   imports: [
     CommonModule,
     SidebarComponent,
-    
+    NgxMaskPipe
   ],
   templateUrl: './relatorio-clientes.component.html',
   styleUrl: './relatorio-clientes.component.css'

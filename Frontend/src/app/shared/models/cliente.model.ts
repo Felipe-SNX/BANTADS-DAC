@@ -12,7 +12,7 @@ export class Cliente {
         public endereco: Endereco = new Endereco(),
         public telefone: string = '',
         public salario: number = 0,
-        public gerente: Gerente = new Gerente(),
-        public statusConta: StatusConta = new StatusConta()
+        public statusConta: StatusConta = new StatusConta(),
+        public gerente: Gerente = new Gerente()
     ){}
 }

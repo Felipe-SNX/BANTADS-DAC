@@ -106,11 +106,6 @@ export class ConsultaExtratoComponent implements OnInit{
       const balanceDate = new Date(transactionsDate);
       balanceDate.setDate(transactionsDate.getDate() + 1);
 
-      //isso é para não aparecer o balanço do fim do dia antes do final
-      if(balanceDate.getTime() > endDate.getTime()){
-        break;
-      }
-
       finalResult.push({
         tipo: TipoMovimentacao.SALDO,
         clienteOrigem: null,

@@ -1,0 +1,17 @@
+[
+  { "dataHora": "2020-01-01T13:00:00.000Z", "tipo": "DEPOSITO", "idClienteOrigem": 1, "idClienteDestino": null, "valor": 1000 },
+  { "dataHora": "2020-01-01T14:00:00.000Z", "tipo": "DEPOSITO", "idClienteOrigem": 1, "idClienteDestino": null, "valor": 900 },
+  { "dataHora": "2020-01-01T15:00:00.000Z", "tipo": "SAQUE", "idClienteOrigem": 1, "idClienteDestino": null, "valor": 550 },
+  { "dataHora": "2020-01-01T16:00:00.000Z", "tipo": "SAQUE", "idClienteOrigem": 1, "idClienteDestino": null, "valor": 350 },
+  { "dataHora": "2020-01-10T18:00:00.000Z", "tipo": "DEPOSITO", "idClienteOrigem": 1, "idClienteDestino": null, "valor": 2000 },
+  { "dataHora": "2020-01-15T11:00:00.000Z", "tipo": "SAQUE", "idClienteOrigem": 1, "idClienteDestino": null, "valor": 500 },
+  { "dataHora": "2020-01-20T15:00:00.000Z", "tipo": "TRANSFERENCIA", "idClienteOrigem": 1, "idClienteDestino": 2, "valor": 1700 },
+  { "dataHora": "2025-01-01T15:00:00.000Z", "tipo": "DEPOSITO", "idClienteOrigem": 2, "idClienteDestino": null, "valor": 1000 },
+  { "dataHora": "2025-01-02T13:00:00.000Z", "tipo": "DEPOSITO", "idClienteOrigem": 2, "idClienteDestino": null, "valor": 5000 },
+  { "dataHora": "2025-01-10T13:00:00.000Z", "tipo": "SAQUE", "idClienteOrigem": 2, "idClienteDestino": null, "valor": 200 },
+  { "dataHora": "2025-02-05T13:00:00.000Z", "tipo": "DEPOSITO", "idClienteOrigem": 2, "idClienteDestino": null, "valor": 7000 },
+  { "dataHora": "2025-05-05T03:00:00.000Z", "tipo": "DEPOSITO", "idClienteOrigem": 3, "idClienteDestino": null, "valor": 1000 },
+  { "dataHora": "2025-05-06T03:00:00.000Z", "tipo": "SAQUE", "idClienteOrigem": 3, "idClienteDestino": null, "valor": 2000 },
+  { "dataHora": "2025-06-01T03:00:00.000Z", "tipo": "DEPOSITO", "idClienteOrigem": 4, "idClienteDestino": null, "valor": 150000 },
+  { "dataHora": "2025-07-01T03:00:00.000Z", "tipo": "DEPOSITO", "idClienteOrigem": 5, "idClienteDestino": null, "valor": 1500 }
+]

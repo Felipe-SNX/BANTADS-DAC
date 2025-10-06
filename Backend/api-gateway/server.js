@@ -18,8 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
-//prefixo padrão para rotas
-app.use('/api/v1', routes);
+app.use('', routes);
 
 //Rota para verificar se a API está funcionando
 app.get('/health', (req, res) => {

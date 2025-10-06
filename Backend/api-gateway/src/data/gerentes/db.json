@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "nome": "Geniéve",
+    "email": "ger1@bantads.com.br",
+    "cpf": "98574307084",
+    "telefone": "4190909090"
+  },
+  {
+    "id": 2,
+    "nome": "Godophredo",
+    "email": "ger2@bantads.com.br",
+    "cpf": "64065268052",
+    "telefone": "4180808080"
+  },
+  {
+    "id": 3,
+    "nome": "Gyândula",
+    "email": "ger3@bantads.com.br",
+    "cpf": "23862179060",
+    "telefone": "4170707070"
+  }
+]

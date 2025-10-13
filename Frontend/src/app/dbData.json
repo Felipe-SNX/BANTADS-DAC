@@ -1,0 +1,119 @@
+{
+    "clientes": [
+      {
+        "id": "1",
+        "nome": "Catharyna",
+        "email": "cli1@bantads.com.br",
+        "cpf": "12912861012",
+        "endereco": {
+          "tipo": "Rua",
+          "logradouro": "Estrada 1",
+          "numero": 1,
+          "complemento": "Casa",
+          "cep": "10000000",
+          "cidade": "Curitiba",
+          "estado": "Paraná"
+        },
+        "telefone": "4199999999",
+        "salario": 10000,
+        "statusConta": {
+          "ativo": true,
+          "motivoRecusa": null,
+          "dataCriacao": "2025-10-04T14:41:24.000Z"
+        },
+        "idGerente": 1
+      },
+      {
+        "id": "2",
+        "nome": "Cleuddônio",
+        "email": "cli2@bantads.com.br",
+        "cpf": "09506382000",
+        "endereco": {
+          "tipo": "Avenida",
+          "logradouro": "Avenida 1",
+          "numero": 2,
+          "complemento": "Apartamento 2",
+          "cep": "20000000",
+          "cidade": "Florianópolis",
+          "estado": "Santa Catarina"
+        },
+        "telefone": "4498888888",
+        "salario": 20000,
+        "statusConta": {
+          "ativo": true,
+          "motivoRecusa": null,
+          "dataCriacao": "2025-10-04T14:41:24.000Z"
+        },
+        "idGerente": 2
+      },
+      {
+        "id": "3",
+        "nome": "Catianna",
+        "email": "cli3@bantads.com.br",
+        "cpf": "85733854057",
+        "endereco": {
+          "tipo": "Avenida",
+          "logradouro": "Avenida 2",
+          "numero": 2,
+          "complemento": "",
+          "cep": "30000000",
+          "cidade": "Porto Alegre",
+          "estado": "Rio Grande do Sul"
+        },
+        "telefone": "47977777777",
+        "salario": 3000,
+        "statusConta": {
+          "ativo": true,
+          "motivoRecusa": null,
+          "dataCriacao": "2025-10-04T14:41:24.000Z"
+        },
+        "idGerente": 3
+      },
+      {
+        "id": "4",
+        "nome": "Cutardo",
+        "email": "cli4@bantads.com.br",
+        "cpf": "58872160006",
+        "endereco": {
+          "tipo": "Avenida",
+          "logradouro": "Avenida 1",
+          "numero": 2,
+          "complemento": "Apartamento 2",
+          "cep": "20000000",
+          "cidade": "Florianópolis",
+          "estado": "Santa Catarina"
+        },
+        "telefone": "4998000000",
+        "salario": 500,
+        "statusConta": {
+          "ativo": true,
+          "motivoRecusa": null,
+          "dataCriacao": "2025-10-04T14:41:24.000Z"
+        },
+        "idGerente": 1
+      },
+      {
+        "id": "5",
+        "nome": "Coândrya",
+        "email": "cli5@bantads.com.br",
+        "cpf": "76179646090",
+        "endereco": {
+          "tipo": "Rua",
+          "logradouro": "Estrada 1",
+          "numero": 1,
+          "complemento": "Casa",
+          "cep": "10000000",
+          "cidade": "Curitiba",
+          "estado": "Paraná"
+        },
+        "telefone": "49989896976",
+        "salario": 1500,
+        "statusConta": {
+          "ativo": true,
+          "motivoRecusa": null,
+          "dataCriacao": "2025-10-04T14:41:24.000Z"
+        },
+        "idGerente": 2
+      }
+    ]
+  }

@@ -8,11 +8,11 @@
 		<version>3.5.6</version>
 		<relativePath/> 
 	</parent>
-	<groupId>com.dac</groupId>
-	<artifactId>bantads</artifactId>
+	<groupId>com.bantads</groupId>
+	<artifactId>conta-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>bantads</name>
-	<description>Internet Banking Bantads</description>
+	<name>conta-service</name>
+	<description>Microsserviço Conta</description>
 	<url/>
 	<licenses>
 		<license/>

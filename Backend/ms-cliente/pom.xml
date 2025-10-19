@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.4</version>
+		<version>3.5.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.dac</groupId>
-	<artifactId>demo</artifactId>
+	<groupId>com.bantads</groupId>
+	<artifactId>mscliente</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>bantads</name>
-	<description>Projeto Dac Bantads</description>
+	<name>mscliente</name>
+	<description>microsserviço do cliente bantads</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -39,6 +39,12 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>

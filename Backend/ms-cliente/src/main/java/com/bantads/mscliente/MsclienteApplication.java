@@ -1,13 +1,13 @@
-package com.dac.bantads;
+package com.bantads.mscliente;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BantadsApplication {
+public class MsclienteApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BantadsApplication.class, args);
+		SpringApplication.run(MsclienteApplication.class, args);
 	}
 
 }

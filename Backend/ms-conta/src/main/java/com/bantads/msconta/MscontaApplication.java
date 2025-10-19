@@ -1,13 +1,13 @@
-package com.bantads.contaservice;
+package com.bantads.msconta;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BantadsApplication {
+public class MscontaApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BantadsApplication.class, args);
+		SpringApplication.run(MscontaApplication.class, args);
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.bantads.msconta.core.model;
 
+import com.bantads.msconta.core.exception.ValorInvalidoException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "conta")
+@Table(name = "conta", schema = "conta_cud")
 public class Conta {
 
     @Id
@@ -29,12 +30,12 @@ public class Conta {
     private BigDecimal limite;
 
     @Column(nullable = false)
-    private Long cpfCliente;
+    private String cpfCliente;
 
     @Column(nullable = false)
-    private Long cpfGerente;
+    private String cpfGerente;
 
-    public Conta(String numConta, BigDecimal limite, Long cpfCliente, Long cpfGerente) {
+    public Conta(String numConta, BigDecimal limite, String cpfCliente, String cpfGerente) {
         if (limite.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("O limite não pode ser negativo.");
         }
@@ -48,17 +49,17 @@ public class Conta {
 
     public void depositar(BigDecimal valor) {
         if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("O valor do depósito deve ser positivo.");
+            throw new ValorInvalidoException("O valor de depósito/transferência não pode ser nulo e deve ser positivo.");
         }
         this.saldo = this.saldo.add(valor);
     }
 
     public void sacar(BigDecimal valor) {
         if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("O valor do saque deve ser positivo.");
+            throw new ValorInvalidoException("O valor de saque não pode ser nulo e deve ser positivo.");
         }
         if (this.saldo.add(this.limite).compareTo(valor) < 0) {
-            throw new IllegalStateException("Saldo e limite insuficientes.");
+            throw new ValorInvalidoException("Valor insuficiente para sacar/transferir");
         }
         this.saldo = this.saldo.subtract(valor);
     }

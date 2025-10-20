@@ -11,3 +11,43 @@ services:
       environment:
         - RABBITMQ_DEFAULT_USER=admin
         - RABBITMQ_DEFAULT_PASS=123456
+      healthcheck:
+        test: [ "CMD", "rabbitmq-diagnostics", "check_running" ]
+        interval: 5s
+        timeout: 5s
+        retries: 10
+
+    ms-conta-db:
+      image: postgres:latest
+      container_name: ms-conta-db
+      environment:
+        - POSTGRES_DB=ms-conta-db
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+      ports:
+        - 5435:5432
+      volumes:
+        - ./init-db:/docker-entrypoint-initdb.d
+      healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -U postgres -d ms-conta-db" ]
+        interval: 5s
+        timeout: 5s
+        retries: 5
+
+    ms-conta:
+      build: './ms-conta'
+      container_name: ms-conta
+      depends_on:
+        ms-conta-db:
+          condition: service_healthy
+        rabbitmq:
+          condition: service_healthy
+      ports:
+        - 8090:8080
+      environment:
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://ms-conta-db:5432/ms-conta-db
+        - SPRING_DATASOURCE_USERNAME=postgres
+        - SPRING_DATASOURCE_PASSWORD=postgres
+        - SPRING_RABBITMQ_HOST=rabbitmq
+        - SPRING_RABBITMQ_USERNAME=admin
+        - SPRING_RABBITMQ_PASSWORD=123456

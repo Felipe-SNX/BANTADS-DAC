@@ -1,6 +1,8 @@
 package com.bantads.msconta.core.dto.mapper;
 
+import com.bantads.msconta.core.dto.OperacaoResponse;
 import com.bantads.msconta.core.dto.SaldoResponse;
+import com.bantads.msconta.core.dto.TransferenciaResponse;
 import com.bantads.msconta.core.model.Conta;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,10 @@ public class ContaMapper {
 
     public static SaldoResponse toSaldoResponse(Conta conta){
         return new ModelMapper().map(conta, SaldoResponse.class);
+    }
+
+    public static OperacaoResponse toOperacaoResponse(Conta conta){
+        return new ModelMapper().map(conta, OperacaoResponse.class);
     }
 
 }

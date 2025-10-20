@@ -1,6 +1,5 @@
 package com.bantads.msconta.core.repository;
 
-import com.bantads.msconta.core.dto.SaldoResponse;
 import com.bantads.msconta.core.model.Conta;
 import org.springframework.data.jpa.repository.JpaRepository;
 

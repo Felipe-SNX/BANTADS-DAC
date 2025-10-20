@@ -30,10 +30,10 @@ public class Movimentacao {
     private TipoMovimentacao tipo;
 
     @Column(nullable = false)
-    private Long cpfClienteOrigem;
+    private String cpfClienteOrigem;
 
     @Column(nullable = true)
-    private Long cpfClienteDestino;
+    private String cpfClienteDestino;
 
     @Column(nullable = false)
     private BigDecimal valor;

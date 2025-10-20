@@ -14,7 +14,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class MovimentacaoRealizadaEvent implements Serializable{
 
-    private Long id;
-    private BigDecimal novoSaldo;
+    private Long contaIdOrigem;
+    private BigDecimal novoSaldoOrigem;
+    private Long contaIdDestino;
+    private BigDecimal novoSaldoDestino;
     private Movimentacao movimentacao;
 }

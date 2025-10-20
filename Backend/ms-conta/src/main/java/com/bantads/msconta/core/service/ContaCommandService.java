@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -25,6 +27,7 @@ public class ContaCommandService {
     private final MovimentacaoCommandService movimentacaoService;
     private RabbitTemplate rabbitTemplate;
 
+    @Transactional
     public OperacaoResponse depositar(OperacaoRequest operacao, String numConta) {
         Conta conta = contaRepository.findByNumConta(numConta)
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta", numConta));
@@ -49,6 +52,7 @@ public class ContaCommandService {
         return ContaMapper.toOperacaoResponse(posDeposito);
     }
 
+    @Transactional
     public OperacaoResponse sacar(OperacaoRequest operacao, String numConta) {
         Conta conta = contaRepository.findByNumConta(numConta)
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta", numConta));
@@ -68,9 +72,12 @@ public class ContaCommandService {
 
         movimentacaoService.salvarMovimentacao(novaMovimentacao);
 
+        sendEvent(posSaque, novaMovimentacao);
+
         return ContaMapper.toOperacaoResponse(posSaque);
     }
 
+    @Transactional
     public TransferenciaResponse transferir(TransferenciaRequest transferencia, String numConta) {
         Conta contaOrigem = contaRepository.findByNumConta(numConta)
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta", numConta));
@@ -82,7 +89,7 @@ public class ContaCommandService {
         contaDestino.depositar(transferencia.getValor());
 
         Conta posSaque = contaRepository.save(contaOrigem);
-        contaRepository.save(contaDestino);
+        Conta posDeposito = contaRepository.save(contaDestino);
 
         var novaMovimentacao = Movimentacao
                 .builder()
@@ -95,6 +102,8 @@ public class ContaCommandService {
 
         movimentacaoService.salvarMovimentacao(novaMovimentacao);
 
+        sendEvent(posSaque, novaMovimentacao, posDeposito);
+
         return TransferenciaResponse
                 .builder()
                 .numConta(numConta)
@@ -105,21 +114,41 @@ public class ContaCommandService {
                 .build();
     }
 
-    private boolean sendEvent(Conta conta, Movimentacao novaMovimentacao){
+    private void sendEvent(Conta conta, Movimentacao novaMovimentacao){
         log.info("Publicando evento de movimentação...");
         
-        MovimentacaoRealizadaEvent event = new MovimentacaoRealizadaEvent(
-            conta.getId(), 
-            conta.getSaldo(), 
-            novaMovimentacao
-        );
+        var event = MovimentacaoRealizadaEvent
+                .builder()
+                .contaIdOrigem(conta.getId())
+                .novoSaldoOrigem(conta.getSaldo())
+                .contaIdDestino(null)
+                .novoSaldoDestino(null)
+                .movimentacao(novaMovimentacao)
+                .build();
 
         rabbitTemplate.convertAndSend(
             RabbitMQConstantes.NOME_EXCHANGE, 
             RabbitMQConstantes.ROUTING_KEY, 
             event
         );
+    }
 
-        return true;
+    private void sendEvent(Conta contaOrigem, Movimentacao novaMovimentacao, Conta contaDestino){
+        log.info("Publicando evento de movimentação...");
+        
+        var event = MovimentacaoRealizadaEvent
+                .builder()
+                .contaIdOrigem(contaOrigem.getId())
+                .novoSaldoOrigem(contaOrigem.getSaldo())
+                .contaIdDestino(contaDestino.getId())
+                .novoSaldoDestino(contaDestino.getSaldo())
+                .movimentacao(novaMovimentacao)
+                .build();
+
+        rabbitTemplate.convertAndSend(
+            RabbitMQConstantes.NOME_EXCHANGE, 
+            RabbitMQConstantes.ROUTING_KEY, 
+            event
+        );
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.bantads.msconta.config.rabbitmq.constantes.RabbitMQConstantes;
 import com.bantads.msconta.core.dto.MovimentacaoRealizadaEvent;
+import com.bantads.msconta.core.enums.TipoMovimentacao;
 import com.bantads.msconta.core.model.ContaView;
 import com.bantads.msconta.core.model.Movimentacao;
 import com.bantads.msconta.core.model.MovimentacaoView;
@@ -40,13 +41,22 @@ public class ContaEventListener {
         
         movimentacaoViewRepository.save(movView);
 
-        ContaView contaView = contaViewRepository.findById(event.getId())
+        ContaView contaView = contaViewRepository.findById(event.getContaIdOrigem())
                 .orElse(new ContaView());
         
-        contaView.setId(event.getId()); 
-        contaView.setSaldo(event.getNovoSaldo());
+        contaView.setId(event.getContaIdOrigem()); 
+        contaView.setSaldo(event.getNovoSaldoOrigem());
 
         contaViewRepository.save(contaView);
+
+        if(movOriginal.getTipo().equals(TipoMovimentacao.TRANSFERENCIA)){
+            ContaView contaViewDestino = contaViewRepository.findById(event.getContaIdDestino())
+                    .orElse(new ContaView());
+            contaViewDestino.setId(event.getContaIdDestino()); 
+            contaViewDestino.setSaldo(event.getNovoSaldoDestino());
+
+            contaViewRepository.save(contaViewDestino);
+        }
 
         log.info("Banco de dados sincronizado com sucesso");
     }

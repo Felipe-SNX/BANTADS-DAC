@@ -4,33 +4,21 @@ import com.bantads.msconta.core.dto.*;
 import com.bantads.msconta.core.dto.mapper.ContaMapper;
 import com.bantads.msconta.core.enums.TipoMovimentacao;
 import com.bantads.msconta.core.exception.ContaNaoEncontradaException;
-import com.bantads.msconta.core.exception.ValorInvalidoException;
 import com.bantads.msconta.core.model.Conta;
 import com.bantads.msconta.core.model.Movimentacao;
-import com.bantads.msconta.core.repository.ContaRepository;
+import com.bantads.msconta.core.repository.ContaWriteRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
-
 
 @Slf4j
 @Service
 @AllArgsConstructor
-public class ContaService {
+public class ContaCommandService {
 
-    private final ContaRepository contaRepository;
-    private final MovimentacaoService movimentacaoService;
-
-    public SaldoResponse consultarSaldo(String numConta) {
-        Conta conta = contaRepository.findByNumConta(numConta)
-                .orElseThrow(() -> new ContaNaoEncontradaException("Conta", numConta));
-        return ContaMapper.toSaldoResponse(conta);
-    }
+    private final ContaWriteRepository contaRepository;
+    private final MovimentacaoCommandService movimentacaoService;
 
     public OperacaoResponse depositar(OperacaoRequest operacao, String numConta) {
         Conta conta = contaRepository.findByNumConta(numConta)
@@ -107,20 +95,6 @@ public class ContaService {
                 .numContaDestino(contaDestino.getNumConta())
                 .saldo(posSaque.getSaldo())
                 .valor(transferencia.getValor())
-                .build();
-    }
-
-    public ExtratoResponse extrato(String numConta) {
-        Conta conta = contaRepository.findByNumConta(numConta)
-                .orElseThrow(() -> new ContaNaoEncontradaException("Conta", numConta));
-
-        List<ItemExtratoResponse> movimentacoes = movimentacaoService.buscarMovimentacoesPorNumConta(conta.getCpfCliente());
-
-        return ExtratoResponse
-                .builder()
-                .numConta(numConta)
-                .saldo(conta.getSaldo())
-                .movimentacoes(movimentacoes)
                 .build();
     }
 

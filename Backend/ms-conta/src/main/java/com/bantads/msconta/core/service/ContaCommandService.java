@@ -1,5 +1,7 @@
 package com.bantads.msconta.core.service;
 
+import com.bantads.msconta.config.rabbitmq.connection.RabbitMQConnection;
+import com.bantads.msconta.config.rabbitmq.constantes.RabbitMQConstantes;
 import com.bantads.msconta.core.dto.*;
 import com.bantads.msconta.core.dto.mapper.ContaMapper;
 import com.bantads.msconta.core.enums.TipoMovimentacao;
@@ -9,6 +11,8 @@ import com.bantads.msconta.core.model.Movimentacao;
 import com.bantads.msconta.core.repository.ContaWriteRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
@@ -19,6 +23,7 @@ public class ContaCommandService {
 
     private final ContaWriteRepository contaRepository;
     private final MovimentacaoCommandService movimentacaoService;
+    private RabbitTemplate rabbitTemplate;
 
     public OperacaoResponse depositar(OperacaoRequest operacao, String numConta) {
         Conta conta = contaRepository.findByNumConta(numConta)
@@ -38,6 +43,8 @@ public class ContaCommandService {
                 .build();
 
         movimentacaoService.salvarMovimentacao(novaMovimentacao);
+
+        sendEvent(posDeposito, novaMovimentacao);
 
         return ContaMapper.toOperacaoResponse(posDeposito);
     }
@@ -98,4 +105,21 @@ public class ContaCommandService {
                 .build();
     }
 
+    private boolean sendEvent(Conta conta, Movimentacao novaMovimentacao){
+        log.info("Publicando evento de movimentação...");
+        
+        MovimentacaoRealizadaEvent event = new MovimentacaoRealizadaEvent(
+            conta.getId(), 
+            conta.getSaldo(), 
+            novaMovimentacao
+        );
+
+        rabbitTemplate.convertAndSend(
+            RabbitMQConstantes.NOME_EXCHANGE, 
+            RabbitMQConstantes.ROUTING_KEY, 
+            event
+        );
+
+        return true;
+    }
 }

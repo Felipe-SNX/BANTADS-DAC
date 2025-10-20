@@ -28,35 +28,37 @@ public class ContaEventListener {
     public void handleMovimentacao(@Payload MovimentacaoRealizadaEvent event){
         log.info("Evento recebido: {}", event);
 
+        ContaView contaViewOrigem = contaViewRepository.findById(event.getContaIdOrigem())
+                .orElse(new ContaView());
+
+        contaViewOrigem.setId(event.getContaIdOrigem());
+        contaViewOrigem.setSaldo(event.getNovoSaldoOrigem());
+
+        contaViewRepository.save(contaViewOrigem);
+
+        ContaView contaViewDestino = contaViewRepository.findById(event.getContaIdDestino())
+                .orElse(new ContaView());
+        contaViewDestino.setId(event.getContaIdDestino());
+        contaViewDestino.setSaldo(event.getNovoSaldoDestino());
+
         Movimentacao movOriginal = event.getMovimentacao();
 
+        if(movOriginal.getTipo().equals(TipoMovimentacao.TRANSFERENCIA)){
+            contaViewRepository.save(contaViewDestino);
+        }
+
         MovimentacaoView movView = MovimentacaoView.builder()
-                .id(movOriginal.getId()) 
+                .id(movOriginal.getId())
                 .data(movOriginal.getData())
                 .tipo(movOriginal.getTipo())
                 .cpfClienteOrigem(movOriginal.getCpfClienteOrigem())
                 .cpfClienteDestino(movOriginal.getCpfClienteDestino())
+                .numContaOrigem(contaViewOrigem.getNumConta())
+                .numContaDestino(contaViewDestino.getNumConta())
                 .valor(movOriginal.getValor())
                 .build();
-        
+
         movimentacaoViewRepository.save(movView);
-
-        ContaView contaView = contaViewRepository.findById(event.getContaIdOrigem())
-                .orElse(new ContaView());
-        
-        contaView.setId(event.getContaIdOrigem()); 
-        contaView.setSaldo(event.getNovoSaldoOrigem());
-
-        contaViewRepository.save(contaView);
-
-        if(movOriginal.getTipo().equals(TipoMovimentacao.TRANSFERENCIA)){
-            ContaView contaViewDestino = contaViewRepository.findById(event.getContaIdDestino())
-                    .orElse(new ContaView());
-            contaViewDestino.setId(event.getContaIdDestino()); 
-            contaViewDestino.setSaldo(event.getNovoSaldoDestino());
-
-            contaViewRepository.save(contaViewDestino);
-        }
 
         log.info("Banco de dados sincronizado com sucesso");
     }

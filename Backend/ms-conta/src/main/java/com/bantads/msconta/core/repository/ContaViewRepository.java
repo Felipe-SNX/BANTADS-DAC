@@ -9,6 +9,6 @@ import com.bantads.msconta.core.model.ContaView;
 
 public interface ContaViewRepository extends JpaRepository<ContaView, Long> {
 
-    Optional<Conta> findByNumConta(String numConta);
+    Optional<ContaView> findByNumConta(String numConta);
 }
 

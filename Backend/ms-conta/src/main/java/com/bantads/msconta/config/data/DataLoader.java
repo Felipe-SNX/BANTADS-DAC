@@ -3,7 +3,9 @@ package com.bantads.msconta.config.data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -27,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class DataLoader implements CommandLineRunner{
 
-    //Temporariamente os bancos são iguais
     private final ContaWriteRepository contaWriteRepository;
     private final ContaViewRepository contaViewRepository;
     private final MovimentacaoWriteRepository movimentacaoWriteRepository;
@@ -79,6 +80,13 @@ public class DataLoader implements CommandLineRunner{
         }
         
         log.info("Carga inicial das contas concluida. " + contas.size() + " contas inseridas.");
+
+        log.info("Criando mapa de CPF para Numero de Conta para enriquecimento da view...");
+        Map<String, String> cpfParaNumContaMap = new HashMap<>();
+        for (Conta conta : contas) {
+            cpfParaNumContaMap.put(conta.getCpfCliente(), conta.getNumConta());
+        }
+
         log.info("Carga inicial das movimentacoes iniciada. ");
 
         if (movimentacaoWriteRepository.count() == 0) {
@@ -111,7 +119,7 @@ public class DataLoader implements CommandLineRunner{
             movimentacaoWriteRepository.saveAll(movimentacoes);
 
             for (Movimentacao mov : movimentacoes) {
-                MovimentacaoView view = criarMovView(mov);
+                MovimentacaoView view = criarMovView(mov, cpfParaNumContaMap); // Passa o mapa!
                 movimentacaoViewRepository.save(view);
             }
         }
@@ -149,16 +157,25 @@ public class DataLoader implements CommandLineRunner{
                     .build();
     }
 
-    private MovimentacaoView criarMovView(Movimentacao mov) {
+    private MovimentacaoView criarMovView(Movimentacao mov, Map<String, String> cpfParaNumContaMap) {
+
+        String numContaOrigem = cpfParaNumContaMap.get(mov.getCpfClienteOrigem());
+        String numContaDestino = null;
+        if (mov.getCpfClienteDestino() != null) {
+            numContaDestino = cpfParaNumContaMap.get(mov.getCpfClienteDestino());
+        }
+
         return MovimentacaoView
-                    .builder()
-                    .id(mov.getId())
-                    .data(mov.getData())
-                    .tipo(mov.getTipo())
-                    .cpfClienteOrigem(mov.getCpfClienteOrigem())
-                    .cpfClienteDestino(mov.getCpfClienteDestino())
-                    .valor(mov.getValor())
-                    .build();
+                .builder()
+                .id(mov.getId())
+                .data(mov.getData())
+                .tipo(mov.getTipo())
+                .valor(mov.getValor())
+                .cpfClienteOrigem(mov.getCpfClienteOrigem())
+                .cpfClienteDestino(mov.getCpfClienteDestino())
+                .numContaOrigem(numContaOrigem)
+                .numContaDestino(numContaDestino)
+                .build();
     }
 
 }

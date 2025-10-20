@@ -9,5 +9,5 @@ import com.bantads.msconta.core.model.MovimentacaoView;
 
 public interface MovimentacaoViewRepository extends JpaRepository<MovimentacaoView, Long> {
 
-    List<ItemExtratoResponse> findAllByCpfClienteOrigem(String cpfConta);
+    List<MovimentacaoView> findAllByCpfClienteOrigem(String cpfConta);
 }

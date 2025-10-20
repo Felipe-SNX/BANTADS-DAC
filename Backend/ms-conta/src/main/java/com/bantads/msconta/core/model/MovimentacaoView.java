@@ -42,4 +42,7 @@ public class MovimentacaoView {
 
     @Column(nullable = false)
     private BigDecimal valor;
+
+    private String numContaOrigem;
+    private String numContaDestino;
 }

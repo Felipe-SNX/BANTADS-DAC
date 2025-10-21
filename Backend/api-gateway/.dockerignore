@@ -1,0 +1,22 @@
+# Ignora o próprio Dockerfile e o .dockerignore
+Dockerfile
+.dockerignore
+
+# Ignora todo o histórico do Git
+.git
+.gitignore
+
+# Ignora o arquivo de segredos. 
+# (Eles devem ser injetados via docker-compose)
+.env
+
+# Ignora as dependências do host.
+/node_modules
+
+# Logs
+npm-debug.log
+*.log
+
+# Arquivos de Sistema Operacional
+.DS_Store
+Thumbs.db

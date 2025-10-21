@@ -1,0 +1,25 @@
+# Pastas de IDE (IntelliJ)
+.idea/
+
+# Pastas de Build (Java/Maven)
+target/
+
+# Pastas de Build (Java/Gradle)
+build/
+
+# Logs
+*.log
+*.log*
+
+# Arquivos de Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Pastas de dados criadas pelo Docker Compose (Bind Mounts)
+/dadosrabbit/
+/postgres_data/ 
+
+# Arquivos gerados pelo Maven/Java
+*.iml
+*.iws
+*.ipr

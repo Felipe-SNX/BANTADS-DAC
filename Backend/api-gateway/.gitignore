@@ -1,0 +1,17 @@
+# Arquivo de Segredos
+.env
+
+# Dependências do Node.js
+/node_modules
+
+# Logs
+npm-debug.log
+*.log
+
+# Pasta de build 
+/dist
+/build
+
+# Arquivos de Sistema Operacional
+.DS_Store
+Thumbs.db

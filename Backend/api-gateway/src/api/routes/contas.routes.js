@@ -8,23 +8,23 @@ const contasServiceProxy = createProxyMiddleware({
     changeOrigin: true,
 });
 
-router.get('contas/:numero/saldo', (req, res, next) => {
+router.get('/contas/:numero/saldo', (req, res, next) => {
     contasServiceProxy(req,res,next);
 });
 
-router.post('/:numero/depositar', verifyToken, (req, res, next) => {
+router.post('contas/:numero/depositar', verifyToken, (req, res, next) => {
     contasServiceProxy(req,res,next);
 });
 
-router.post('/:numero/sacar', verifyToken, (req, res, next) => {
+router.post('contas/:numero/sacar', verifyToken, (req, res, next) => {
     contasServiceProxy(req,res,next);
 });
 
-router.post('/:numero/transferir', verifyToken, (req, res, next) => {
+router.post('contas/:numero/transferir', verifyToken, (req, res, next) => {
     contasServiceProxy(req,res,next);
 });
 
-router.get('/:numero/extrato', verifyToken, (req, res, next) => {
+router.get('contas/:numero/extrato', verifyToken, (req, res, next) => {
     contasServiceProxy(req,res,next);
 });
 

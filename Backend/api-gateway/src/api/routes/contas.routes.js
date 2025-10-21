@@ -8,7 +8,7 @@ const contasServiceProxy = createProxyMiddleware({
     changeOrigin: true,
 });
 
-router.get('/contas/:numero/saldo', (req, res, next) => {
+router.get('contas/:numero/saldo', (req, res, next) => {
     contasServiceProxy(req,res,next);
 });
 

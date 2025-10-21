@@ -1,9 +1,13 @@
 const { Router } = require('express');
 const verifyToken = require('../../middlewares/auth.middleware.js');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const router = Router();
 
-const clientesServiceProxy = httpProxy('http://localhost:5001'); 
+const clientesServiceProxy= createProxyMiddleware({
+    target: process.env.MS_CONTA_URL,
+    changeOrigin: true,
+});
 
 router.post('/:cpf/aprovar', verifyToken, (req, res, next) => {
     clientesServiceProxy(req,res,next);

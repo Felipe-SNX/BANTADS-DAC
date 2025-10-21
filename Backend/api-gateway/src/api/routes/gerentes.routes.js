@@ -1,8 +1,12 @@
 const { Router } = require('express');
 const verifyToken = require('../../middlewares/auth.middleware.js');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const router = Router();
-const gerentesServiceProxy = httpProxy('http://localhost:5003');
+const gerentesServiceProxy = createProxyMiddleware({
+    target: process.env.MS_CONTA_URL,
+    changeOrigin: true,
+});
 
 router.delete('/:cpf', verifyToken, (req, res, next) => {
     gerentesServiceProxy(req,res,next);

@@ -11,15 +11,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bantads.msconta.core.enums.TipoMovimentacao;
-import com.bantads.msconta.core.model.Conta;
-import com.bantads.msconta.core.model.ContaView;
-import com.bantads.msconta.core.model.Movimentacao;
-import com.bantads.msconta.core.model.MovimentacaoView;
-import com.bantads.msconta.core.repository.ContaViewRepository;
-import com.bantads.msconta.core.repository.ContaWriteRepository;
-import com.bantads.msconta.core.repository.MovimentacaoViewRepository;
-import com.bantads.msconta.core.repository.MovimentacaoWriteRepository;
+import com.bantads.msconta.conta.command.model.Conta;
+import com.bantads.msconta.conta.command.model.Movimentacao;
+import com.bantads.msconta.conta.command.repository.ContaWriteRepository;
+import com.bantads.msconta.conta.command.repository.MovimentacaoWriteRepository;
+import com.bantads.msconta.conta.enums.TipoMovimentacao;
+import com.bantads.msconta.conta.query.model.ContaView;
+import com.bantads.msconta.conta.query.model.MovimentacaoView;
+import com.bantads.msconta.conta.query.repository.ContaViewRepository;
+import com.bantads.msconta.conta.query.repository.MovimentacaoViewRepository;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

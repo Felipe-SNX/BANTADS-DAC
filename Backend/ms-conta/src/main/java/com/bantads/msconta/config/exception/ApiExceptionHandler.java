@@ -1,7 +1,5 @@
 package com.bantads.msconta.config.exception;
 
-import com.bantads.msconta.core.exception.ContaNaoEncontradaException;
-import com.bantads.msconta.core.exception.ValorInvalidoException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +8,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.bantads.msconta.conta.exception.ContaNaoEncontradaException;
+import com.bantads.msconta.conta.exception.TransferenciaInvalidaException;
+import com.bantads.msconta.conta.exception.ValorInvalidoException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,4 +37,15 @@ public class ApiExceptionHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, message));
     }
+
+    @ExceptionHandler(TransferenciaInvalidaException.class)
+    public ResponseEntity<ErrorMessage> transferenciaInvalidaException(TransferenciaInvalidaException ex, HttpServletRequest request) {
+        log.error("transferenciaInvalidaException capturada: {}", ex.getMessage());
+        String message = ex.getMessage();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, message));
+    }
+
 }

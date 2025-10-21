@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/contas")
+@RequestMapping("/contas")
 public class ContaController {
 
     private final ContaCommandService contaCommandService;

@@ -1,0 +1,9 @@
+# Ignora o .env com segredos!
+.env
+
+# Ignora os módulos que serão instalados dentro do contêiner
+node_modules
+
+# Outros
+.git
+README.md

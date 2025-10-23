@@ -30,11 +30,11 @@ services:
         timeout: 5s
         retries: 10
 
-    ms-conta-db:
+    bantads-db:
       image: postgres:latest
-      container_name: ms-conta-db
+      container_name: bantads-db
       environment:
-        - POSTGRES_DB=ms-conta-db
+        - POSTGRES_DB=bantads-db
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=postgres
       ports:
@@ -42,7 +42,7 @@ services:
       volumes:
         - ./init-db:/docker-entrypoint-initdb.d
       healthcheck:
-        test: [ "CMD-SHELL", "pg_isready -U postgres -d ms-conta-db" ]
+        test: [ "CMD-SHELL", "pg_isready -U postgres -d bantads-db" ]
         interval: 5s
         timeout: 5s
         retries: 5
@@ -51,14 +51,32 @@ services:
       build: './ms-conta'
       container_name: ms-conta
       depends_on:
-        ms-conta-db:
+        bantads-db:
           condition: service_healthy
         rabbitmq:
           condition: service_healthy
       ports:
-        - 8090:8080
+        - 8090:8090
       environment:
-        - SPRING_DATASOURCE_URL=jdbc:postgresql://ms-conta-db:5432/ms-conta-db
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://bantads-db:5432/bantads-db
+        - SPRING_DATASOURCE_USERNAME=postgres
+        - SPRING_DATASOURCE_PASSWORD=postgres
+        - SPRING_RABBITMQ_HOST=rabbitmq
+        - SPRING_RABBITMQ_USERNAME=admin
+        - SPRING_RABBITMQ_PASSWORD=123456
+
+    ms-gerente:
+      build: './ms-gerente'
+      container_name: ms-gerente
+      depends_on:
+        bantads-db:
+          condition: service_healthy
+        rabbitmq:
+          condition: service_healthy
+      ports:
+        - 8091:8091
+      environment:
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://bantads-db:5432/bantads-db
         - SPRING_DATASOURCE_USERNAME=postgres
         - SPRING_DATASOURCE_PASSWORD=postgres
         - SPRING_RABBITMQ_HOST=rabbitmq

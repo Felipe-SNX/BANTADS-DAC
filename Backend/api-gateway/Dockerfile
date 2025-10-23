@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 RUN npm config set strict-ssl false
-RUN npm ci --omit=dev
+RUN npm install
 
 FROM node:18-alpine
 WORKDIR /app

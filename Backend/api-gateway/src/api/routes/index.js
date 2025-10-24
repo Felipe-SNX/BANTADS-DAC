@@ -23,18 +23,18 @@ const clientesServiceProxy = createProxyMiddleware({
     changeOrigin: true,
     logLevel: 'debug',
     pathRewrite: (path, req) => {
-        const newPath = '/contas' + path; 
+        const newPath = '/clientes' + path;
         console.log(`[Proxy PathRewrite] Path reescrito para: ${newPath}`);
         return newPath;
     },
 });
 
 const gerentesServiceProxy = createProxyMiddleware({
-    target: process.env.MS_CONTA_URL,
+    target: process.env.MS_GERENTE_URL,
     changeOrigin: true,
     logLevel: 'debug',
     pathRewrite: (path, req) => {
-        const newPath = '/contas' + path; 
+        const newPath = '/gerentes' + path;
         console.log(`[Proxy PathRewrite] Path reescrito para: ${newPath}`);
         return newPath;
     },

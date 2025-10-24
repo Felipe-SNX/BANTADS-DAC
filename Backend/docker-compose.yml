@@ -8,9 +8,13 @@ services:
         - "3000:3000"
       environment:
         PORT: 3000
-        MS_CONTA_URL: http://ms-conta:8080
+        MS_CONTA_URL: http://ms-conta:8090
+        MS_GERENTE_URL: http://ms-gerente:8091
       depends_on:
-        - ms-conta
+        ms-conta:
+          condition: service_healthy
+        ms-gerente:
+          condition: service_healthy
 
     rabbitmq:
       image: rabbitmq:4-management
@@ -38,7 +42,7 @@ services:
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=postgres
       ports:
-        - 5435:5432
+        - 5436:5432
       volumes:
         - ./init-db:/docker-entrypoint-initdb.d
       healthcheck:
@@ -64,6 +68,12 @@ services:
         - SPRING_RABBITMQ_HOST=rabbitmq
         - SPRING_RABBITMQ_USERNAME=admin
         - SPRING_RABBITMQ_PASSWORD=123456
+      healthcheck:
+        test: [ "CMD", "curl", "-f", "http://localhost:8090/actuator/health" ]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+        start_period: 30s
 
     ms-gerente:
       build: './ms-gerente'
@@ -82,3 +92,9 @@ services:
         - SPRING_RABBITMQ_HOST=rabbitmq
         - SPRING_RABBITMQ_USERNAME=admin
         - SPRING_RABBITMQ_PASSWORD=123456
+      healthcheck:
+        test: [ "CMD", "curl", "-f", "http://localhost:8091/actuator/health" ]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+        start_period: 30s

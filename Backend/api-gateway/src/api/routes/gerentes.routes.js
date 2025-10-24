@@ -4,7 +4,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const router = Router();
 const gerentesServiceProxy = createProxyMiddleware({
-    target: process.env.MS_CONTA_URL,
+    target: process.env.MS_GERENTE_URL,
     changeOrigin: true,
 });
 

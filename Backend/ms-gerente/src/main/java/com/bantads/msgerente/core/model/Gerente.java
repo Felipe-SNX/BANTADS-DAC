@@ -1,11 +1,7 @@
 package com.bantads.msgerente.core.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.bantads.msgerente.core.enums.TipoGerente;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,6 +24,9 @@ public class Gerente {
     @Column(nullable = false)
     private String cpf;
 
-    @Column(nullable = false)
     private String telefone;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TipoGerente tipo;
 }

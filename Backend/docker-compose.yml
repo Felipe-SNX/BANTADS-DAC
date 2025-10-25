@@ -1,100 +1,105 @@
 services:
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      MS_CONTA_URL: http://ms-conta:8080
+      MS_GERENTE_URL: http://ms-gerente:8081
+    depends_on:
+      ms-conta:
+        condition: service_healthy
+      ms-gerente:
+        condition: service_healthy
 
-    api-gateway:
-      build:
-        context: ./api-gateway
-      container_name: api-gateway
-      ports:
-        - "3000:3000"
-      environment:
-        PORT: 3000
-        MS_CONTA_URL: http://ms-conta:8090
-        MS_GERENTE_URL: http://ms-gerente:8091
-      depends_on:
-        ms-conta:
-          condition: service_healthy
-        ms-gerente:
-          condition: service_healthy
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=123456
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
-    rabbitmq:
-      image: rabbitmq:4-management
-      container_name: rabbitmq
-      restart: always
-      ports:
-        - 5672:5672
-        - 15672:15672
-      volumes:
-        - ./dadosrabbit:/var/lib/rabbitmq
-      environment:
-        - RABBITMQ_DEFAULT_USER=admin
-        - RABBITMQ_DEFAULT_PASS=123456
-      healthcheck:
-        test: [ "CMD", "rabbitmq-diagnostics", "check_running" ]
-        interval: 5s
-        timeout: 5s
-        retries: 10
+  bantads_db:
+    image: postgres:15-alpine
+    container_name: bantads_db
+    environment:
+      - POSTGRES_DB=bantads_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5437:5432"
+    volumes:
+      - ./init-db:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bantads_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-    bantads-db:
-      image: postgres:latest
-      container_name: bantads-db
-      environment:
-        - POSTGRES_DB=bantads-db
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=postgres
-      ports:
-        - 5436:5432
-      volumes:
-        - ./init-db:/docker-entrypoint-initdb.d
-      healthcheck:
-        test: [ "CMD-SHELL", "pg_isready -U postgres -d bantads-db" ]
-        interval: 5s
-        timeout: 5s
-        retries: 5
+  ms-conta:
+    build: './ms-conta'
+    container_name: ms-conta
+    ports:
+      - "8090:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://bantads_db:5432/bantads_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=123456
+    depends_on:
+      bantads_db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
-    ms-conta:
-      build: './ms-conta'
-      container_name: ms-conta
-      depends_on:
-        bantads-db:
-          condition: service_healthy
-        rabbitmq:
-          condition: service_healthy
-      ports:
-        - 8090:8090
-      environment:
-        - SPRING_DATASOURCE_URL=jdbc:postgresql://bantads-db:5432/bantads-db
-        - SPRING_DATASOURCE_USERNAME=postgres
-        - SPRING_DATASOURCE_PASSWORD=postgres
-        - SPRING_RABBITMQ_HOST=rabbitmq
-        - SPRING_RABBITMQ_USERNAME=admin
-        - SPRING_RABBITMQ_PASSWORD=123456
-      healthcheck:
-        test: [ "CMD", "curl", "-f", "http://localhost:8090/actuator/health" ]
-        interval: 10s
-        timeout: 5s
-        retries: 5
-        start_period: 30s
+  ms-gerente:
+    build: './ms-gerente'
+    container_name: ms-gerente
+    ports:
+      - "8091:8081"
+    environment:
+      - SERVER_PORT=8081
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://bantads_db:5432/bantads_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=123456
+    depends_on:
+      bantads_db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8081/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
-    ms-gerente:
-      build: './ms-gerente'
-      container_name: ms-gerente
-      depends_on:
-        bantads-db:
-          condition: service_healthy
-        rabbitmq:
-          condition: service_healthy
-      ports:
-        - 8091:8091
-      environment:
-        - SPRING_DATASOURCE_URL=jdbc:postgresql://bantads-db:5432/bantads-db
-        - SPRING_DATASOURCE_USERNAME=postgres
-        - SPRING_DATASOURCE_PASSWORD=postgres
-        - SPRING_RABBITMQ_HOST=rabbitmq
-        - SPRING_RABBITMQ_USERNAME=admin
-        - SPRING_RABBITMQ_PASSWORD=123456
-      healthcheck:
-        test: [ "CMD", "curl", "-f", "http://localhost:8091/actuator/health" ]
-        interval: 10s
-        timeout: 5s
-        retries: 5
-        start_period: 30s
+volumes:
+  rabbitmq_data:
+  postgres_data:

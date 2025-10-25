@@ -1,5 +1,6 @@
 package com.bantads.msgerente.core.dto;
 
+import com.bantads.msgerente.core.enums.TipoGerente;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +15,5 @@ public class DadoGerente {
     private String cpf;
     private String nome;
     private String email;
-    private String tipo;
+    private TipoGerente tipo;
 }

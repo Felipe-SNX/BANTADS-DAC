@@ -1,9 +1,10 @@
 package com.bantads.mscliente.core.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @Entity
@@ -11,4 +12,25 @@ import lombok.NoArgsConstructor;
 @Table(name = "cliente", schema = "ms_cliente")
 public class Cliente {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String nome;
+
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String cpf;
+
+    @Column(nullable = false)
+    private long idEndereco;
+
+    @Column(nullable = false)
+    private String telefone;
+
+    @Column(nullable = false)
+    private BigDecimal salario;
 }

@@ -1,8 +1,9 @@
 package com.bantads.mscliente.core.service;
 
-import com.bantads.mscliente.core.dto.AutoCadastroInfo;
-import com.bantads.mscliente.core.dto.ClienteParaAprovarResponse;
+import com.bantads.mscliente.core.dto.*;
 import com.bantads.mscliente.core.dto.mapper.ClienteMapper;
+import com.bantads.mscliente.core.exception.ClienteNaoEncontradoException;
+import com.bantads.mscliente.core.exception.CpfJaCadastradoException;
 import com.bantads.mscliente.core.exception.EnderecoNaoEncontradoException;
 import com.bantads.mscliente.core.model.Cliente;
 import com.bantads.mscliente.core.model.Endereco;
@@ -41,8 +42,91 @@ public class ClienteService {
         return clienteParaAprovarResponse;
     }
 
-    public ClienteParaAprovarResponse cadastrarCliente(AutoCadastroInfo autoCadastroInfo){
+    public ClienteParaAprovarResponse cadastrarCliente(AutoCadastroInfo autoCadastroInfo) {
+        Optional<Cliente> clienteExistente = clienteRepository.findByCpf(autoCadastroInfo.getCpf());
 
+        if(clienteExistente.isPresent()){
+            throw new CpfJaCadastradoException("Cliente", autoCadastroInfo.getCpf());
+        }
+
+        Cliente cliente = ClienteMapper.autoCadastroInfoToCliente(autoCadastroInfo);
+
+        String[] enderecoCompleto = autoCadastroInfo.getEndereco().split(",");
+
+        var endereco = Endereco
+                .builder()
+                .cep(autoCadastroInfo.getCep())
+                .cidade(autoCadastroInfo.getCidade())
+                .estado(autoCadastroInfo.getEstado())
+                .logradouro(enderecoCompleto[0])
+                .numero(enderecoCompleto[1])
+                .build();
+
+        Endereco enderecoSalvo = enderecoRepository.save(endereco);
+
+        cliente.setIdEndereco(enderecoSalvo.getId());
+
+        clienteRepository.save(cliente);
+
+        ClienteParaAprovarResponse clienteParaAprovarResponse = ClienteMapper.toClienteParaAprovarResponse(cliente);
+        clienteParaAprovarResponse.setEndereco(enderecoSalvo.getLogradouro().concat(", ").concat(enderecoSalvo.getNumero()));
+        clienteParaAprovarResponse.setCidade(enderecoSalvo.getCidade());
+        clienteParaAprovarResponse.setEstado(enderecoSalvo.getEstado());
+
+        return clienteParaAprovarResponse;
     }
 
+    public RelatorioClientesResponse getClientePorCpf(String cpf){
+        Cliente cliente = clienteRepository.findByCpf(cpf)
+                .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente", cpf));
+
+        Endereco endereco = enderecoRepository.findById(cliente.getIdEndereco())
+                .orElseThrow(() -> new EnderecoNaoEncontradoException("Endereco", cliente.getCpf()));
+
+        RelatorioClientesResponse relatorioClientesResponse = ClienteMapper.clienteToRelatorioClientesResponse(cliente);
+        relatorioClientesResponse.setCidade(endereco.getCidade());
+        relatorioClientesResponse.setEstado(endereco.getEstado());
+        relatorioClientesResponse.setEndereco(endereco.getLogradouro().concat(", ").concat(endereco.getNumero()));
+
+        return relatorioClientesResponse;
+    }
+
+    public void atualizaCliente(PerfilInfo perfilInfo, String cpf){
+        Cliente cliente = clienteRepository.findByCpf(cpf)
+                .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente", cpf));
+
+        Endereco endereco = enderecoRepository.findById(cliente.getIdEndereco())
+                .orElseThrow(() -> new EnderecoNaoEncontradoException("Endereco", cliente.getCpf()));
+
+        String[] enderecoCompleto = perfilInfo.getEndereco().split(",");
+
+        endereco.setEstado(perfilInfo.getEstado());
+        endereco.setCep(perfilInfo.getCep());
+        endereco.setCidade(perfilInfo.getCidade());
+        endereco.setLogradouro(enderecoCompleto[0]);
+        endereco.setNumero(enderecoCompleto[1]);
+        enderecoRepository.save(endereco);
+
+        cliente.setNome(perfilInfo.getNome());
+        cliente.setEmail(perfilInfo.getEmail());
+        cliente.setSalario(perfilInfo.getSalario());
+        clienteRepository.save(cliente);
+    }
+
+    public void aprovarCliente(String cpf){
+        Cliente cliente = clienteRepository.findByCpf(cpf)
+                .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente", cpf));
+
+        cliente.setAprovado(true);
+        clienteRepository.save(cliente);
+    }
+
+    public void rejeitarCliente(ClienteRejeitadoDto clienteRejeitadoDto, String cpf){
+        Cliente cliente = clienteRepository.findByCpf(cpf)
+                .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente", cpf));
+
+        cliente.setAprovado(false);
+        cliente.setMotivoRejeição(clienteRejeitadoDto.getMotivo());
+        clienteRepository.save(cliente);
+    }
 }

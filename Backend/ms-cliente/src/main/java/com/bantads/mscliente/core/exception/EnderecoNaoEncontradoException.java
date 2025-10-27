@@ -1,5 +1,8 @@
 package com.bantads.mscliente.core.exception;
 
+import lombok.Getter;
+
+@Getter
 public class EnderecoNaoEncontradoException extends RuntimeException {
 
     private String recurso;

@@ -1,11 +1,15 @@
 package com.bantads.mscliente.core.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "endereco", schema = "ms_cliente")
 public class Endereco {
@@ -20,7 +24,6 @@ public class Endereco {
     @Column(nullable = false)
     private String numero;
 
-    @Column(nullable = false)
     private String complemento;
 
     @Column(nullable = false)

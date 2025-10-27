@@ -28,9 +28,13 @@ public class Cliente {
     @Column(nullable = false)
     private long idEndereco;
 
-    @Column(nullable = false)
     private String telefone;
 
     @Column(nullable = false)
     private BigDecimal salario;
+
+    @Column(nullable = false)
+    private boolean aprovado = true;
+
+    private String motivoRejeição = null;
 }

@@ -9,10 +9,13 @@ services:
       PORT: 3000
       MS_CONTA_URL: http://ms-conta:8080
       MS_GERENTE_URL: http://ms-gerente:8081
+      MS_CLIENTE_URL: http://ms-cliente:8082
     depends_on:
       ms-conta:
         condition: service_healthy
       ms-gerente:
+        condition: service_healthy
+      ms-cliente:
         condition: service_healthy
 
   rabbitmq:
@@ -95,6 +98,31 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -q --spider http://localhost:8081/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  ms-cliente:
+    build: './ms-cliente'
+    container_name: ms-cliente
+    ports:
+      - "8092:8082"
+    environment:
+      - SERVER_PORT=8082
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://bantads_db:5432/bantads_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=123456
+    depends_on:
+      bantads_db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://localhost:8082/actuator/health || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5

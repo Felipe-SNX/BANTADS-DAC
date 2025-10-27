@@ -9,6 +9,7 @@ Dockerfile
 # Ignora o arquivo de segredos. 
 # (Eles devem ser injetados via docker-compose)
 .env
+.env.example
 
 # Ignora as dependências do host.
 /node_modules

@@ -8,9 +8,21 @@ const contasServiceProxy = createProxyMiddleware({
     changeOrigin: true,
     logLevel: 'debug',
     pathRewrite: (path, req) => {
-        const newPath = '/contas' + path; 
-        console.log(`[Proxy PathRewrite] Path reescrito para: ${newPath}`);
-        return newPath;
+        const [pathOnly, queryString] = path.split('?');
+        const query = queryString ? `?${queryString}` : '';
+
+        let newPath;
+
+        if (pathOnly === '/') {
+            newPath = '/contas';
+        } else {
+            newPath = '/contas' + pathOnly;
+        }
+
+        const finalPath = newPath + query;
+
+        console.log(`[Proxy PathRewrite] Original: "${path}", Reescrito para: "${finalPath}"`);
+        return finalPath;
     },
 });
 
@@ -19,9 +31,21 @@ const clientesServiceProxy = createProxyMiddleware({
     changeOrigin: true,
     logLevel: 'debug',
     pathRewrite: (path, req) => {
-        const newPath = '/clientes' + path;
-        console.log(`[Proxy PathRewrite] Path reescrito para: ${newPath}`);
-        return newPath;
+        const [pathOnly, queryString] = path.split('?');
+        const query = queryString ? `?${queryString}` : '';
+
+        let newPath;
+
+        if (pathOnly === '/') {
+            newPath = '/clientes';
+        } else {
+            newPath = '/clientes' + pathOnly;
+        }
+
+        const finalPath = newPath + query;
+
+        console.log(`[Proxy PathRewrite] Original: "${path}", Reescrito para: "${finalPath}"`);
+        return finalPath;
     },
 });
 
@@ -30,14 +54,21 @@ const gerentesServiceProxy = createProxyMiddleware({
     changeOrigin: true,
     logLevel: 'debug',
     pathRewrite: (path, req) => {
-        //Isso está aqui, pois nas rotas sem parâmetros estava dando erro por causa da barra extra
-        if (path === '/') {
-            console.log(`[Proxy PathRewrite] Path (raiz) reescrito para: /gerentes`);
-            return '/gerentes';
+        const [pathOnly, queryString] = path.split('?');
+        const query = queryString ? `?${queryString}` : '';
+
+        let newPath;
+
+        if (pathOnly === '/') {
+            newPath = '/gerentes';
+        } else {
+            newPath = '/gerentes' + pathOnly;
         }
-        const newPath = '/gerentes' + path;
-        console.log(`[Proxy PathRewrite] Path (sub-rota) reescrito para: ${newPath}`);
-        return newPath;
+
+        const finalPath = newPath + query;
+
+        console.log(`[Proxy PathRewrite] Original: "${path}", Reescrito para: "${finalPath}"`);
+        return finalPath;
     },
 });
 

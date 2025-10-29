@@ -27,7 +27,7 @@ public class SagaEventProducer {
 
         } catch (Exception e) {
             log.error("PRODUCER: ERRO ao enviar evento para o tópico {}: SagaId={} | Erro: {}",
-                      topic.toString(), event.getId(), e.getMessage());
+                    topic.toString(), event.getId(), e.getMessage());
         }
     }
 

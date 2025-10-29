@@ -23,6 +23,7 @@ public class Evento {
     @Lob
     private String payload;
     
+    private String saga;
     private EEventSource source;
     private ESagaStatus status;
     private List<Historico> eventoHistorico;

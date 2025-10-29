@@ -54,6 +54,23 @@ services:
       timeout: 5s
       retries: 5
 
+  ms-orquestrador:
+    build: './ms-orquestrador'
+    container_name: ms-orquestrador
+    depends_on:
+      - rabbitmq
+      - bantads_db
+    environment:
+      - SERVER_PORT=8083
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://bantads_db:5432/bantads_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=123456
+    ports:
+      - "8093:8083"
+
   ms-conta:
     build: './ms-conta'
     container_name: ms-conta

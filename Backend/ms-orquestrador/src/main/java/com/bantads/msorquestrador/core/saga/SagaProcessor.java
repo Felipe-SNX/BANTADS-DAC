@@ -1,8 +1,9 @@
 package com.bantads.msorquestrador.core.saga;
 
+import com.bantads.msorquestrador.core.dto.Evento;
+import com.bantads.msorquestrador.core.dto.Historico;
 import com.bantads.msorquestrador.core.enums.ETopics;
-import com.bantads.msorquestrador.core.model.Evento;
-import com.bantads.msorquestrador.core.model.Historico;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

@@ -23,14 +23,6 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding startSagaBinding(TopicExchange exchange, Queue orchestratorQueue) {
-        return BindingBuilder
-                .bind(orchestratorQueue)
-                .to(exchange)
-                .with(RabbitMQConstantes.ROUTING_KEY_START_SAGA);
-    }
-
-    @Bean
     public Binding replyEventsBinding(TopicExchange exchange, Queue orchestratorQueue) {
         return BindingBuilder
                 .bind(orchestratorQueue)

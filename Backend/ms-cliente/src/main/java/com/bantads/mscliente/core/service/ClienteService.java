@@ -7,7 +7,6 @@ import com.bantads.mscliente.core.exception.CpfJaCadastradoException;
 import com.bantads.mscliente.core.exception.EnderecoNaoEncontradoException;
 import com.bantads.mscliente.core.model.Cliente;
 import com.bantads.mscliente.core.model.Endereco;
-import com.bantads.mscliente.core.producer.ClienteEventProducer;
 import com.bantads.mscliente.core.repository.ClienteRepository;
 import com.bantads.mscliente.core.repository.EnderecoRepository;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -26,7 +24,6 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
     private final EnderecoRepository enderecoRepository;
-    private final ClienteEventProducer clienteEventProducer;
 
     public List<ClienteParaAprovarResponse> listarClientes(){
         List<Cliente> clientes = clienteRepository.findAll();
@@ -76,8 +73,6 @@ public class ClienteService {
         clienteParaAprovarResponse.setCidade(enderecoSalvo.getCidade());
         clienteParaAprovarResponse.setEstado(enderecoSalvo.getEstado());
 
-        clienteEventProducer.publicarInicioSagaAutocadastro(ClienteMapper.toClienteDto(cliente));
-
         return clienteParaAprovarResponse;
     }
 
@@ -111,12 +106,7 @@ public class ClienteService {
         cliente.setNome(perfilInfo.getNome());
         cliente.setEmail(perfilInfo.getEmail());
         cliente.setSalario(perfilInfo.getSalario());
-        clienteRepository.save(cliente);
-
-        log.info("{}", !Objects.equals(cliente.getSalario(), perfilInfo.getSalario()));
-        if(!Objects.equals(cliente.getSalario(), perfilInfo.getSalario())){
-            clienteEventProducer.publicarInicioSagaAlteracaoPerfil(ClienteMapper.toClienteDto(cliente));
-        }
+        clienteRepository.save(cliente);        
     }
 
     public void aprovarCliente(String cpf){

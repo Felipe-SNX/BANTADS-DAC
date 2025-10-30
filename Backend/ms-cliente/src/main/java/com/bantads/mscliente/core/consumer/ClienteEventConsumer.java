@@ -1,16 +1,11 @@
 package com.bantads.mscliente.core.consumer;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
-
 import com.bantads.mscliente.config.rabbitmq.RabbitMQConstantes;
 import com.bantads.mscliente.core.dto.Evento;
 import com.bantads.mscliente.core.enums.ESaga;
-import com.bantads.mscliente.core.repository.ClienteRepository;
-import com.bantads.mscliente.core.repository.EnderecoRepository;
 import com.bantads.mscliente.core.service.ClienteService;
-
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +19,7 @@ public class ClienteEventConsumer {
     
     @Transactional
     @RabbitListener(queues = RabbitMQConstantes.FILA_CLIENTES)
-    public void handleAlteracoes(@Payload Evento event){
+    public void handleAlteracoes(Evento event){
         log.info("Evento recebido: {}", event);
 
         ESaga sagaType = event.getSaga();
@@ -39,7 +34,7 @@ public class ClienteEventConsumer {
                     break;
             }
         } catch(Exception e){
-            
+
         }
 
         log.info("Banco de dados de cliente sincronizado com sucesso");

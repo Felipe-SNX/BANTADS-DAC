@@ -13,10 +13,21 @@ public enum ETopics {
 
     CMD_CONTA_CREATE("cmd.conta.create"),
     CMD_CONTA_COMPENSATE("cmd.conta.compensate"),
+
+    EVT_CLIENTE_SUCCESS("evt.cliente.success"),
+    EVT_CLIENTE_FAIL("evt.cliente.fail"),
+
+    EVT_AUTENTICACAO_SUCCESS("evt.autenticacao.success"),
+    EVT_AUTENTICACAO_FAIL("evt.autenticacao.fail"),
+
+    EVT_GERENTE_SUCCESS("evt.gerente.success"),
+    EVT_GERENTE_FAIL("evt.gerente.fail"),
+
+    EVT_CONTA_SUCCESS("evt.conta.success"),
+    EVT_CONTA_FAIL("evt.conta.fail"),
     
     FINISH_SUCCESS("finish.success"),
-    FINISH_FAIL("finish.fail"),
-    NOTIFY_ENDING("notify.ending");
+    FINISH_FAIL("finish.fail");
 
     private final String topic;
 

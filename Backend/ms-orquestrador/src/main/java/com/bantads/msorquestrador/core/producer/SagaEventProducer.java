@@ -4,8 +4,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
 import com.bantads.msorquestrador.config.rabbitmq.RabbitMQConstantes;
+import com.bantads.msorquestrador.core.dto.Evento;
 import com.bantads.msorquestrador.core.enums.ETopics;
-import com.bantads.msorquestrador.core.model.Evento;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

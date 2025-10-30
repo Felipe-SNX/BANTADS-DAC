@@ -18,14 +18,14 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue orchestratorQueue() {
+    public Queue clientesQueue() {
         return new Queue(RabbitMQConstantes.FILA_CLIENTES, true);
     }
 
     @Bean
-    public Binding orchestratorBinding(TopicExchange exchange, Queue orchestratorQueue) {
+    public Binding clientesBinding(TopicExchange exchange, Queue clientesQueue) {
         return BindingBuilder
-                .bind(orchestratorQueue)
+                .bind(clientesQueue)
                 .to(exchange)
                 .with(RabbitMQConstantes.ROUTING_KEY);
     }

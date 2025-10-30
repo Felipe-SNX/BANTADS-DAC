@@ -1,5 +1,6 @@
 package com.bantads.msorquestrador.core.model;
 
+import com.bantads.msorquestrador.core.enums.ESaga;
 import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +24,7 @@ public class Evento {
     @Lob
     private String payload;
     
-    private String saga;
+    private ESaga saga;
     private EEventSource source;
     private ESagaStatus status;
     private List<Historico> eventoHistorico;

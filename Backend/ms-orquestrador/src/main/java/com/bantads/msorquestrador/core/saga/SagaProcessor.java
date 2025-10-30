@@ -32,14 +32,14 @@ public class SagaProcessor {
     private ETopics findTopicBySourceAndStatus(Evento event, final Object[][] handler) {
         return (ETopics) Arrays.stream(handler)
                 .filter(row -> isEventSourceAndStatusValid(event, row))
-                .map(i -> i[SagaAutocadastroHandler.TOPIC_INDEX])
+                .map(i -> i[SagaHandler.TOPIC_INDEX])
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Tópico não encontrado para a transição: " + event));
     }
 
     private boolean isEventSourceAndStatusValid(Evento event, Object[] row) {
-        var source = row[SagaAutocadastroHandler.EVENT_SOURCE_INDEX];
-        var status = row[SagaAutocadastroHandler.SAGA_STATUS_INDEX];
+        var source = row[SagaHandler.EVENT_SOURCE_INDEX];
+        var status = row[SagaHandler.SAGA_STATUS_INDEX];
         return event.getSource().equals(source) && event.getStatus().equals(status);
     }
     

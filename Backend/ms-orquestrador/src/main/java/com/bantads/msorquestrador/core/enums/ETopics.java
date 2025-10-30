@@ -1,9 +1,9 @@
 package com.bantads.msorquestrador.core.enums;
 
 public enum ETopics {
- 
-    FINISH_AUTOCADASTRO_SUCCESS("finish-autocadastro-success"),
-    FINISH_AUTOCADASTRO_FAIL("finish-autocadastro-fail"),
+
+    FINISH_SUCCESS("finish-success"),
+    FINISH_FAIL("finish-fail"),
     CLIENTE_SUCCESS("cliente-success"),
     CLIENTE_FAIL("cliente-fail"),
     AUTENTICACAO_SUCCESS("autenticacao-success"),
@@ -12,7 +12,7 @@ public enum ETopics {
     CONTA_FAIL("conta-fail"),
     GERENTE_SUCCESS("gerente-success"),
     GERENTE_FAIL("gerente-fail"),
-    NOTIFY_AUTOCADASTRO_ENDING("notify-autocadastro-ending");
+    NOTIFY_ENDING("notify-ending");
 
     private final String topic;
 

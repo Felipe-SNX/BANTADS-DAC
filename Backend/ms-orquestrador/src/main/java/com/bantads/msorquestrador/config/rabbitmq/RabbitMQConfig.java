@@ -19,15 +19,23 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue orchestratorQueue() {
-        return new Queue(RabbitMQConstantes.FILA, true);
+        return new Queue(RabbitMQConstantes.FILA_ORQUESTRADOR, true);
     }
 
     @Bean
-    public Binding orchestratorBinding(TopicExchange exchange, Queue orchestratorQueue) {
+    public Binding startSagaBinding(TopicExchange exchange, Queue orchestratorQueue) {
         return BindingBuilder
                 .bind(orchestratorQueue)
                 .to(exchange)
-                .with(RabbitMQConstantes.ROUTING_KEY);
+                .with(RabbitMQConstantes.ROUTING_KEY_START_SAGA);
+    }
+
+    @Bean
+    public Binding replyEventsBinding(TopicExchange exchange, Queue orchestratorQueue) {
+        return BindingBuilder
+                .bind(orchestratorQueue)
+                .to(exchange)
+                .with(RabbitMQConstantes.ROUTING_KEY_EVENTOS);
     }
 
     @Bean

@@ -13,54 +13,54 @@ public final class SagaHandler {
     }
 
     public static final Object[][] SAGA_AUTOCADASTRO_HANDLER = {
-        { EEventSource.CLIENTE_SERVICE, ESagaStatus.SAGA_STARTED, ETopics.AUTENTICACAO_SUCCESS },
-        { EEventSource.CLIENTE_SERVICE, ESagaStatus.ROLLBACK_PENDING, ETopics.CLIENTE_FAIL },
+        { EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, ETopics.CMD_CLIENTE_CREATE },
+        { EEventSource.ORQUESTRADOR, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
+
         { EEventSource.CLIENTE_SERVICE, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
+        { EEventSource.CLIENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_AUTENTICACAO_CREATE },
 
-        { EEventSource.AUTENTICACAO_SERVICE, ESagaStatus.ROLLBACK_PENDING, ETopics.AUTENTICACAO_FAIL },
-        { EEventSource.AUTENTICACAO_SERVICE, ESagaStatus.FAIL, ETopics.CLIENTE_FAIL },
-        { EEventSource.AUTENTICACAO_SERVICE, ESagaStatus.SUCCESS, ETopics.CONTA_SUCCESS },
+        { EEventSource.AUTENTICACAO_SERVICE, ESagaStatus.FAIL, ETopics.CMD_CLIENTE_COMPENSATE },
+        { EEventSource.AUTENTICACAO_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_CONTA_CREATE },
 
-        { EEventSource.CONTA_SERVICE, ESagaStatus.ROLLBACK_PENDING, ETopics.CONTA_FAIL },
-        { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.AUTENTICACAO_FAIL },
-        { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.GERENTE_SUCCESS },
+        { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.CMD_AUTENTICACAO_COMPENSATE },
+        { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_GERENTE_CREATE },
 
-        { EEventSource.GERENTE_SERVICE, ESagaStatus.ROLLBACK_PENDING, ETopics.GERENTE_FAIL },
-        { EEventSource.GERENTE_SERVICE, ESagaStatus.FAIL, ETopics.CONTA_FAIL },
+        { EEventSource.GERENTE_SERVICE, ESagaStatus.FAIL, ETopics.CMD_CONTA_COMPENSATE },
         { EEventSource.GERENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.FINISH_SUCCESS }
     };
 
     public static final Object[][] SAGA_ALTERACAO_PERFIL_HANDLER = {
-        { EEventSource.CLIENTE_SERVICE, ESagaStatus.SAGA_STARTED, ETopics.CONTA_SUCCESS },
-        { EEventSource.CLIENTE_SERVICE, ESagaStatus.ROLLBACK_PENDING, ETopics.CLIENTE_FAIL },
-        { EEventSource.CLIENTE_SERVICE, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
+        { EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, ETopics.CMD_CLIENTE_CREATE },
+        { EEventSource.ORQUESTRADOR, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
 
-        { EEventSource.CONTA_SERVICE, ESagaStatus.ROLLBACK_PENDING, ETopics.CONTA_FAIL },
-        { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.CLIENTE_FAIL },
+        { EEventSource.CLIENTE_SERVICE, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
+        { EEventSource.CLIENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_CONTA_CREATE },
+
+        { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.CMD_CLIENTE_COMPENSATE },
         { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.FINISH_SUCCESS }
     };
 
     public static final Object[][] SAGA_REMOCAO_GERENTE_HANDLER = {
-        { EEventSource.GERENTE_SERVICE, ESagaStatus.SAGA_STARTED, ETopics.CONTA_SUCCESS },
-        { EEventSource.GERENTE_SERVICE, ESagaStatus.ROLLBACK_PENDING, ETopics.GERENTE_FAIL },
+        { EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, ETopics.CMD_GERENTE_CREATE },
+
         { EEventSource.GERENTE_SERVICE, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
+        { EEventSource.GERENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_CONTA_CREATE },
 
-        { EEventSource.CONTA_SERVICE, ESagaStatus.ROLLBACK_PENDING, ETopics.CONTA_FAIL },
-        { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.GERENTE_FAIL },
-        { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.GERENTE_SUCCESS },
+        { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.CMD_GERENTE_COMPENSATE },
+        { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_GERENTE_CREATE },
 
-        { EEventSource.GERENTE_SERVICE, ESagaStatus.ROLLBACK_PENDING, ETopics.GERENTE_FAIL },
-        { EEventSource.GERENTE_SERVICE, ESagaStatus.FAIL, ETopics.CONTA_FAIL },
+        { EEventSource.GERENTE_SERVICE, ESagaStatus.FAIL, ETopics.CMD_CONTA_COMPENSATE },
         { EEventSource.GERENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.FINISH_SUCCESS }
     };
 
     public static final Object[][] SAGA_INSERCAO_GERENTE_HANDLER = {
-        { EEventSource.GERENTE_SERVICE, ESagaStatus.SAGA_STARTED, ETopics.CONTA_SUCCESS },
-        { EEventSource.GERENTE_SERVICE, ESagaStatus.ROLLBACK_PENDING, ETopics.GERENTE_FAIL },
-        { EEventSource.GERENTE_SERVICE, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
+        { EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, ETopics.CMD_GERENTE_CREATE },
+        { EEventSource.ORQUESTRADOR, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
 
-        { EEventSource.CONTA_SERVICE, ESagaStatus.ROLLBACK_PENDING, ETopics.CONTA_FAIL },
-        { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.GERENTE_FAIL },
+        { EEventSource.GERENTE_SERVICE, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
+        { EEventSource.GERENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_CONTA_CREATE },
+
+        { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.CMD_GERENTE_COMPENSATE },
         { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.FINISH_SUCCESS }
     };
 

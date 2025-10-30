@@ -1,8 +1,8 @@
 package com.bantads.msorquestrador.core.consumer;
 
 import com.bantads.msorquestrador.config.rabbitmq.RabbitMQConstantes;
+import com.bantads.msorquestrador.core.dto.Evento;
 import com.bantads.msorquestrador.core.enums.ESaga;
-import com.bantads.msorquestrador.core.model.Evento;
 import com.bantads.msorquestrador.core.producer.SagaEventProducer;
 import com.bantads.msorquestrador.core.saga.SagaHandler;
 import com.bantads.msorquestrador.core.saga.SagaProcessor;

@@ -1,4 +1,4 @@
-package com.bantads.msorquestrador.core.model;
+package com.bantads.msorquestrador.core.dto;
 
 import lombok.Data;
 import java.time.LocalDateTime;

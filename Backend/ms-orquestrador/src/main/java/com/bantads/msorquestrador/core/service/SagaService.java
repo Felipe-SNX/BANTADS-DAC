@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 
 import com.bantads.msorquestrador.core.dto.AutoCadastroInfo;
 import com.bantads.msorquestrador.core.dto.DadoGerenteInsercao;
+import com.bantads.msorquestrador.core.dto.Evento;
+import com.bantads.msorquestrador.core.dto.Historico;
 import com.bantads.msorquestrador.core.dto.PerfilInfo;
 import com.bantads.msorquestrador.core.enums.EEventSource;
 import com.bantads.msorquestrador.core.enums.ESaga;
 import com.bantads.msorquestrador.core.enums.ESagaStatus;
-import com.bantads.msorquestrador.core.model.Evento;
-import com.bantads.msorquestrador.core.model.Historico;
 import com.bantads.msorquestrador.core.producer.SagaEventProducer;
 import com.bantads.msorquestrador.core.saga.SagaHandler;
 import com.bantads.msorquestrador.core.saga.SagaProcessor;

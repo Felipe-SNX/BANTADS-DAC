@@ -1,10 +1,7 @@
 package com.bantads.msorquestrador.core.service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import org.springframework.stereotype.Service;
 
@@ -67,7 +64,7 @@ public class SagaService {
     }
 
     public void iniciarSagaInserirGerente(DadoGerenteInsercao dadoGerenteInsercao) {
-        log.info("Saga de alterar perfil iniciada para o gerente: {}", dadoGerenteInsercao.nome());
+        log.info("Saga de inserir gerente iniciada para o gerente: {}", dadoGerenteInsercao.nome());
 
         Historico historicoInicial = criarHistorico(EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, "Saga de inserir gerente iniciada");
 
@@ -121,7 +118,7 @@ public class SagaService {
                 .saga(saga)
                 .source(source)
                 .createdAt(LocalDateTime.now())
-                .eventoHistorico(Collections.singletonList(historicoInicial))
+                .eventoHistorico(new ArrayList<>(List.of(historicoInicial)))
                 .build();
     }
 

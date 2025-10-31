@@ -19,6 +19,7 @@ public class SagaEventProducer {
 
     public void sendEvent(ETopics topic, Evento event) {
         try {
+            log.info("SagaEventProducer.sendEvent: topic: {}, event: {}", topic, event);
             String routingKey = topic.toString();
             log.info("PRODUCER: Enviando evento para o exchange '{}' com a routing key '{}'. SagaId={}",
                     RabbitMQConstantes.NOME_EXCHANGE, routingKey, event.getId());

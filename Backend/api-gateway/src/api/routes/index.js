@@ -3,27 +3,10 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const router = Router();
 
-const contasServiceProxy = createProxyMiddleware({
-    target: process.env.MS_CONTA_URL,
+const orquestradorServiceProxy = createProxyMiddleware({
+    target: process.env.MS_ORQUESTRADOR_URL,
     changeOrigin: true,
     logLevel: 'debug',
-    pathRewrite: (path, req) => {
-        const [pathOnly, queryString] = path.split('?');
-        const query = queryString ? `?${queryString}` : '';
-
-        let newPath;
-
-        if (pathOnly === '/') {
-            newPath = '/contas';
-        } else {
-            newPath = '/contas' + pathOnly;
-        }
-
-        const finalPath = newPath + query;
-
-        console.log(`[Proxy PathRewrite] Original: "${path}", Reescrito para: "${finalPath}"`);
-        return finalPath;
-    },
 });
 
 const clientesServiceProxy = createProxyMiddleware({
@@ -31,20 +14,8 @@ const clientesServiceProxy = createProxyMiddleware({
     changeOrigin: true,
     logLevel: 'debug',
     pathRewrite: (path, req) => {
-        const [pathOnly, queryString] = path.split('?');
-        const query = queryString ? `?${queryString}` : '';
-
-        let newPath;
-
-        if (pathOnly === '/') {
-            newPath = '/clientes';
-        } else {
-            newPath = '/clientes' + pathOnly;
-        }
-
-        const finalPath = newPath + query;
-
-        console.log(`[Proxy PathRewrite] Original: "${path}", Reescrito para: "${finalPath}"`);
+        const finalPath = '/clientes' + (path === '/' ? '' : path);
+        console.log(`[Proxy MS-Cliente] Original: "${req.originalUrl}", Reescrito para: "${finalPath}"`);
         return finalPath;
     },
 });
@@ -54,23 +25,45 @@ const gerentesServiceProxy = createProxyMiddleware({
     changeOrigin: true,
     logLevel: 'debug',
     pathRewrite: (path, req) => {
-        const [pathOnly, queryString] = path.split('?');
-        const query = queryString ? `?${queryString}` : '';
-
-        let newPath;
-
-        if (pathOnly === '/') {
-            newPath = '/gerentes';
-        } else {
-            newPath = '/gerentes' + pathOnly;
-        }
-
-        const finalPath = newPath + query;
-
-        console.log(`[Proxy PathRewrite] Original: "${path}", Reescrito para: "${finalPath}"`);
+        const finalPath = '/gerentes' + (path === '/' ? '' : path);
+        console.log(`[Proxy MS-Gerente] Original: "${req.originalUrl}", Reescrito para: "${finalPath}"`);
         return finalPath;
     },
 });
+
+const contasServiceProxy = createProxyMiddleware({
+    target: process.env.MS_CONTA_URL,
+    changeOrigin: true,
+    logLevel: 'debug',
+    pathRewrite: (path, req) => {
+        const finalPath = '/contas' + (path === '/' ? '' : path);
+        console.log(`[Proxy MS-Conta] Original: "${req.originalUrl}", Reescrito para: "${finalPath}"`);
+        return finalPath;
+    },
+});
+
+router.post('/clientes', (req, res, next) => {
+    req.url = '/saga/autocadastro';
+    orquestradorServiceProxy(req, res, next);
+});
+
+router.put('/clientes/:cpf', (req, res, next) => {
+    req.url = `/saga/alterarPerfil/${req.params.cpf}`;
+    orquestradorServiceProxy(req, res, next);
+});
+
+router.post('/gerentes', (req, res, next) => {
+    req.url = '/saga/inserirGerente';
+    orquestradorServiceProxy(req, res, next);
+});
+
+router.delete('/gerentes/:cpf', (req, res, next) => {
+    req.url = `/saga/removerGerente/${req.params.cpf}`;
+    orquestradorServiceProxy(req, res, next);
+});
+
+router.post('/clientes/:cpf/rejeitar', clientesServiceProxy);
+router.post('/clientes/:cpf/aprovar', clientesServiceProxy);
 
 router.use('/gerentes', gerentesServiceProxy);
 router.use('/clientes', clientesServiceProxy);

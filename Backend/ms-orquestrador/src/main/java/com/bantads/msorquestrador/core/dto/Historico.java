@@ -1,5 +1,7 @@
 package com.bantads.msorquestrador.core.dto;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Data;
 import java.time.LocalDateTime;
 
@@ -16,7 +18,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Historico {
 
+    @Enumerated(EnumType.STRING)
     private EEventSource source;
+    @Enumerated(EnumType.STRING)
     private ESagaStatus status;
     private String message;
     private LocalDateTime createdAt;

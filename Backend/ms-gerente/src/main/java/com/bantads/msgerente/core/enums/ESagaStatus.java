@@ -1,4 +1,4 @@
-package com.bantads.mscliente.core.enums;
+package com.bantads.msgerente.core.enums;
 
 public enum ESagaStatus {
     SAGA_STARTED,

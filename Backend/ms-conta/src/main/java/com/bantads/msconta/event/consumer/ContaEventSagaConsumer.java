@@ -3,6 +3,7 @@ package com.bantads.msconta.event.consumer;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+import com.bantads.msconta.common.dto.DadoGerenteInsercao;
 import com.bantads.msconta.common.dto.Evento;
 import com.bantads.msconta.common.enums.EEventSource;
 import com.bantads.msconta.common.enums.ESaga;
@@ -11,6 +12,7 @@ import com.bantads.msconta.common.enums.ETopics;
 import com.bantads.msconta.config.rabbitmq.RabbitMQConstantes;
 import com.bantads.msconta.conta.command.service.ContaCommandService;
 import com.bantads.msconta.event.producer.ContaEventSagaProducer;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.transaction.Transactional;
@@ -24,7 +26,7 @@ public class ContaEventSagaConsumer {
 
     private final ContaCommandService contaCommandService;    
     private final ObjectMapper objectMapper;
-    private final ContaEventSagaProducer clienteEventProducer;
+    private final ContaEventSagaProducer contaEventProducer;
     
     @Transactional
     @RabbitListener(queues = RabbitMQConstantes.FILA_CONTA_CMD)
@@ -39,6 +41,17 @@ public class ContaEventSagaConsumer {
                     break;
                 case ALTERACAO_PERFIL_SAGA:
                     break;
+                case INSERCAO_GERENTE_SAGA:
+                    JsonNode rootNode = objectMapper.readTree(evento.getPayload());
+                    JsonNode gerenteNode = rootNode.path("dadoGerenteInsercao");
+                    DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(gerenteNode, DadoGerenteInsercao.class);
+                    contaCommandService.atribuirContas(dadoGerenteInsercao);
+                    evento.setSource(EEventSource.CONTA_SERVICE);
+                    evento.setStatus(ESagaStatus.SUCCESS);
+                    contaEventProducer.sendEvent(ETopics.EVT_CONTA_SUCCESS, evento);
+                    break;
+                case REMOCAO_GERENTE_SAGA:
+                    break;
                 default:
                     break;
             }
@@ -46,10 +59,10 @@ public class ContaEventSagaConsumer {
             log.info("Erro ocorreu em {} do tipo {}", sagaType, e);
             evento.setSource(EEventSource.CONTA_SERVICE);
             evento.setStatus(ESagaStatus.FAIL);
-            clienteEventProducer.sendEvent(ETopics.EVT_CONTA_FAIL, evento);
+            contaEventProducer.sendEvent(ETopics.EVT_CONTA_FAIL, evento);
         }
 
-        log.info("Banco de dados de cliente sincronizado com sucesso");
+        log.info("Banco de dados de conta sincronizado com sucesso");
     }
 
 }

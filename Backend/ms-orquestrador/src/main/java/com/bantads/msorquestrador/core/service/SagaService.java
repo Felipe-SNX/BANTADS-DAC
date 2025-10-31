@@ -34,12 +34,11 @@ public class SagaService {
     public void iniciarSagaAutocadastro(AutoCadastroInfo autoCadastroInfo) {
         log.info("Saga de autocadastro iniciada para o cliente: {}", autoCadastroInfo.nome());
 
-        Historico historicoInicial = criarHistorico(EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, "Saga de autocadastro iniciada");
         Map<String, Object> autocadastro = new HashMap<>();
         autocadastro.put("autoCadastroInfo", autoCadastroInfo);
 
         try {
-            Evento evento = criarEvento(autocadastro, historicoInicial, ESaga.AUTOCADASTRO_SAGA, EEventSource.ORQUESTRADOR);
+            Evento evento = criarEvento(autocadastro, ESaga.AUTOCADASTRO_SAGA, EEventSource.ORQUESTRADOR);
             publicarEvento(evento);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -49,14 +48,13 @@ public class SagaService {
     public void iniciarSagaAlterarPerfil(PerfilInfo perfilInfo, String cpf) {
         log.info("Saga de alterar perfil iniciada para o cliente: {}", perfilInfo.nome());
 
-        Historico historicoInicial = criarHistorico(EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, "Saga de alterar perfil iniciada");
 
         Map<String, Object> alterarPerfilInfo = new HashMap<>();
         alterarPerfilInfo.put("cpf", cpf);
         alterarPerfilInfo.put("perfilInfo", perfilInfo);
 
         try {
-            Evento evento = criarEvento(alterarPerfilInfo, historicoInicial, ESaga.ALTERACAO_PERFIL_SAGA, EEventSource.ORQUESTRADOR);
+            Evento evento = criarEvento(alterarPerfilInfo, ESaga.ALTERACAO_PERFIL_SAGA, EEventSource.ORQUESTRADOR);
             publicarEvento(evento);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -66,13 +64,11 @@ public class SagaService {
     public void iniciarSagaInserirGerente(DadoGerenteInsercao dadoGerenteInsercao) {
         log.info("Saga de inserir gerente iniciada para o gerente: {}", dadoGerenteInsercao.nome());
 
-        Historico historicoInicial = criarHistorico(EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, "Saga de inserir gerente iniciada");
-
         Map<String, Object> inserirGerenteInfo = new HashMap<>();
         inserirGerenteInfo.put("dadoGerenteInsercao", dadoGerenteInsercao);
 
         try {
-            Evento evento = criarEvento(inserirGerenteInfo, historicoInicial, ESaga.INSERCAO_GERENTE_SAGA, EEventSource.ORQUESTRADOR);
+            Evento evento = criarEvento(inserirGerenteInfo, ESaga.INSERCAO_GERENTE_SAGA, EEventSource.ORQUESTRADOR);
             publicarEvento(evento);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -82,13 +78,11 @@ public class SagaService {
     public void iniciarSagaRemoverGerente(String cpf) {
         log.info("Saga de alterar perfil iniciada para o gerente de cpf: {}", cpf);
 
-        Historico historicoInicial = criarHistorico(EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, "Saga de remover gerente iniciada");
-
         Map<String, Object> removerGerenteInfo = new HashMap<>();
         removerGerenteInfo.put("cpf", cpf);
 
         try {
-            Evento evento = criarEvento(removerGerenteInfo, historicoInicial, ESaga.REMOCAO_GERENTE_SAGA, EEventSource.ORQUESTRADOR);
+            Evento evento = criarEvento(removerGerenteInfo, ESaga.REMOCAO_GERENTE_SAGA, EEventSource.ORQUESTRADOR);
             publicarEvento(evento);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -99,16 +93,8 @@ public class SagaService {
         return UUID.randomUUID().toString();
     }
 
-    private Historico criarHistorico(EEventSource source, ESagaStatus status, String message){
-        return Historico.builder()
-                .source(source)
-                .status(status)
-                .message(message)
-                .createdAt(LocalDateTime.now())
-                .build();
-    }
 
-    private Evento criarEvento(Map<String, Object> payload, Historico historicoInicial, ESaga saga, EEventSource source) throws JsonProcessingException{
+    private Evento criarEvento(Map<String, Object> payload, ESaga saga, EEventSource source) throws JsonProcessingException{
         String sagaId = gerarId();
 
         return Evento.builder()
@@ -118,7 +104,6 @@ public class SagaService {
                 .saga(saga)
                 .source(source)
                 .createdAt(LocalDateTime.now())
-                .eventoHistorico(new ArrayList<>(List.of(historicoInicial)))
                 .build();
     }
 

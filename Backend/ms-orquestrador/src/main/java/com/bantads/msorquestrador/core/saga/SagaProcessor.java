@@ -2,6 +2,8 @@ package com.bantads.msorquestrador.core.saga;
 
 import com.bantads.msorquestrador.core.dto.Evento;
 import com.bantads.msorquestrador.core.dto.Historico;
+import com.bantads.msorquestrador.core.enums.EEventSource;
+import com.bantads.msorquestrador.core.enums.ESagaStatus;
 import com.bantads.msorquestrador.core.enums.ETopics;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,14 @@ public class SagaProcessor {
         Evento eventToSend = addHistoryToEvent(incomingEvent, "Transição processada com sucesso.");
 
         logCurrentSaga(eventToSend, nextTopic);
+
+        log.info("Proximo topico: {}", nextTopic);
+        if(nextTopic.equals(ETopics.FINISH_SUCCESS) || nextTopic.equals(ETopics.FINISH_FAIL)){
+            log.info("Entrei o if de finalização");
+            incomingEvent.setSource(EEventSource.ORQUESTRADOR);
+            incomingEvent.setStatus(ESagaStatus.FINISHED);
+            eventToSend = addHistoryToEvent(incomingEvent, "Saga Finalizada.");
+        }
 
         return new SagaStep(nextTopic, eventToSend);
     }

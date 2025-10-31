@@ -6,6 +6,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
@@ -18,25 +19,27 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    @Qualifier("filaCqrs")
     public Queue filaCqrs(){
         return new Queue(RabbitMQConstantes.FILA_CONTA_SYNC, true, false, false);
     }
 
     @Bean
+    @Qualifier("filaSaga")
     public Queue filaSaga(){
         return new Queue(RabbitMQConstantes.FILA_CONTA_CMD, true, false, false);
     }
 
     @Bean
-    public Binding contaSagaBinding(TopicExchange exchange, Queue contaSagaQueue) {
+    public Binding contaSagaBinding(TopicExchange exchange, @Qualifier("filaSaga") Queue contaSagaQueue) {
         return BindingBuilder
                 .bind(contaSagaQueue)
                 .to(exchange)
-                .with(RabbitMQConstantes.FILA_CONTA_CMD); 
+                .with(RabbitMQConstantes.ROUTING_KEY_CMD); 
     }
 
     @Bean
-    public Binding contaCqrsBinding(Queue contaSyncQueue, TopicExchange bantadsExchange) {
+    public Binding contaCqrsBinding(@Qualifier("filaCqrs") Queue contaSyncQueue, TopicExchange bantadsExchange) {
 
         return BindingBuilder.bind(contaSyncQueue)
                 .to(bantadsExchange)

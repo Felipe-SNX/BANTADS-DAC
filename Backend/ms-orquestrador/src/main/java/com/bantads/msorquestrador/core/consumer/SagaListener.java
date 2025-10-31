@@ -3,6 +3,7 @@ package com.bantads.msorquestrador.core.consumer;
 import com.bantads.msorquestrador.config.rabbitmq.RabbitMQConstantes;
 import com.bantads.msorquestrador.core.dto.Evento;
 import com.bantads.msorquestrador.core.enums.ESaga;
+import com.bantads.msorquestrador.core.enums.ETopics;
 import com.bantads.msorquestrador.core.producer.SagaEventProducer;
 import com.bantads.msorquestrador.core.saga.SagaHandler;
 import com.bantads.msorquestrador.core.saga.SagaProcessor;
@@ -31,7 +32,15 @@ public class SagaListener {
                 log.info("Processando SAGA do tipo: {}", sagaType);
 
                 var sagaStep = sagaProcessor.processNextStep(event, handler);
-                sagaEventProducer.sendEvent(sagaStep.getProximoTopico(), sagaStep.getEventoParaEnviar());
+
+                if(!(sagaStep.getProximoTopico().equals(ETopics.FINISH_SUCCESS)) && !(sagaStep.getProximoTopico().equals(ETopics.FINISH_FAIL)) ){
+                    log.info("entrei no if de enviar evento");
+                    sagaEventProducer.sendEvent(sagaStep.getProximoTopico(), sagaStep.getEventoParaEnviar());
+                }
+                else{
+                    log.info("Saga {} finalizada, status final do evento {}", event.getSaga(), event);
+                }
+
             } else {
                 log.warn("Nenhum handler encontrado para a SAGA do tipo: {}", sagaType);
             }

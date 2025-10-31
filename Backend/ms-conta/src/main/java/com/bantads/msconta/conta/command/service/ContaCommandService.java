@@ -1,5 +1,6 @@
 package com.bantads.msconta.conta.command.service;
 
+import com.bantads.msconta.common.dto.DadoGerenteInsercao;
 import com.bantads.msconta.conta.command.model.Conta;
 import com.bantads.msconta.conta.command.model.Movimentacao;
 import com.bantads.msconta.conta.command.repository.ContaWriteRepository;
@@ -120,5 +121,10 @@ public class ContaCommandService {
                 .saldo(posSaque.getSaldo())
                 .valor(transferencia.getValor())
                 .build();
+    }
+
+    @Transactional
+    public void atribuirContas(DadoGerenteInsercao dadoGerenteInsercao){
+        
     }
 }

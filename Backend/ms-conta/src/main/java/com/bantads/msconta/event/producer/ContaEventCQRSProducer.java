@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @AllArgsConstructor
-public class ContaEventProducer {
+public class ContaEventCQRSProducer {
 
     private RabbitTemplate rabbitTemplate;
 
@@ -32,7 +32,7 @@ public class ContaEventProducer {
 
         rabbitTemplate.convertAndSend(
             RabbitMQConstantes.NOME_EXCHANGE, 
-            RabbitMQConstantes.ROUTING_KEY, 
+            RabbitMQConstantes.ROUTING_KEY_SYNC, 
             event
         );
     }
@@ -51,7 +51,7 @@ public class ContaEventProducer {
 
         rabbitTemplate.convertAndSend(
             RabbitMQConstantes.NOME_EXCHANGE, 
-            RabbitMQConstantes.ROUTING_KEY, 
+            RabbitMQConstantes.ROUTING_KEY_SYNC, 
             event
         );
     }

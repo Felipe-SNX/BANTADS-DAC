@@ -11,7 +11,7 @@ import com.bantads.msconta.conta.enums.TipoMovimentacao;
 import com.bantads.msconta.conta.exception.ContaNaoEncontradaException;
 import com.bantads.msconta.conta.exception.TransferenciaInvalidaException;
 import com.bantads.msconta.conta.mapper.ContaMapper;
-import com.bantads.msconta.event.producer.ContaEventProducer;
+import com.bantads.msconta.event.producer.ContaEventCQRSProducer;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class ContaCommandService {
 
     private final ContaWriteRepository contaRepository;
     private final MovimentacaoCommandService movimentacaoService;
-    private final ContaEventProducer eventProducer;
+    private final ContaEventCQRSProducer eventProducer;
 
 
     @Transactional

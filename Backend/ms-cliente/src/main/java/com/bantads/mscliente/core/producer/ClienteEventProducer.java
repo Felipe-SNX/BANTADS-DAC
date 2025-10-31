@@ -2,6 +2,8 @@ package com.bantads.mscliente.core.producer;
 
 import com.bantads.mscliente.config.rabbitmq.RabbitMQConstantes;
 import com.bantads.mscliente.core.dto.Evento;
+import com.bantads.mscliente.core.enums.ETopics;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -12,18 +14,18 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ClienteEventProducer {
 
-    private RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate;
 
-    public void sendEvent(String routingKey, Evento event) {
+    public void sendEvent(ETopics topic, Evento evento) {
         try {
             log.info("PRODUCER: Enviando evento para o exchange '{}' com a routing key '{}'. SagaId={}",
-                    RabbitMQConstantes.NOME_EXCHANGE, routingKey, event.getId());
+                    RabbitMQConstantes.NOME_EXCHANGE, topic.getTopic(), evento.getId());
             
-            rabbitTemplate.convertAndSend(RabbitMQConstantes.NOME_EXCHANGE, routingKey, event);
+            rabbitTemplate.convertAndSend(RabbitMQConstantes.NOME_EXCHANGE, topic.getTopic(), evento);
 
         } catch (Exception e) {
             log.error("PRODUCER: ERRO ao enviar evento para o tópico {}: SagaId={} | Erro: {}",
-                    routingKey, event.getId(), e.getMessage());
+                    topic.getTopic(), evento.getId(), e.getMessage());
         }
     }
 

@@ -18,16 +18,29 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue fila(){
+    public Queue filaCqrs(){
         return new Queue(RabbitMQConstantes.FILA_CONTA_SYNC, true, false, false);
     }
 
     @Bean
-    public Binding contaSyncBinding(Queue contaSyncQueue, TopicExchange bantadsExchange) {
+    public Queue filaSaga(){
+        return new Queue(RabbitMQConstantes.FILA_CONTA_CMD, true, false, false);
+    }
+
+    @Bean
+    public Binding contaSagaBinding(TopicExchange exchange, Queue contaSagaQueue) {
+        return BindingBuilder
+                .bind(contaSagaQueue)
+                .to(exchange)
+                .with(RabbitMQConstantes.FILA_CONTA_CMD); 
+    }
+
+    @Bean
+    public Binding contaCqrsBinding(Queue contaSyncQueue, TopicExchange bantadsExchange) {
 
         return BindingBuilder.bind(contaSyncQueue)
                 .to(bantadsExchange)
-                .with(RabbitMQConstantes.ROUTING_KEY);
+                .with(RabbitMQConstantes.ROUTING_KEY_SYNC);
     }
 
     @Bean

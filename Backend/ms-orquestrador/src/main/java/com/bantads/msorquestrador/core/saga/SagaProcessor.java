@@ -60,6 +60,7 @@ public class SagaProcessor {
                 .payload(event.getPayload())
                 .source(event.getSource()) 
                 .status(event.getStatus())
+                .saga(event.getSaga())
                 .createdAt(event.getCreatedAt())
                 .eventoHistorico(historicoList) 
                 .build();

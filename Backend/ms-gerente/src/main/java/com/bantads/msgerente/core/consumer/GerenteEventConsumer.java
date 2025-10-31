@@ -4,11 +4,14 @@ import com.bantads.msgerente.config.rabbitmq.RabbitMQConstantes;
 import com.bantads.msgerente.core.dto.DadoGerente;
 import com.bantads.msgerente.core.dto.DadoGerenteInsercao;
 import com.bantads.msgerente.core.dto.Evento;
+import com.bantads.msgerente.core.enums.EEventSource;
 import com.bantads.msgerente.core.enums.ESaga;
+import com.bantads.msgerente.core.enums.ESagaStatus;
 import com.bantads.msgerente.core.enums.ETopics;
 import com.bantads.msgerente.core.producer.GerenteEventProducer;
 import com.bantads.msgerente.core.service.GerenteService;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -33,20 +36,19 @@ public class GerenteEventConsumer {
         log.info("Evento recebido: {}", evento);
 
         ESaga sagaType = evento.getSaga();
-        String payload = evento.getPayload();
 
         try{
-            HashMap<String, Object> payloadMap = objectMapper.readValue(
-                    payload,
-                    new TypeReference<HashMap<String, Object>>() {}
-            );
-
+         
             switch(sagaType){
                 case AUTOCADASTRO_SAGA:
                     break;
                 case INSERCAO_GERENTE_SAGA:
-                    DadoGerenteInsercao dadoGerenteInsercao = (DadoGerenteInsercao) payloadMap.get("dadoGerenteInsercao");
-                    DadoGerente dadoGerente = gerenteService.inserirGerente(dadoGerenteInsercao);
+                    JsonNode rootNode = objectMapper.readTree(evento.getPayload());
+                    JsonNode gerenteNode = rootNode.path("dadoGerenteInsercao");
+                    DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(gerenteNode, DadoGerenteInsercao.class);
+                    gerenteService.inserirGerente(dadoGerenteInsercao);
+                    evento.setSource(EEventSource.GERENTE_SERVICE);
+                    evento.setStatus(ESagaStatus.SUCCESS);
                     gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_SUCCESS, evento);
                     break;
                 case REMOCAO_GERENTE_SAGA:
@@ -55,7 +57,10 @@ public class GerenteEventConsumer {
                     break;
             }
         } catch(Exception e){
-
+            log.info("Erro ocorreu em {} do tipo {}", sagaType, e);
+            evento.setSource(EEventSource.GERENTE_SERVICE);
+            evento.setStatus(ESagaStatus.FAIL);
+            gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_FAIL, evento);
         }
 
         log.info("Banco de dados de gerente sincronizado com sucesso");

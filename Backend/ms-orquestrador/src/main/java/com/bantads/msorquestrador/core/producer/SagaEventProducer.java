@@ -15,12 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class SagaEventProducer {
 
-    private RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate;
 
     public void sendEvent(ETopics topic, Evento event) {
         try {
             log.info("SagaEventProducer.sendEvent: topic: {}, event: {}", topic, event);
-            String routingKey = topic.toString();
+            String routingKey = topic.getTopic();
             log.info("PRODUCER: Enviando evento para o exchange '{}' com a routing key '{}'. SagaId={}",
                     RabbitMQConstantes.NOME_EXCHANGE, routingKey, event.getId());
             
@@ -28,7 +28,7 @@ public class SagaEventProducer {
 
         } catch (Exception e) {
             log.error("PRODUCER: ERRO ao enviar evento para o tópico {}: SagaId={} | Erro: {}",
-                    topic.toString(), event.getId(), e.getMessage());
+                    topic.getTopic(), event.getId(), e.getMessage());
         }
     }
 

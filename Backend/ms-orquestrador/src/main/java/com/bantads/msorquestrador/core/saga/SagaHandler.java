@@ -14,24 +14,30 @@ public final class SagaHandler {
 
     public static final Object[][] SAGA_AUTOCADASTRO_HANDLER = {
         { EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, ETopics.CMD_CLIENTE_CREATE },
-        { EEventSource.ORQUESTRADOR, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
 
         { EEventSource.CLIENTE_SERVICE, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
+        { EEventSource.CLIENTE_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
+        { EEventSource.CLIENTE_SERVICE, ESagaStatus.COMPENSATE, ETopics.FINISH_FAIL },
         { EEventSource.CLIENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_AUTENTICACAO_CREATE },
 
         { EEventSource.AUTENTICACAO_SERVICE, ESagaStatus.FAIL, ETopics.CMD_CLIENTE_COMPENSATE },
+        { EEventSource.AUTENTICACAO_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
+        { EEventSource.AUTENTICACAO_SERVICE, ESagaStatus.COMPENSATE, ETopics.CMD_CLIENTE_COMPENSATE },
         { EEventSource.AUTENTICACAO_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_CONTA_CREATE },
 
         { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.CMD_AUTENTICACAO_COMPENSATE },
+        { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
+        { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE, ETopics.CMD_AUTENTICACAO_COMPENSATE },
         { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_GERENTE_CREATE },
 
         { EEventSource.GERENTE_SERVICE, ESagaStatus.FAIL, ETopics.CMD_CONTA_COMPENSATE },
+        { EEventSource.GERENTE_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
+        { EEventSource.GERENTE_SERVICE, ESagaStatus.COMPENSATE, ETopics.CMD_CONTA_COMPENSATE },
         { EEventSource.GERENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.FINISH_SUCCESS }
     };
 
     public static final Object[][] SAGA_ALTERACAO_PERFIL_HANDLER = {
         { EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, ETopics.CMD_CLIENTE_CREATE },
-        { EEventSource.ORQUESTRADOR, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
 
         { EEventSource.CLIENTE_SERVICE, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
         { EEventSource.CLIENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_CONTA_CREATE },
@@ -55,7 +61,6 @@ public final class SagaHandler {
 
     public static final Object[][] SAGA_INSERCAO_GERENTE_HANDLER = {
         { EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, ETopics.CMD_GERENTE_CREATE },
-        { EEventSource.ORQUESTRADOR, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
 
         { EEventSource.GERENTE_SERVICE, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
         { EEventSource.GERENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_CONTA_CREATE },

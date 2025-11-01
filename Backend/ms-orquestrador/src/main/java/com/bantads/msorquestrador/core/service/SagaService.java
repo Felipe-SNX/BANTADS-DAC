@@ -3,6 +3,7 @@ package com.bantads.msorquestrador.core.service;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.bantads.msorquestrador.core.exception.ErroAoConverterJsonException;
 import org.springframework.stereotype.Service;
 
 import com.bantads.msorquestrador.core.dto.AutoCadastroInfo;
@@ -41,7 +42,7 @@ public class SagaService {
             Evento evento = criarEvento(autocadastro, ESaga.AUTOCADASTRO_SAGA, EEventSource.ORQUESTRADOR);
             publicarEvento(evento);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            throw new ErroAoConverterJsonException("Saga Autocadastro", e.getMessage());
         }
     }
 
@@ -57,7 +58,7 @@ public class SagaService {
             Evento evento = criarEvento(alterarPerfilInfo, ESaga.ALTERACAO_PERFIL_SAGA, EEventSource.ORQUESTRADOR);
             publicarEvento(evento);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            throw new ErroAoConverterJsonException("Saga Alterar Perfil", e.getMessage());
         }
     }
 
@@ -71,7 +72,7 @@ public class SagaService {
             Evento evento = criarEvento(inserirGerenteInfo, ESaga.INSERCAO_GERENTE_SAGA, EEventSource.ORQUESTRADOR);
             publicarEvento(evento);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            throw new ErroAoConverterJsonException("Saga Inserir Gerente", e.getMessage());
         }
     }
 
@@ -85,7 +86,7 @@ public class SagaService {
             Evento evento = criarEvento(removerGerenteInfo, ESaga.REMOCAO_GERENTE_SAGA, EEventSource.ORQUESTRADOR);
             publicarEvento(evento);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            throw new ErroAoConverterJsonException("Saga Remover Gerente", e.getMessage());
         }
     }
 

@@ -34,6 +34,7 @@ public class SagaController {
 
     @PutMapping("/alterarPerfil/{cpf}")
     public void iniciarSagaAlterarPerfil(@RequestBody PerfilInfo perfilInfo, @PathVariable String cpf) {
+        log.info("Iniciando saga alterar perfil");
         sagaService.iniciarSagaAlterarPerfil(perfilInfo, cpf);
     }
 
@@ -46,6 +47,7 @@ public class SagaController {
 
     @DeleteMapping("/removerGerente/{cpf}")
     public void deletarGerenteCpf(@PathVariable String cpf) {
+        log.info("Iniciando saga remover gerente");
         sagaService.iniciarSagaRemoverGerente(cpf);
     }
     

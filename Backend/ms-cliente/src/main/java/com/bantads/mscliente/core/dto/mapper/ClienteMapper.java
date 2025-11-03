@@ -1,6 +1,7 @@
 package com.bantads.mscliente.core.dto.mapper;
 
 import com.bantads.mscliente.core.dto.AutoCadastroInfo;
+import com.bantads.mscliente.core.dto.ClienteDto;
 import com.bantads.mscliente.core.dto.ClienteParaAprovarResponse;
 import com.bantads.mscliente.core.dto.RelatorioClientesResponse;
 import com.bantads.mscliente.core.model.Cliente;
@@ -24,6 +25,10 @@ public class ClienteMapper {
 
     public static RelatorioClientesResponse clienteToRelatorioClientesResponse(Cliente cliente){
         return new ModelMapper().map(cliente, RelatorioClientesResponse.class);
+    }
+
+    public static ClienteDto toClienteDto(Cliente cliente){
+        return new ModelMapper().map(cliente, ClienteDto.class);
     }
 
 }

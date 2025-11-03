@@ -1,5 +1,6 @@
 package com.bantads.msconta.conta.command.service;
 
+import com.bantads.msconta.common.dto.DadoGerenteInsercao;
 import com.bantads.msconta.conta.command.model.Conta;
 import com.bantads.msconta.conta.command.model.Movimentacao;
 import com.bantads.msconta.conta.command.repository.ContaWriteRepository;
@@ -11,7 +12,7 @@ import com.bantads.msconta.conta.enums.TipoMovimentacao;
 import com.bantads.msconta.conta.exception.ContaNaoEncontradaException;
 import com.bantads.msconta.conta.exception.TransferenciaInvalidaException;
 import com.bantads.msconta.conta.mapper.ContaMapper;
-import com.bantads.msconta.event.producer.ContaEventProducer;
+import com.bantads.msconta.event.producer.ContaEventCQRSProducer;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -28,8 +30,7 @@ public class ContaCommandService {
 
     private final ContaWriteRepository contaRepository;
     private final MovimentacaoCommandService movimentacaoService;
-    private final ContaEventProducer eventProducer;
-
+    private final ContaEventCQRSProducer eventProducer;
 
     @Transactional
     public OperacaoResponse depositar(OperacaoRequest operacao, String numConta) {
@@ -120,5 +121,16 @@ public class ContaCommandService {
                 .saldo(posSaque.getSaldo())
                 .valor(transferencia.getValor())
                 .build();
+    }
+
+    @Transactional
+    public void atribuirContas(DadoGerenteInsercao dadoGerenteInsercao){
+        String cpfComMaisContas = contaRepository.findCpfGerenteComMaisContas();
+        Optional<Conta> contaEscolhida = contaRepository.findFirstByCpfGerenteOrderByDataCriacaoAsc(cpfComMaisContas);
+
+        if(contaEscolhida.isPresent()){
+            contaEscolhida.get().setCpfGerente(dadoGerenteInsercao.getCpf());
+            contaRepository.save(contaEscolhida.get());
+        }
     }
 }

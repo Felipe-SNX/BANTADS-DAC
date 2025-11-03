@@ -10,6 +10,9 @@ services:
       MS_CONTA_URL: http://ms-conta:8080
       MS_GERENTE_URL: http://ms-gerente:8081
       MS_CLIENTE_URL: http://ms-cliente:8082
+      MS_ORQUESTRADOR_URL: http://ms-orquestrador:8083
+    networks:
+      - bantads-network
     depends_on:
       ms-conta:
         condition: service_healthy
@@ -27,6 +30,8 @@ services:
       - "15672:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - bantads-network
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=123456
@@ -45,6 +50,8 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5437:5432"
+    networks:
+      - bantads-network
     volumes:
       - ./init-db:/docker-entrypoint-initdb.d
       - postgres_data:/var/lib/postgresql/data
@@ -53,6 +60,27 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  ms-orquestrador:
+    build: './ms-orquestrador'
+    container_name: ms-orquestrador
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      bantads_db:
+        condition: service_healthy
+    networks:
+      - bantads-network
+    environment:
+      - SERVER_PORT=8083
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://bantads_db:5432/bantads_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=123456
+    ports:
+      - "8093:8083"
 
   ms-conta:
     build: './ms-conta'
@@ -66,6 +94,8 @@ services:
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_USERNAME=admin
       - SPRING_RABBITMQ_PASSWORD=123456
+    networks:
+      - bantads-network
     depends_on:
       bantads_db:
         condition: service_healthy
@@ -91,6 +121,8 @@ services:
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_USERNAME=admin
       - SPRING_RABBITMQ_PASSWORD=123456
+    networks:
+      - bantads-network
     depends_on:
       bantads_db:
         condition: service_healthy
@@ -116,6 +148,8 @@ services:
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_USERNAME=admin
       - SPRING_RABBITMQ_PASSWORD=123456
+    networks:
+      - bantads-network
     depends_on:
       bantads_db:
         condition: service_healthy
@@ -131,3 +165,7 @@ services:
 volumes:
   rabbitmq_data:
   postgres_data:
+
+networks:
+  bantads-network:
+    driver: bridge

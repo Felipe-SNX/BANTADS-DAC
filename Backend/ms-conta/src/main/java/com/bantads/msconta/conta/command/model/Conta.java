@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 import com.bantads.msconta.conta.exception.ValorInvalidoException;
 
-@Getter
+@Data
 @Entity
 @NoArgsConstructor
 @Table(name = "conta", schema = "conta_cud")

@@ -16,8 +16,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Usuario {
 
     @Id
-    private long idUsuario;
-    private long idClienteGerente;
+    private long id;
+    private String cpfUsuario;
     private String login;
     private String senha;
     private TipoUsuario tipoUsuario;

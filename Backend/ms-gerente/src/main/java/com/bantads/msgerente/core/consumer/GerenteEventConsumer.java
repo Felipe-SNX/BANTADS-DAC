@@ -52,8 +52,6 @@ public class GerenteEventConsumer {
             JsonNode rootNode = objectMapper.readTree(evento.getPayload());
 
             switch(sagaType){
-                case AUTOCADASTRO_SAGA:
-                    break;
                 case INSERCAO_GERENTE_SAGA:
                     JsonNode gerenteNode = rootNode.path("dadoGerenteInsercao");
                     DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(gerenteNode, DadoGerenteInsercao.class);
@@ -86,8 +84,6 @@ public class GerenteEventConsumer {
             JsonNode rootNode = objectMapper.readTree(evento.getPayload());
 
             switch(sagaType){
-                case AUTOCADASTRO_SAGA:
-                    break;
                 case INSERCAO_GERENTE_SAGA:
                     JsonNode gerenteNode = rootNode.path("dadoGerenteInsercao");
                     DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(gerenteNode, DadoGerenteInsercao.class);

@@ -28,10 +28,7 @@ public final class SagaHandler {
         { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.CMD_AUTENTICACAO_COMPENSATE },
         { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
         { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE, ETopics.CMD_AUTENTICACAO_COMPENSATE },
-        { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_GERENTE_CREATE },
-
-        { EEventSource.GERENTE_SERVICE, ESagaStatus.FAIL, ETopics.CMD_CONTA_COMPENSATE },
-        { EEventSource.GERENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.FINISH_SUCCESS }
+        { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.FINISH_SUCCESS },
     };
 
     public static final Object[][] SAGA_ALTERACAO_PERFIL_HANDLER = {

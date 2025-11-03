@@ -43,7 +43,14 @@ public class DataLoader implements CommandLineRunner {
             gerente3.setTelefone("4170707070");
             gerente3.setTipo(TipoGerente.GERENTE);
 
-            List<Gerente> gerentes = Arrays.asList(gerente1, gerente2, gerente3);
+            Gerente admin = new Gerente();
+            admin.setNome("Adamântio");
+            admin.setEmail("adm1@bantads.com.br");
+            admin.setCpf("23862179060");
+            admin.setTelefone("4160606060");
+            admin.setTipo(TipoGerente.ADMINISTRADOR);
+
+            List<Gerente> gerentes = Arrays.asList(gerente1, gerente2, gerente3, admin);
 
             gerenteRepository.saveAll(gerentes);
             log.info("Foram inseridos {} gerentes no banco de dados.", gerentes.size());

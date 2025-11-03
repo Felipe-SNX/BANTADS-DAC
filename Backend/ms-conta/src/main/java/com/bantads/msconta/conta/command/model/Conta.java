@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 import com.bantads.msconta.conta.exception.ValorInvalidoException;
 
 @Data
+@Builder
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "conta", schema = "conta_cud")
 public class Conta {
@@ -33,8 +35,9 @@ public class Conta {
     @Column(nullable = false)
     private String cpfCliente;
 
-    @Column(nullable = false)
     private String cpfGerente;
+
+    private boolean ativo = false;
 
     public Conta(String numConta, BigDecimal limite, String cpfCliente, String cpfGerente) {
         if (limite.compareTo(BigDecimal.ZERO) < 0) {

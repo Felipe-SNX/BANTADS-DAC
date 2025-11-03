@@ -1,4 +1,4 @@
-package com.bantads.mscliente.core.enums;
+package com.bantads.mscliente.common.enums;
 
 public enum EEventSource {
     ORQUESTRADOR,

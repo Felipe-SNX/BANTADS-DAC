@@ -18,4 +18,30 @@ export class Orchestrator {
             order: orderDetails,
         };
     }
+
+    async composeRespons(userId: string, orderId: string) {
+        const userDetails = await this.getUserDetails(userId);
+        const orderDetails = await this.getOrderDetails(orderId);
+        
+        return {
+            user: userDetails,
+            order: orderDetails,
+        };
+    }async composeResponses(userId: string, orderId: string) {
+        const userDetails = await this.getUserDetails(userId);
+        const orderDetails = await this.getOrderDetails(orderId);
+        
+        return {
+            user: userDetails,
+            order: orderDetails,
+        };
+    }async composeResponser(userId: string, orderId: string) {
+        const userDetails = await this.getUserDetails(userId);
+        const orderDetails = await this.getOrderDetails(orderId);
+        
+        return {
+            user: userDetails,
+            order: orderDetails,
+        };
+    }
 }

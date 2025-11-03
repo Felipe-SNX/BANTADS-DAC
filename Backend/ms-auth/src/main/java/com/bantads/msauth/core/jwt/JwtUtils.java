@@ -5,7 +5,10 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct; // Importante: usar o de jakarta ou javax
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component; // <-- MUDANÇA 1
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -14,29 +17,29 @@ import java.time.ZoneId;
 import java.util.Date;
 
 @Slf4j
+@Component 
 public class JwtUtils {
 
-    public static final String JWT_BEARER = "Bearer ";
-    public static final String JWT_AUTHORIZATION = "Authorization";
-    public static final String SECRET_KEY = "Nf3oai8aakCw0TF7Wv0PAGQyiNEv6vuOgSFLmKefxUi";
-    public static final long EXPIRE_DAYS = 0;
-    public static final long EXPIRE_HOURS = 0;
-    public static final long EXPIRE_MINUTES = 30;
+    @Value("${spring.jwt.secret}")
+    private String secretKey;
 
-    private JwtUtils(){
+    @Value("${spring.jwt.expiration.minutes}")
+    private long expirationMinutes;
+    
+    private Key key;
+
+    @PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(this.secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    private static Key generateKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
-    }
-
-    private static Date toExpireDate(Date start) {
+    private Date toExpireDate(Date start) {
         LocalDateTime dateTime = start.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        LocalDateTime end = dateTime.plusDays(EXPIRE_DAYS).plusHours(EXPIRE_HOURS).plusMinutes(EXPIRE_MINUTES);
+        LocalDateTime end = dateTime.plusMinutes(this.expirationMinutes); 
         return Date.from(end.atZone(ZoneId.systemDefault()).toInstant());
     }
 
-    public static JwtToken createToken(String username, String role) {
+    public JwtToken createToken(String username, String role) {
         Date issuedAt = new Date();
         Date limit = toExpireDate(issuedAt);
 
@@ -45,45 +48,17 @@ public class JwtUtils {
                 .setSubject(username)
                 .setIssuedAt(issuedAt)
                 .setExpiration(limit)
-                .signWith(generateKey(), SignatureAlgorithm.HS256)
+                .signWith(this.key, SignatureAlgorithm.HS256)
                 .claim("role", role)
                 .compact();
 
         return new JwtToken(token);
     }
 
-    private static Claims getClaimsFromToken(String token) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(generateKey()).build()
-                    .parseClaimsJws(refactorToken(token)).getBody();
-        } catch (JwtException ex) {
-            log.error(String.format("Token invalido %s", ex.getMessage()));
-        }
-        return null;
+    public Claims getClaimsFromToken(String token) throws JwtException {
+        return Jwts.parserBuilder()
+                .setSigningKey(this.key).build() 
+                .parseClaimsJws(token).getBody();
     }
 
-    public static String getUsernameFromToken(String token) {
-        return getClaimsFromToken(token).getSubject();
-    }
-
-    public static boolean isTokenValid(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(generateKey()).build()
-                    .parseClaimsJws(refactorToken(token));
-            return true;
-        } catch (JwtException ex) {
-            log.error(String.format("Token invalido %s", ex.getMessage()));
-        }
-        return false;
-    }
-
-    private static String refactorToken(String token) {
-        if (token.contains(JWT_BEARER)) {
-            return token.substring(JWT_BEARER.length());
-        }
-        return token;
-    }
 }
-

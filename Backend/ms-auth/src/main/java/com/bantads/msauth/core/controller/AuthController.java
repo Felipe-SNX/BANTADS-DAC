@@ -2,6 +2,7 @@ package com.bantads.msauth.core.controller;
 
 import com.bantads.msauth.config.exception.ErrorMessage;
 import com.bantads.msauth.core.dto.LoginInfo;
+import com.bantads.msauth.core.dto.LoginResponseDto;
 import com.bantads.msauth.core.jwt.JwtToken;
 import com.bantads.msauth.core.jwt.JwtUserDetailsService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,10 +35,9 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getSenha());
 
             authenticationManager.authenticate(authenticationToken);
+            LoginResponseDto response = detailsService.buildLoginResponse(dto.getEmail());
 
-            JwtToken token = detailsService.getTokenAuthenticated(dto.getEmail());
-
-            return ResponseEntity.ok(token);
+            return ResponseEntity.ok(response);
         } catch (AuthenticationException ex) {
             log.warn("Bad Credentials from username '{}'", dto.getEmail());
         }
@@ -45,5 +45,6 @@ public class AuthController {
                 .badRequest()
                 .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, "Credenciais Inválidas"));
     }
+
 
 }

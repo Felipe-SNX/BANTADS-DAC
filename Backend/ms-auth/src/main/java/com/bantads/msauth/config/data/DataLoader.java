@@ -3,19 +3,24 @@ package com.bantads.msauth.config.data;
 import com.bantads.msauth.core.document.Usuario;
 import com.bantads.msauth.core.enums.TipoUsuario;
 import com.bantads.msauth.core.repository.AuthRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder; 
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class DataLoader implements CommandLineRunner {
 
     private final AuthRepository authRepository;
+    private final PasswordEncoder passwordEncoder; 
+
+    public DataLoader(AuthRepository authRepository, PasswordEncoder passwordEncoder) {
+        this.authRepository = authRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public void run(String... args) throws Exception {
@@ -27,7 +32,7 @@ public class DataLoader implements CommandLineRunner {
                     .idUsuario(1L)
                     .tipoUsuario(TipoUsuario.CLIENTE)
                     .login("cli1@bantads.com.br")
-                    .senha("tads")
+                    .senha(passwordEncoder.encode("tads")) 
                     .idClienteGerente(1L)
                     .build();
 
@@ -35,7 +40,7 @@ public class DataLoader implements CommandLineRunner {
                     .idUsuario(2L)
                     .tipoUsuario(TipoUsuario.CLIENTE)
                     .login("cli2@bantads.com.br")
-                    .senha("tads")
+                    .senha(passwordEncoder.encode("tads")) 
                     .idClienteGerente(2L)
                     .build();
 
@@ -43,7 +48,7 @@ public class DataLoader implements CommandLineRunner {
                     .idUsuario(3L)
                     .tipoUsuario(TipoUsuario.CLIENTE)
                     .login("cli3@bantads.com.br")
-                    .senha("tads")
+                    .senha(passwordEncoder.encode("tads")) 
                     .idClienteGerente(3L)
                     .build();
 
@@ -51,7 +56,7 @@ public class DataLoader implements CommandLineRunner {
                     .idUsuario(4L)
                     .tipoUsuario(TipoUsuario.CLIENTE)
                     .login("cli4@bantads.com.br")
-                    .senha("tads")
+                    .senha(passwordEncoder.encode("tads"))
                     .idClienteGerente(4L)
                     .build();
 
@@ -59,7 +64,7 @@ public class DataLoader implements CommandLineRunner {
                     .idUsuario(5L)
                     .tipoUsuario(TipoUsuario.CLIENTE)
                     .login("cli5@bantads.com.br")
-                    .senha("tads")
+                    .senha(passwordEncoder.encode("tads")) 
                     .idClienteGerente(5L)
                     .build();
 
@@ -67,7 +72,7 @@ public class DataLoader implements CommandLineRunner {
                     .idUsuario(6L)
                     .tipoUsuario(TipoUsuario.GERENTE)
                     .login("ger1@bantads.com.br")
-                    .senha("tads")
+                    .senha(passwordEncoder.encode("tads")) 
                     .idClienteGerente(1L)
                     .build();
 
@@ -75,7 +80,7 @@ public class DataLoader implements CommandLineRunner {
                     .idUsuario(7L)
                     .tipoUsuario(TipoUsuario.GERENTE)
                     .login("ger2@bantads.com.br")
-                    .senha("tads")
+                    .senha(passwordEncoder.encode("tads")) 
                     .idClienteGerente(2L)
                     .build();
 
@@ -83,7 +88,7 @@ public class DataLoader implements CommandLineRunner {
                     .idUsuario(8L)
                     .tipoUsuario(TipoUsuario.GERENTE)
                     .login("ger3@bantads.com.br")
-                    .senha("tads")
+                    .senha(passwordEncoder.encode("tads")) 
                     .idClienteGerente(3L)
                     .build();
 
@@ -91,7 +96,7 @@ public class DataLoader implements CommandLineRunner {
                     .idUsuario(9L)
                     .tipoUsuario(TipoUsuario.ADMIN)
                     .login("adm1@bantads.com.br")
-                    .senha("tads")
+                    .senha(passwordEncoder.encode("tads"))
                     .idClienteGerente(4L)
                     .build();
 

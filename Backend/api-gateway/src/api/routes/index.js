@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
+const { verifyToken, checkRole } = require('../../middlewares/auth.middleware');
 const router = Router();
 
 const orquestradorServiceProxy = createProxyMiddleware({
@@ -48,11 +49,17 @@ const authServiceProxy = createProxyMiddleware({
     logLevel: 'debug',
 });
 
+router.get('/reboot', (req, res, next) => {
+    return res.status(200).json({ message: 'Banco de dados criado conforme especificação' });
+}) 
+
 router.post('/login', (req, res, next) => {
+    req.url = '/auth/login';
     authServiceProxy(req, res, next);
 });
 
-router.post('/logout', (req, res, next) => {
+router.post('/logout', verifyToken, (req, res, next) => {
+    req.url = '/auth/logout';
     authServiceProxy(req, res, next);
 });
 
@@ -61,26 +68,26 @@ router.post('/clientes', (req, res, next) => {
     orquestradorServiceProxy(req, res, next);
 });
 
-router.put('/clientes/:cpf', (req, res, next) => {
+router.put('/clientes/:cpf', verifyToken, (req, res, next) => {
     req.url = `/saga/alterarPerfil/${req.params.cpf}`;
     orquestradorServiceProxy(req, res, next);
 });
 
-router.post('/gerentes', (req, res, next) => {
+router.post('/gerentes', verifyToken, checkRole(['ADMIN']), (req, res, next) => {
     req.url = '/saga/inserirGerente';
     orquestradorServiceProxy(req, res, next);
 });
 
-router.delete('/gerentes/:cpf', (req, res, next) => {
+router.delete('/gerentes/:cpf', verifyToken, checkRole(['ADMIN']), (req, res, next) => {
     req.url = `/saga/removerGerente/${req.params.cpf}`;
     orquestradorServiceProxy(req, res, next);
 });
 
-router.post('/clientes/:cpf/rejeitar', clientesServiceProxy);
-router.post('/clientes/:cpf/aprovar', clientesServiceProxy);
+router.post('/clientes/:cpf/rejeitar', verifyToken, clientesServiceProxy);
+router.post('/clientes/:cpf/aprovar', verifyToken, clientesServiceProxy);
 
-router.use('/gerentes', gerentesServiceProxy);
-router.use('/clientes', clientesServiceProxy);
-router.use('/contas', contasServiceProxy);
+router.use('/gerentes', verifyToken, gerentesServiceProxy);
+router.use('/clientes', verifyToken, clientesServiceProxy);
+router.use('/contas', verifyToken, contasServiceProxy);
 
 module.exports = router;

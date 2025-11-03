@@ -7,6 +7,7 @@ services:
       - "3000:3000"
     environment:
       PORT: 3000
+      JWT_SECRET: Nf3oai8aakCw0TF7Wv0PAGQyiNEv6vuOgSFLmKefxUi
       MS_CONTA_URL: http://ms-conta:8080
       MS_GERENTE_URL: http://ms-gerente:8081
       MS_CLIENTE_URL: http://ms-cliente:8082

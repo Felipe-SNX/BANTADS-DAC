@@ -107,12 +107,6 @@ public class ContaEventSagaConsumer {
             JsonNode rootNode = objectMapper.readTree(evento.getPayload());
 
             switch(sagaType){
-                case AUTOCADASTRO_SAGA:
-                    break;
-                case ALTERACAO_PERFIL_SAGA:
-                    break;
-                case INSERCAO_GERENTE_SAGA:
-                    break;
                 case REMOCAO_GERENTE_SAGA:
                     break;
                 default:

@@ -11,6 +11,7 @@ services:
       MS_GERENTE_URL: http://ms-gerente:8081
       MS_CLIENTE_URL: http://ms-cliente:8082
       MS_ORQUESTRADOR_URL: http://ms-orquestrador:8083
+      MS_AUTH_URL: http://ms-auth:8084
     networks:
       - bantads-network
     depends_on:
@@ -59,7 +60,44 @@ services:
       test: ["CMD-SHELL", "pg_isready -U postgres -d bantads_db"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 3
+
+  auth_db:
+    image: mongo:latest
+    container_name: auth_db
+    restart: always
+    networks:
+      - bantads-network
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=123456
+    ports:
+      - 27017:27017
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  ms-auth:
+    build: './ms-auth'
+    container_name: ms-auth
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      auth_db:
+        condition: service_healthy
+    networks:
+      - bantads-network
+    environment:
+      - SERVER_PORT=8084
+      - SPRING_DATA_MONGODB_URI=mongodb://admin:123456@auth_db:27017/bantads_auth?authSource=admin
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=123456
+    ports:
+      - "8094:8084"
 
   ms-orquestrador:
     build: './ms-orquestrador'

@@ -42,6 +42,20 @@ const contasServiceProxy = createProxyMiddleware({
     },
 });
 
+const authServiceProxy = createProxyMiddleware({
+    target: process.env.MS_AUTH_URL,
+    changeOrigin: true,
+    logLevel: 'debug',
+});
+
+router.post('/login', (req, res, next) => {
+    authServiceProxy(req, res, next);
+});
+
+router.post('/logout', (req, res, next) => {
+    authServiceProxy(req, res, next);
+});
+
 router.post('/clientes', (req, res, next) => {
     req.url = '/saga/autocadastro';
     orquestradorServiceProxy(req, res, next);

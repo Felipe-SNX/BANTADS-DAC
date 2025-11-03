@@ -20,10 +20,10 @@ public final class SagaHandler {
         { EEventSource.CLIENTE_SERVICE, ESagaStatus.COMPENSATE, ETopics.FINISH_FAIL },
         { EEventSource.CLIENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_AUTENTICACAO_CREATE },
 
-        { EEventSource.AUTENTICACAO_SERVICE, ESagaStatus.FAIL, ETopics.CMD_CLIENTE_COMPENSATE },
-        { EEventSource.AUTENTICACAO_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
-        { EEventSource.AUTENTICACAO_SERVICE, ESagaStatus.COMPENSATE, ETopics.CMD_CLIENTE_COMPENSATE },
-        { EEventSource.AUTENTICACAO_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_CONTA_CREATE },
+        { EEventSource.AUTH_SERVICE, ESagaStatus.FAIL, ETopics.CMD_CLIENTE_COMPENSATE },
+        { EEventSource.AUTH_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
+        { EEventSource.AUTH_SERVICE, ESagaStatus.COMPENSATE, ETopics.CMD_CLIENTE_COMPENSATE },
+        { EEventSource.AUTH_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_CONTA_CREATE },
 
         { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.CMD_AUTENTICACAO_COMPENSATE },
         { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },

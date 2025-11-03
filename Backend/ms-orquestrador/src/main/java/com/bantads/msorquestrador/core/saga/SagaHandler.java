@@ -47,15 +47,10 @@ public final class SagaHandler {
     };
 
     public static final Object[][] SAGA_REMOCAO_GERENTE_HANDLER = {
-        { EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, ETopics.CMD_GERENTE_CREATE },
+        { EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, ETopics.CMD_CONTA_CREATE },
 
-        { EEventSource.GERENTE_SERVICE, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
-        { EEventSource.GERENTE_SERVICE, ESagaStatus.COMPENSATE, ETopics.FINISH_FAIL },
-        { EEventSource.GERENTE_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
-        { EEventSource.GERENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_CONTA_CREATE },
-
-        { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.CMD_GERENTE_COMPENSATE },
-        { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE, ETopics.CMD_GERENTE_COMPENSATE },
+        { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
+        { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE, ETopics.FINISH_FAIL },
         { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
         { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_GERENTE_CREATE },
 

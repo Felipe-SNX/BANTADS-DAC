@@ -7,6 +7,7 @@ import com.bantads.msgerente.core.enums.EEventSource;
 import com.bantads.msgerente.core.enums.ESaga;
 import com.bantads.msgerente.core.enums.ESagaStatus;
 import com.bantads.msgerente.core.enums.ETopics;
+import com.bantads.msgerente.core.model.Gerente;
 import com.bantads.msgerente.core.producer.GerenteEventProducer;
 import com.bantads.msgerente.core.service.GerenteService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -90,7 +91,7 @@ public class GerenteEventConsumer {
                 case INSERCAO_GERENTE_SAGA:
                     JsonNode gerenteNode = rootNode.path("dadoGerenteInsercao");
                     DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(gerenteNode, DadoGerenteInsercao.class);
-                    gerenteService.inserirGerente(dadoGerenteInsercao);
+                    gerenteService.deletarGerentePorCpf(dadoGerenteInsercao.getCpf());
                     evento.setSource(EEventSource.GERENTE_SERVICE);
                     evento.setStatus(ESagaStatus.COMPENSATE);
                     gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_SUCCESS, evento);
@@ -109,7 +110,7 @@ public class GerenteEventConsumer {
         } catch(Exception e){
             log.info("Erro ocorreu em {} do tipo {}", sagaType, e);
             evento.setSource(EEventSource.GERENTE_SERVICE);
-            evento.setStatus(ESagaStatus.FAIL);
+            evento.setStatus(ESagaStatus.COMPENSATE_FAILED);
             gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_FAIL, evento);
         }
     }

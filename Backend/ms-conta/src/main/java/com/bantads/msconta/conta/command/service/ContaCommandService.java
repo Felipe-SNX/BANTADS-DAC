@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -30,7 +31,6 @@ public class ContaCommandService {
     private final ContaWriteRepository contaRepository;
     private final MovimentacaoCommandService movimentacaoService;
     private final ContaEventCQRSProducer eventProducer;
-
 
     @Transactional
     public OperacaoResponse depositar(OperacaoRequest operacao, String numConta) {
@@ -125,6 +125,12 @@ public class ContaCommandService {
 
     @Transactional
     public void atribuirContas(DadoGerenteInsercao dadoGerenteInsercao){
-        
+        String cpfComMaisContas = contaRepository.findCpfGerenteComMaisContas();
+        Optional<Conta> contaEscolhida = contaRepository.findFirstByCpfGerenteOrderByDataCriacaoAsc(cpfComMaisContas);
+
+        if(contaEscolhida.isPresent()){
+            contaEscolhida.get().setCpfGerente(dadoGerenteInsercao.getCpf());
+            contaRepository.save(contaEscolhida.get());
+        }
     }
 }

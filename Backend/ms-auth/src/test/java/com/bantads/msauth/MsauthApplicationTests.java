@@ -1,10 +1,10 @@
-package com.dac.bantads;
+package com.bantads.msauth;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BantadsApplicationTests {
+class MsauthApplicationTests {
 
 	@Test
 	void contextLoads() {

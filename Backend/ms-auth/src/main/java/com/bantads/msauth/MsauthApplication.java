@@ -1,13 +1,13 @@
-package com.dac.bantads;
+package com.bantads.msauth;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BantadsApplication {
+public class MsauthApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BantadsApplication.class, args);
+		SpringApplication.run(MsauthApplication.class, args);
 	}
 
 }

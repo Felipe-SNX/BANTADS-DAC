@@ -1,4 +1,4 @@
-package com.bantads.msgerente.core.enums;
+package com.bantads.msauth.common.enums;
 
 public enum EEventSource {
     ORQUESTRADOR,

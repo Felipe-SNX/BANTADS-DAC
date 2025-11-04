@@ -3,6 +3,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const { verifyToken, checkRole } = require('../../middlewares/auth.middleware');
 const router = Router();
+const axios = require('axios');
 
 const orquestradorServiceProxy = createProxyMiddleware({
     target: process.env.MS_ORQUESTRADOR_URL,
@@ -92,6 +93,48 @@ router.delete('/gerentes/:cpf', verifyToken, checkRole(['ADMIN']), (req, res, ne
 
 router.post('/clientes/:cpf/rejeitar', verifyToken, clientesServiceProxy);
 router.post('/clientes/:cpf/aprovar', verifyToken, clientesServiceProxy);
+
+router.get('/clientes/:cpf', verifyToken, async (req, res, next) => {
+    const { cpf } = req.params;
+    const { authorization } = req.headers; 
+
+    const clienteUrl = `${process.env.MS_CLIENTE_URL}/clientes/${cpf}`;
+    
+    const contaUrl = `${process.env.MS_CONTA_URL}/contas/${cpf}/dadosConta`; 
+
+    try {
+        const clienteRequest = axios.get(clienteUrl, {
+            headers: { 'Authorization': authorization }
+        });
+
+        const contaRequest = axios.get(contaUrl, {
+            headers: { 'Authorization': authorization }
+        });
+
+        const [clienteResponse, contaResponse] = await Promise.all([
+            clienteRequest,
+            contaRequest
+        ]);
+
+        const clienteData = clienteResponse.data; 
+        const contaData = contaResponse.data;    
+
+        const compositeResponse = {
+            ...clienteData,
+            limite: contaData.limite 
+        };
+
+        res.status(200).json(compositeResponse);
+
+    } catch (error) {
+        console.error(`Erro ao buscar dados para CPF ${cpf}:`, error.message);
+        
+        res.status(500).json({ 
+            message: 'Erro ao compor a resposta dos microsserviços.',
+            serviceError: error.message
+        });
+    }
+});
 
 router.use('/gerentes', verifyToken, gerentesServiceProxy);
 router.use('/clientes', verifyToken, clientesServiceProxy);

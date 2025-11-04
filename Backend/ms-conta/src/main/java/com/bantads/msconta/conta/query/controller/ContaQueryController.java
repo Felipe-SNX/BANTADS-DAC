@@ -1,5 +1,6 @@
 package com.bantads.msconta.conta.query.controller;
 
+import com.bantads.msconta.conta.dto.DadoConta;
 import com.bantads.msconta.conta.dto.ExtratoResponse;
 import com.bantads.msconta.conta.dto.SaldoResponse;
 import com.bantads.msconta.conta.query.service.ContaQueryService;
@@ -14,6 +15,12 @@ import org.springframework.web.bind.annotation.*;
 public class ContaQueryController {
 
     private final ContaQueryService contaQueryService;
+
+    @GetMapping("/{cpf}/dadosConta")
+    public ResponseEntity<DadoConta> obterDadosConta(@PathVariable String cpf) {
+        DadoConta dadoConta = contaQueryService.getContaByClienteCpf(cpf);
+        return ResponseEntity.ok(dadoConta);
+    }
 
     @GetMapping("/{numero}/saldo")
     public ResponseEntity<SaldoResponse> saldo(@PathVariable String numero) {

@@ -36,7 +36,7 @@ public class Cliente {
     private String cpfGerente;
 
     @Column(nullable = false)
-    private boolean aprovado = true;
+    private boolean aprovado = false;
 
     private String motivoRejeição = null;
 }

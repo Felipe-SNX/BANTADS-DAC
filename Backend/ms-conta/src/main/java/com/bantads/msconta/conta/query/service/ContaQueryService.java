@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bantads.msconta.conta.dto.DadoConta;
 import com.bantads.msconta.conta.dto.ExtratoResponse;
 import com.bantads.msconta.conta.dto.ItemExtratoResponse;
 import com.bantads.msconta.conta.dto.SaldoResponse;
@@ -30,6 +31,13 @@ public class ContaQueryService {
         ContaView conta = contaRepository.findByNumConta(numConta)
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta", numConta));
         return ContaViewMapper.toSaldoResponse(conta);
+    }
+
+    @Transactional(readOnly = true)
+    public DadoConta getContaByClienteCpf(String cpf) {
+        ContaView conta = contaRepository.findByCpfCliente(cpf)
+                .orElseThrow(() -> new ContaNaoEncontradaException("Conta", cpf));
+        return ContaViewMapper.toDadoConta(conta);
     }
 
     @Transactional(readOnly = true)

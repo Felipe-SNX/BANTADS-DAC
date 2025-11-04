@@ -37,18 +37,14 @@ public class ClienteService {
 
     public List<ClienteParaAprovarResponse> listarClientes(String filtro){
         List<Cliente> clientes = new ArrayList<>();
-        log.info(filtro);
-        if(filtro.equals("para_aprovar")){
-            log.info("estou no para aprovar");
-            clientes = clienteRepository.findAllByAprovado(false);
-        }
+        
+        if(filtro.equals("para_aprovar")) clientes = listarClientesParaAprovar();
+        
         else if(filtro.equals("adm_relatorio_clientes")){
-            log.info("estou no adm_relatorio_clientes");
             clientes = clienteRepository.findAll();
         }
         else if(filtro.equals("melhores_clientes")){
-            log.info("estou no melhores_clientes");
-            clientes = clienteRepository.findThreeBestClientes();
+            clientes = listarMelhoresClientes();
         }
         else{
             log.info("Filtro inválido");
@@ -67,6 +63,14 @@ public class ClienteService {
         }
 
         return clienteParaAprovarResponse;
+    }
+
+    private List<Cliente> listarClientesParaAprovar(){
+        return clienteRepository.findAllByAprovado(false);
+    }
+
+    private List<Cliente> listarMelhoresClientes(){
+        return clienteRepository.findThreeBestClientes();
     }
 
     @Transactional

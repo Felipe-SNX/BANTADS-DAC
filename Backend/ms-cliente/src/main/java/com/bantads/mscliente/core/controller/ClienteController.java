@@ -2,12 +2,23 @@ package com.bantads.mscliente.core.controller;
 
 import com.bantads.mscliente.core.dto.*;
 import com.bantads.mscliente.core.service.ClienteService;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("/clientes")
@@ -16,7 +27,33 @@ public class ClienteController {
     private final ClienteService clienteService;
 
     @GetMapping
-    public ResponseEntity<List<ClienteParaAprovarResponse>> listar(@RequestParam(required = false) String filtro) {
+    public ResponseEntity<?> listar(@RequestParam(required = false) String filtro, @AuthenticationPrincipal UserDetails userDetails) {
+        
+        Set<String> rolesUsuario = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)         
+                .map(role -> role.replace("ROLE_", "")) 
+                .collect(Collectors.toSet());
+
+        Map<String, List<String>> permissoesFiltro = new HashMap<>();
+        permissoesFiltro.put("para_aprovar", List.of("GERENTE"));
+        permissoesFiltro.put("adm_relatorio_clientes", List.of("ADMINISTRADOR"));
+        permissoesFiltro.put("melhores_clientes", List.of("GERENTE"));
+
+        if (filtro != null && !filtro.isEmpty()) {
+            
+            List<String> rolesPermitidas = permissoesFiltro.get(filtro);
+
+            if (rolesPermitidas == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                     .body("Filtro '" + filtro + "' é inválido.");
+            }
+
+            if (rolesPermitidas.stream().noneMatch(rolesUsuario::contains)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("Usuário com role(s) " + rolesUsuario + " não tem permissão para o filtro '" + filtro + "'.");
+            }
+        }
+
         List<ClienteParaAprovarResponse> clienteParaAprovarResponse = clienteService.listarClientes(filtro);
         return ResponseEntity.ok(clienteParaAprovarResponse);
     }
@@ -40,7 +77,7 @@ public class ClienteController {
     }
 
     @PostMapping("/{cpf}/aprovar")
-    public ResponseEntity<Void> aprovarCliente(@PathVariable String cpf) {
+    public ResponseEntity<Void> aprovarCliente(@RequestBody ClienteParaAprovarRequest clienteParaAprovarRequest, @PathVariable String cpf) {
         clienteService.aprovarCliente(cpf);
         return ResponseEntity.ok().build();
     }

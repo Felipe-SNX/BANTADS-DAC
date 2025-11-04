@@ -97,6 +97,7 @@ services:
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_USERNAME=admin
       - SPRING_RABBITMQ_PASSWORD=123456
+      - SPRING_JWT_SECRET=Nf3oai8aakCw0TF7Wv0PAGQyiNEv6vuOgSFLmKefxUi
     ports:
       - "8094:8084"
 
@@ -187,6 +188,7 @@ services:
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_USERNAME=admin
       - SPRING_RABBITMQ_PASSWORD=123456
+      - SPRING_JWT_SECRET=Nf3oai8aakCw0TF7Wv0PAGQyiNEv6vuOgSFLmKefxUi
     networks:
       - bantads-network
     depends_on:

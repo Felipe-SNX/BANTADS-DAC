@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bantads.msgerente.core.dto.DadoGerenteAtualizacao;
+import com.bantads.msgerente.core.enums.TipoGerente;
 import com.bantads.msgerente.core.exception.GerenteNaoEncontradoException;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class  GerenteService {
     private final GerenteRepository repository;
 
     public List<GerentesResponse> listarGerentes() {
-        List<Gerente> gerentes = repository.findAll();
+        List<Gerente> gerentes = repository.findAllByTipo(TipoGerente.GERENTE);
         List<GerentesResponse> gerenteResponse = new ArrayList<>();
 
         for (Gerente gerente : gerentes) {

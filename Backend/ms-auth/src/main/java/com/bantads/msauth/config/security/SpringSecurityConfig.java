@@ -2,12 +2,9 @@ package com.bantads.msauth.config.security;
 
 import com.bantads.msauth.core.jwt.JwtAuthenticationEntryPoint;
 import com.bantads.msauth.core.jwt.JwtAuthorizationFilter;
-import com.bantads.msauth.core.jwt.JwtUserDetailsService;
-import com.bantads.msauth.core.jwt.JwtUtils;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

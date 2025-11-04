@@ -31,73 +31,73 @@ public class DataLoader implements CommandLineRunner {
             Usuario auth1 = Usuario.builder()
                     .id(1L)
                     .tipoUsuario(TipoUsuario.CLIENTE)
-                    .login("cli1@bantads.com.br")
+                    .email("cli1@bantads.com.br")
                     .senha(passwordEncoder.encode("tads")) 
-                    .cpfUsuario("12912861012")
+                    .cpf("12912861012")
                     .build();
 
             Usuario auth2 = Usuario.builder()
                     .id(2L)
                     .tipoUsuario(TipoUsuario.CLIENTE)
-                    .login("cli2@bantads.com.br")
+                    .email("cli2@bantads.com.br")
                     .senha(passwordEncoder.encode("tads")) 
-                    .cpfUsuario("09506382000")
+                    .cpf("09506382000")
                     .build();
 
             Usuario auth3 = Usuario.builder()
                     .id(3L)
                     .tipoUsuario(TipoUsuario.CLIENTE)
-                    .login("cli3@bantads.com.br")
+                    .email("cli3@bantads.com.br")
                     .senha(passwordEncoder.encode("tads")) 
-                    .cpfUsuario("85733854057")
+                    .cpf("85733854057")
                     .build();
 
             Usuario auth4 = Usuario.builder()
                     .id(4L)
                     .tipoUsuario(TipoUsuario.CLIENTE)
-                    .login("cli4@bantads.com.br")
+                    .email("cli4@bantads.com.br")
                     .senha(passwordEncoder.encode("tads"))
-                    .cpfUsuario("58872160006")
+                    .cpf("58872160006")
                     .build();
 
             Usuario auth5 = Usuario.builder()
                     .id(5L)
                     .tipoUsuario(TipoUsuario.CLIENTE)
-                    .login("cli5@bantads.com.br")
+                    .email("cli5@bantads.com.br")
                     .senha(passwordEncoder.encode("tads")) 
-                    .cpfUsuario("76179646090")
+                    .cpf("76179646090")
                     .build();
 
             Usuario auth6 = Usuario.builder()
                     .id(6L)
                     .tipoUsuario(TipoUsuario.GERENTE)
-                    .login("ger1@bantads.com.br")
+                    .email("ger1@bantads.com.br")
                     .senha(passwordEncoder.encode("tads")) 
-                    .cpfUsuario("98574307084")
+                    .cpf("98574307084")
                     .build();
 
             Usuario auth7 = Usuario.builder()
                     .id(7L)
                     .tipoUsuario(TipoUsuario.GERENTE)
-                    .login("ger2@bantads.com.br")
+                    .email("ger2@bantads.com.br")
                     .senha(passwordEncoder.encode("tads")) 
-                    .cpfUsuario("64065268052")
+                    .cpf("64065268052")
                     .build();
 
             Usuario auth8 = Usuario.builder()
                     .id(8L)
                     .tipoUsuario(TipoUsuario.GERENTE)
-                    .login("ger3@bantads.com.br")
+                    .email("ger3@bantads.com.br")
                     .senha(passwordEncoder.encode("tads")) 
-                    .cpfUsuario("23862179060")
+                    .cpf("23862179060")
                     .build();
 
             Usuario auth9 = Usuario.builder()
                     .id(9L)
-                    .tipoUsuario(TipoUsuario.ADMIN)
-                    .login("adm1@bantads.com.br")
+                    .tipoUsuario(TipoUsuario.ADMINISTRADOR)
+                    .email("adm1@bantads.com.br")
                     .senha(passwordEncoder.encode("tads"))
-                    .cpfUsuario("40501740066")
+                    .cpf("40501740066")
                     .build();
 
             List<Usuario> usuarios = List.of(

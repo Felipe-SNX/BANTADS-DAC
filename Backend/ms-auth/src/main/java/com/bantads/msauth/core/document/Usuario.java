@@ -17,8 +17,8 @@ public class Usuario {
 
     @Id
     private long id;
-    private String cpfUsuario;
-    private String login;
+    private String cpf;
+    private String email;
     private String senha;
     private TipoUsuario tipoUsuario;
 }

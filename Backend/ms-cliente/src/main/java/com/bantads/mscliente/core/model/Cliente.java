@@ -33,6 +33,8 @@ public class Cliente {
     @Column(nullable = false)
     private BigDecimal salario;
 
+    private String cpfGerente;
+
     @Column(nullable = false)
     private boolean aprovado = true;
 

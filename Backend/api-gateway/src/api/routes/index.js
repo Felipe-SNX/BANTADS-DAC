@@ -15,7 +15,11 @@ const clientesServiceProxy = createProxyMiddleware({
     changeOrigin: true,
     logLevel: 'debug',
     pathRewrite: (path, req) => {
-        const finalPath = '/clientes' + (path === '/' ? '' : path);
+        let finalPath = path;
+        if (path === '/' || path.startsWith('/?')) {
+            const [basePath, queryString] = path.split('?'); // basePath será "/"
+            finalPath = '/clientes' + (queryString ? '?' + queryString : '');
+        }
         console.log(`[Proxy MS-Cliente] Original: "${req.originalUrl}", Reescrito para: "${finalPath}"`);
         return finalPath;
     },
@@ -64,8 +68,7 @@ router.post('/logout', verifyToken, (req, res, next) => {
 });
 
 router.post('/clientes', (req, res, next) => {
-    req.url = '/saga/autocadastro';
-    orquestradorServiceProxy(req, res, next);
+    clientesServiceProxy(req, res, next);
 });
 
 router.put('/clientes/:cpf', verifyToken, (req, res, next) => {
@@ -76,6 +79,10 @@ router.put('/clientes/:cpf', verifyToken, (req, res, next) => {
 router.post('/gerentes', verifyToken, checkRole(['ADMIN']), (req, res, next) => {
     req.url = '/saga/inserirGerente';
     orquestradorServiceProxy(req, res, next);
+});
+
+router.put('/gerentes/:cpf', verifyToken, checkRole(['ADMIN']), (req, res, next) => {
+    gerentesServiceProxy(req, res, next);
 });
 
 router.delete('/gerentes/:cpf', verifyToken, checkRole(['ADMIN']), (req, res, next) => {

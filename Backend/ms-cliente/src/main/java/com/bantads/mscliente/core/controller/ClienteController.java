@@ -16,8 +16,8 @@ public class ClienteController {
     private final ClienteService clienteService;
 
     @GetMapping
-    public ResponseEntity<List<ClienteParaAprovarResponse>> listar(@RequestParam("filtro") String filtro) {
-        List<ClienteParaAprovarResponse> clienteParaAprovarResponse = clienteService.listarClientes();
+    public ResponseEntity<List<ClienteParaAprovarResponse>> listar(@RequestParam(required = false) String filtro) {
+        List<ClienteParaAprovarResponse> clienteParaAprovarResponse = clienteService.listarClientes(filtro);
         return ResponseEntity.ok(clienteParaAprovarResponse);
     }
 

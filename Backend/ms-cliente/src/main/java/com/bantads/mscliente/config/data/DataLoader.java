@@ -62,6 +62,7 @@ public class DataLoader implements CommandLineRunner {
             cliente1.setTelefone("4199999999");
             cliente1.setSalario(BigDecimal.valueOf(10000.00));
             cliente1.setIdEndereco(endereco1.getId());
+            cliente1.setCpfGerente("98574307084");
 
             Cliente cliente2 = new Cliente();
             cliente2.setNome("Cleuddônio");
@@ -70,6 +71,7 @@ public class DataLoader implements CommandLineRunner {
             cliente2.setTelefone("4498888888");
             cliente2.setSalario(BigDecimal.valueOf(20000.00));
             cliente2.setIdEndereco(endereco2.getId());
+            cliente2.setCpfGerente("64065268052");
 
             Cliente cliente3 = new Cliente();
             cliente3.setNome("Catianna");
@@ -78,6 +80,7 @@ public class DataLoader implements CommandLineRunner {
             cliente3.setTelefone("47977777777");
             cliente3.setSalario(BigDecimal.valueOf(3000.00));
             cliente3.setIdEndereco(endereco3.getId());
+            cliente3.setCpfGerente("23862179060");
 
             Cliente cliente4 = new Cliente();
             cliente4.setNome("Cutardo");
@@ -86,6 +89,7 @@ public class DataLoader implements CommandLineRunner {
             cliente4.setTelefone("4998000000");
             cliente4.setSalario(BigDecimal.valueOf(500.00));
             cliente4.setIdEndereco(endereco1.getId());
+            cliente4.setCpfGerente("98574307084");
 
             Cliente cliente5 = new Cliente();
             cliente5.setNome("Coândrya");
@@ -94,6 +98,7 @@ public class DataLoader implements CommandLineRunner {
             cliente5.setTelefone("49989896976");
             cliente5.setSalario(BigDecimal.valueOf(1500.00));
             cliente5.setIdEndereco(endereco2.getId());
+            cliente5.setCpfGerente("64065268052");
 
             List<Cliente> clientes = Arrays.asList(cliente1, cliente2, cliente3, cliente4, cliente5);
 

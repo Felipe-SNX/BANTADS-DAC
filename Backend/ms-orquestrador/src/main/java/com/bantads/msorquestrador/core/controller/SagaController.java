@@ -25,6 +25,13 @@ public class SagaController {
 
     private final SagaService sagaService;
 
+    @PostMapping("/autocadastro")
+    public void iniciarSagaAutocadastro(@RequestBody AutoCadastroInfo autoCadastroInfo) {
+        log.info("Iniciando saga autocadastro");
+        sagaService.iniciarSagaAutocadastro(autoCadastroInfo);
+    }
+
+
     @PutMapping("/alterarPerfil/{cpf}")
     public void iniciarSagaAlterarPerfil(@RequestBody PerfilInfo perfilInfo, @PathVariable String cpf) {
         log.info("Iniciando saga alterar perfil");

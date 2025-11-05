@@ -32,6 +32,21 @@ public class SagaService {
     private final SagaProcessor sagaProcessor;
     private final SagaEventProducer sagaEventProducer;
 
+
+    public void iniciarSagaAutocadastro(AutoCadastroInfo autoCadastroInfo) {
+        log.info("Saga de Autocadastro iniciada para o cliente: {}", autoCadastroInfo.nome());
+
+        Map<String, Object> autoCadastroInfoMap = new HashMap<>();
+        autoCadastroInfoMap.put("autoCadastroInfo", autoCadastroInfo);
+
+        try {
+            Evento evento = criarEvento(autoCadastroInfoMap, ESaga.AUTOCADASTRO_SAGA, EEventSource.ORQUESTRADOR);
+            publicarEvento(evento);
+        } catch (JsonProcessingException e) {
+            throw new ErroAoConverterJsonException("Saga Alterar Perfil", e.getMessage());
+        }
+    }
+
     public void iniciarSagaAlterarPerfil(PerfilInfo perfilInfo, String cpf) {
         log.info("Saga de alterar perfil iniciada para o cliente: {}", perfilInfo.nome());
 

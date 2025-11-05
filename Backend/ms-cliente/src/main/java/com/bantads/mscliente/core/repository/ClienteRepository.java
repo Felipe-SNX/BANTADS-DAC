@@ -21,4 +21,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     List<Cliente> findThreeBestClientes();
 
     Optional<Cliente> findByCpfAndAprovado(String cpf, boolean b);
+
+    List<Cliente> findAllByAprovadoOrderByNomeAsc(boolean b);
 }

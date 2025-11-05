@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.bantads.msgerente.core.dto.DadoGerente;
 import com.bantads.msgerente.core.dto.DadoGerenteInsercao;
 import com.bantads.msgerente.core.dto.GerentesResponse;
+import com.bantads.msgerente.core.service.DataService;
 import com.bantads.msgerente.core.service.GerenteService;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +21,13 @@ import lombok.AllArgsConstructor;
 public class GerenteController {
 
     private final GerenteService gerenteService;
+    private final DataService dataService;
+
+    @GetMapping("/reboot")
+    public ResponseEntity<Void> reboot() {
+        dataService.popularBanco();
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping
     public ResponseEntity<List<GerentesResponse>> listar() {

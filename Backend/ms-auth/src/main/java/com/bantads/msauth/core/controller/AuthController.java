@@ -7,6 +7,8 @@ import com.bantads.msauth.core.dto.LogoutResponse;
 import com.bantads.msauth.core.jwt.JwtToken;
 import com.bantads.msauth.core.jwt.JwtUserDetailsService;
 import com.bantads.msauth.core.service.AuthService;
+import com.bantads.msauth.core.service.DataService;
+
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Slf4j
 @RestController
@@ -29,6 +32,13 @@ public class AuthController {
     private final JwtUserDetailsService detailsService;
     private final AuthenticationManager authenticationManager;
     private final AuthService authService;
+    private final DataService dataService;
+
+    @GetMapping("/reboot")
+    public ResponseEntity<Void> reboot() {
+        dataService.popularBanco();
+        return ResponseEntity.ok().build();
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> autenticar(@RequestBody LoginInfo dto, HttpServletRequest request) {

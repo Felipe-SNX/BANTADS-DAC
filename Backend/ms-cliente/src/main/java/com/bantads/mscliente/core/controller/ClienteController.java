@@ -2,6 +2,7 @@ package com.bantads.mscliente.core.controller;
 
 import com.bantads.mscliente.core.dto.*;
 import com.bantads.mscliente.core.service.ClienteService;
+import com.bantads.mscliente.core.service.DataService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,12 +10,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import com.bantads.mscliente.core.model.Cliente;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,6 +28,26 @@ import java.util.stream.Collectors;
 public class ClienteController {
 
     private final ClienteService clienteService;
+    private final DataService dataService;
+
+    @GetMapping("/reboot")
+    public ResponseEntity<Void> reboot() {
+        dataService.popularBanco();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/checkCpf/{cpf}")
+    public ResponseEntity<String> checkCpf(@PathVariable String cpf) {
+        Optional<Cliente> cliente = clienteService.checkCpf(cpf);
+
+        if(cliente.isPresent()){
+            log.info("Retornando 409");
+            return ResponseEntity.status(409).body("Cliente já cadastrado ou aguardando aprovação, CPF duplicado");
+        }
+
+        return ResponseEntity.status(200).body("Cpf não cadastrado");
+    }
+
 
     @GetMapping
     public ResponseEntity<?> listar(@RequestParam(required = false) String filtro, @AuthenticationPrincipal UserDetails userDetails) {
@@ -54,8 +77,8 @@ public class ClienteController {
             }
         }
 
-        List<ClienteParaAprovarResponse> clienteParaAprovarResponse = clienteService.listarClientes(filtro);
-        return ResponseEntity.ok(clienteParaAprovarResponse);
+        List<ClienteParaAprovarResponse> clienteResponse = clienteService.listarClientes(filtro);
+        return ResponseEntity.ok(clienteResponse);
     }
 
     @PostMapping

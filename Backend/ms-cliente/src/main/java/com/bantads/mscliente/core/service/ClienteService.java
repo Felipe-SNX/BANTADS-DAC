@@ -17,15 +17,19 @@ import com.bantads.mscliente.core.repository.ClienteRepository;
 import com.bantads.mscliente.core.repository.EnderecoRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDateTime;
-import java.util.*;
 
 @Slf4j
 @Service
@@ -37,19 +41,24 @@ public class ClienteService {
     private final ClienteEventProducer clienteEventProducer;
     private final ObjectMapper objectMapper;
 
+    public Optional<Cliente> checkCpf(String cpf){
+        return clienteRepository.findByCpf(cpf);
+    }
+
     public List<ClienteParaAprovarResponse> listarClientes(String filtro){
         List<Cliente> clientes = new ArrayList<>();
         
-        if(filtro.equals("para_aprovar")) clientes = listarClientesParaAprovar();
-        
+        if(filtro == null){
+            clientes = clienteRepository.findAllByAprovadoOrderByNomeAsc(true);
+        }
+        else if(filtro.equals("para_aprovar")){
+            clientes = listarClientesParaAprovar();
+        }
         else if(filtro.equals("adm_relatorio_clientes")){
             clientes = clienteRepository.findAll();
         }
-        else if(filtro.equals("melhores_clientes")){
-            clientes = listarMelhoresClientes();
-        }
         else{
-            log.info("Filtro inválido");
+            clientes = listarMelhoresClientes();
         }
 
         List<ClienteParaAprovarResponse> clienteParaAprovarResponse = new ArrayList<>();

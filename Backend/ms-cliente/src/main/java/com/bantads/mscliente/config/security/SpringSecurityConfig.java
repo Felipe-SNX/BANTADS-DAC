@@ -30,6 +30,8 @@ public class SpringSecurityConfig {
             .httpBasic(basic -> basic.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/clientes").permitAll()
+                .requestMatchers(HttpMethod.GET, "/clientes/checkCpf/{cpf}").permitAll()
+                .requestMatchers(HttpMethod.GET, "/clientes/reboot").permitAll()
                 .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
                 .anyRequest().authenticated()
             ).sessionManagement(

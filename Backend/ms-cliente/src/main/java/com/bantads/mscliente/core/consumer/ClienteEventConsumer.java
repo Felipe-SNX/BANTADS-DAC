@@ -55,6 +55,14 @@ public class ClienteEventConsumer {
             JsonNode rootNode = objectMapper.readTree(evento.getPayload());
 
             switch(sagaType){
+                case AUTOCADASTRO_SAGA:
+                    JsonNode autoCadastroNode = rootNode.path("autoCadastroInfo");
+                    AutoCadastroInfo autoCadastroInfo = objectMapper.treeToValue(autoCadastroNode, AutoCadastroInfo.class);
+                    clienteService.cadastrarCliente(autoCadastroInfo);                    
+                    evento.setSource(EEventSource.CLIENTE_SERVICE);
+                    evento.setStatus(ESagaStatus.SUCCESS);
+                    clienteEventProducer.sendEvent(ETopics.EVT_CLIENTE_SUCCESS, evento);
+                    break;
                 case ALTERACAO_PERFIL_SAGA:
                     JsonNode perfilNode = rootNode.path("perfilInfo");
                     JsonNode cpfNode = rootNode.path("cpf");

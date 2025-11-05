@@ -24,8 +24,6 @@ public class SagaListener {
 
     private final SagaProcessor sagaProcessor;
     private final SagaEventProducer sagaEventProducer;
-    private final SagaService sagaService;
-    private final ObjectMapper objectMapper;
 
     @RabbitListener(queues = RabbitMQConstantes.FILA_ORQUESTRADOR)
     public void handleEvents(Evento evento) {

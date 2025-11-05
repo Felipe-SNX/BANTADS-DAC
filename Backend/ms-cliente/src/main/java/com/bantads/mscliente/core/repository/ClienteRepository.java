@@ -15,8 +15,10 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     @Query(
             "SELECT c.id, c.email, c.cpf, c.idEndereco, c.telefone, c.salario," +
-            "c.aprovado, c.cpfGerente, c.motivoRejeição, c.nome " +
+            "c.aprovado, c.cpfGerente, c.motivoRejeicao, c.nome " +
             "FROM Cliente c"
     )
     List<Cliente> findThreeBestClientes();
+
+    Optional<Cliente> findByCpfAndAprovado(String cpf, boolean b);
 }

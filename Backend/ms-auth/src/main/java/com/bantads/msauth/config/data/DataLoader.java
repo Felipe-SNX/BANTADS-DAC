@@ -29,7 +29,6 @@ public class DataLoader implements CommandLineRunner {
             System.out.println(">>> Semeando dados iniciais de Usuários...");
 
             Usuario auth1 = Usuario.builder()
-                    .id(1L)
                     .tipoUsuario(TipoUsuario.CLIENTE)
                     .email("cli1@bantads.com.br")
                     .senha(passwordEncoder.encode("tads")) 
@@ -37,7 +36,6 @@ public class DataLoader implements CommandLineRunner {
                     .build();
 
             Usuario auth2 = Usuario.builder()
-                    .id(2L)
                     .tipoUsuario(TipoUsuario.CLIENTE)
                     .email("cli2@bantads.com.br")
                     .senha(passwordEncoder.encode("tads")) 
@@ -45,7 +43,6 @@ public class DataLoader implements CommandLineRunner {
                     .build();
 
             Usuario auth3 = Usuario.builder()
-                    .id(3L)
                     .tipoUsuario(TipoUsuario.CLIENTE)
                     .email("cli3@bantads.com.br")
                     .senha(passwordEncoder.encode("tads")) 
@@ -53,7 +50,6 @@ public class DataLoader implements CommandLineRunner {
                     .build();
 
             Usuario auth4 = Usuario.builder()
-                    .id(4L)
                     .tipoUsuario(TipoUsuario.CLIENTE)
                     .email("cli4@bantads.com.br")
                     .senha(passwordEncoder.encode("tads"))
@@ -61,7 +57,6 @@ public class DataLoader implements CommandLineRunner {
                     .build();
 
             Usuario auth5 = Usuario.builder()
-                    .id(5L)
                     .tipoUsuario(TipoUsuario.CLIENTE)
                     .email("cli5@bantads.com.br")
                     .senha(passwordEncoder.encode("tads")) 
@@ -69,7 +64,6 @@ public class DataLoader implements CommandLineRunner {
                     .build();
 
             Usuario auth6 = Usuario.builder()
-                    .id(6L)
                     .tipoUsuario(TipoUsuario.GERENTE)
                     .email("ger1@bantads.com.br")
                     .senha(passwordEncoder.encode("tads")) 
@@ -77,7 +71,6 @@ public class DataLoader implements CommandLineRunner {
                     .build();
 
             Usuario auth7 = Usuario.builder()
-                    .id(7L)
                     .tipoUsuario(TipoUsuario.GERENTE)
                     .email("ger2@bantads.com.br")
                     .senha(passwordEncoder.encode("tads")) 
@@ -85,7 +78,6 @@ public class DataLoader implements CommandLineRunner {
                     .build();
 
             Usuario auth8 = Usuario.builder()
-                    .id(8L)
                     .tipoUsuario(TipoUsuario.GERENTE)
                     .email("ger3@bantads.com.br")
                     .senha(passwordEncoder.encode("tads")) 
@@ -93,7 +85,6 @@ public class DataLoader implements CommandLineRunner {
                     .build();
 
             Usuario auth9 = Usuario.builder()
-                    .id(9L)
                     .tipoUsuario(TipoUsuario.ADMINISTRADOR)
                     .email("adm1@bantads.com.br")
                     .senha(passwordEncoder.encode("tads"))

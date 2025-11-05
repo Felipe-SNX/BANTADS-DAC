@@ -22,6 +22,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -119,13 +121,14 @@ public class ClienteService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+        log.info("Enviando evento de autocadastro");
         clienteEventProducer.sendEvent(ETopics.EVT_CLIENTE_SUCCESS, evento);
 
         return clienteParaAprovarResponse;
     }
 
     public RelatorioClientesResponse getClientePorCpf(String cpf){
-        Cliente cliente = getCliente(cpf);
+        Cliente cliente = getCliente(cpf, true);
 
         Endereco endereco = getEndereco(cliente.getIdEndereco(), cpf);
 
@@ -137,8 +140,9 @@ public class ClienteService {
         return relatorioClientesResponse;
     }
 
+
     public void atualizaCliente(PerfilInfo perfilInfo, String cpf){
-        Cliente cliente = getCliente(cpf);
+        Cliente cliente = getCliente(cpf, true);
 
         Endereco endereco = getEndereco(cliente.getIdEndereco(), cpf);
 
@@ -154,26 +158,39 @@ public class ClienteService {
         cliente.setNome(perfilInfo.getNome());
         cliente.setEmail(perfilInfo.getEmail());
         cliente.setSalario(perfilInfo.getSalario());
-        clienteRepository.save(cliente);        
+        clienteRepository.save(cliente);
+
+        Map<String, Object> perfilInfoMap = new HashMap<>();
+        perfilInfoMap.put("perfilInfo", perfilInfo);
+
+        Evento evento = null;
+        try {
+            evento = criarEvento(perfilInfoMap, ESaga.ALTERACAO_PERFIL_SAGA, EEventSource.CLIENTE_SERVICE);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        log.info("Enviando evento de alterar perfil");
+        clienteEventProducer.sendEvent(ETopics.EVT_CLIENTE_SUCCESS, evento);
     }
 
-    public void aprovarCliente(String cpf){
-        Cliente cliente = getCliente(cpf);
-
+    public void aprovarCliente(ClienteParaAprovarRequest clienteParaAprovarRequest, String cpf){
+        Cliente cliente = getCliente(cpf, false);
+        cliente.setCpfGerente(clienteParaAprovarRequest.getCpf());
         cliente.setAprovado(true);
         clienteRepository.save(cliente);
     }
 
     public void rejeitarCliente(ClienteRejeitadoDto clienteRejeitadoDto, String cpf){
-        Cliente cliente = getCliente(cpf);
+        Cliente cliente = getCliente(cpf, false);
 
         cliente.setAprovado(false);
-        cliente.setMotivoRejeição(clienteRejeitadoDto.getMotivo());
+        cliente.setMotivoRejeicao(clienteRejeitadoDto.getMotivo());
+        cliente.setCpfGerente(clienteRejeitadoDto.getUsuario().getCpf());
         clienteRepository.save(cliente);
     }
 
-    private Cliente getCliente(String cpf){
-        return clienteRepository.findByCpf(cpf)
+    private Cliente getCliente(String cpf, boolean aprovado){
+        return clienteRepository.findByCpfAndAprovado(cpf, aprovado)
                 .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente", cpf));
     }
 

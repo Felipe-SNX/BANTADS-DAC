@@ -1,5 +1,7 @@
 package com.bantads.msconta.event.consumer;
 
+import com.bantads.msconta.conta.command.model.Conta;
+import com.bantads.msconta.event.producer.ContaEventCQRSProducer;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -31,6 +33,7 @@ public class ContaEventSagaConsumer {
     private final ContaCommandService contaCommandService;    
     private final ObjectMapper objectMapper;
     private final ContaEventSagaProducer contaEventProducer;
+    private final ContaEventCQRSProducer contaEventCQRSProducer;
     
     @Transactional
     @RabbitListener(queues = RabbitMQConstantes.FILA_CONTA_CMD)
@@ -58,9 +61,10 @@ public class ContaEventSagaConsumer {
                 case AUTOCADASTRO_SAGA:
                     JsonNode autoCadastroNode = rootNode.path("autoCadastroInfo");
                     AutoCadastroInfo autoCadastroInfo = objectMapper.treeToValue(autoCadastroNode, AutoCadastroInfo.class);
-                    contaCommandService.criarConta(autoCadastroInfo);
+                    Conta conta = contaCommandService.criarConta(autoCadastroInfo);
                     evento.setSource(EEventSource.CONTA_SERVICE);
                     evento.setStatus(ESagaStatus.SUCCESS);
+                    contaEventCQRSProducer.sendSyncReadDatabaseEvent(conta);
                     contaEventProducer.sendEvent(ETopics.EVT_CONTA_SUCCESS, evento);
                     break;
                 case ALTERACAO_PERFIL_SAGA:

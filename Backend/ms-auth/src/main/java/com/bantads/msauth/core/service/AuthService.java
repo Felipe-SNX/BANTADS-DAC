@@ -10,12 +10,15 @@ import com.bantads.msauth.core.repository.AuthRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AuthService {
@@ -62,6 +65,7 @@ public class AuthService {
 
     private String gerarSenha(){
         String senhaPura = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 8);
+        log.info("Essa é a senha gerada: {}", senhaPura);
         //Aqui é necessário enviar a senha original para o cliente
         return passwordEncoder.encode(senhaPura);
     }

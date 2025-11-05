@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClienteRejeitadoDto {
+public class Usuario {
 
-    private Usuario usuario;
-    private String motivo;
+    private String cpf;
+    private String nome;
+    private String email;
 }

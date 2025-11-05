@@ -38,5 +38,5 @@ public class Cliente {
     @Column(nullable = false)
     private boolean aprovado = false;
 
-    private String motivoRejeição = null;
+    private String motivoRejeicao = null;
 }

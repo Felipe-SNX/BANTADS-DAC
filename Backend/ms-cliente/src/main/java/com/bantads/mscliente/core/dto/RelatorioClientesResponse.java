@@ -20,4 +20,7 @@ public class RelatorioClientesResponse {
     private String cidade;
     private String estado;
     private BigDecimal salario;
+    private BigDecimal limite;
+    private String conta;
+    private String cpfGerente;
 }

@@ -35,6 +35,7 @@ public class AuthEventConsumer {
         ESaga sagaType = evento.getSaga();
 
         if(routingKey.equals(ETopics.CMD_AUTH_CREATE.getTopic())){
+            log.info("entrei no if de ms-auth get topic");
             prosseguirTransacao(sagaType, evento);
         }
         else{
@@ -53,15 +54,10 @@ public class AuthEventConsumer {
                     JsonNode clienteNode = rootNode.path("autoCadastroInfo");
                     AutoCadastroInfo autoCadastroInfo = objectMapper.treeToValue(clienteNode, AutoCadastroInfo.class);
                     authService.cadastrarUsuario(autoCadastroInfo);
-                    evento.setSource(EEventSource.CLIENTE_SERVICE);
+                    log.info("produzindo o evento de sucesso");
+                    evento.setSource(EEventSource.AUTH_SERVICE);
                     evento.setStatus(ESagaStatus.SUCCESS);
                     authEventProducer.sendEvent(ETopics.EVT_AUTH_SUCCESS, evento);
-                    break;
-                case INSERCAO_GERENTE_SAGA:
-
-                    break;
-                case REMOCAO_GERENTE_SAGA:
-
                     break;
                 default:
                     break;

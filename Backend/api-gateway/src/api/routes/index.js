@@ -73,13 +73,11 @@ router.post('/clientes', (req, res, next) => {
 });
 
 router.put('/clientes/:cpf', verifyToken, (req, res, next) => {
-    req.url = `/saga/alterarPerfil/${req.params.cpf}`;
-    orquestradorServiceProxy(req, res, next);
+    clientesServiceProxy(req, res, next);
 });
 
 router.post('/gerentes', verifyToken, checkRole(['ADMIN']), (req, res, next) => {
-    req.url = '/saga/inserirGerente';
-    orquestradorServiceProxy(req, res, next);
+    gerentesServiceProxy(req, res, next);
 });
 
 router.put('/gerentes/:cpf', verifyToken, checkRole(['ADMIN']), (req, res, next) => {
@@ -87,20 +85,18 @@ router.put('/gerentes/:cpf', verifyToken, checkRole(['ADMIN']), (req, res, next)
 });
 
 router.delete('/gerentes/:cpf', verifyToken, checkRole(['ADMIN']), (req, res, next) => {
-    req.url = `/saga/removerGerente/${req.params.cpf}`;
-    orquestradorServiceProxy(req, res, next);
+    gerentesServiceProxy(req, res, next);
 });
 
-router.post('/clientes/:cpf/rejeitar', verifyToken, clientesServiceProxy);
-router.post('/clientes/:cpf/aprovar', verifyToken, clientesServiceProxy);
+router.post('/clientes/:cpf/rejeitar', verifyToken, checkRole(['GERENTE']), clientesServiceProxy);
+router.post('/clientes/:cpf/aprovar', verifyToken, checkRole(['GERENTE']), clientesServiceProxy);
 
 router.get('/clientes/:cpf', verifyToken, async (req, res, next) => {
     const { cpf } = req.params;
-    const { authorization } = req.headers; 
+    const { authorization } = req.headers;
 
     const clienteUrl = `${process.env.MS_CLIENTE_URL}/clientes/${cpf}`;
-    
-    const contaUrl = `${process.env.MS_CONTA_URL}/contas/${cpf}/dadosConta`; 
+    const contaUrl = `${process.env.MS_CONTA_URL}/contas/${cpf}/dadosConta`;
 
     try {
         const clienteRequest = axios.get(clienteUrl, {
@@ -109,6 +105,9 @@ router.get('/clientes/:cpf', verifyToken, async (req, res, next) => {
 
         const contaRequest = axios.get(contaUrl, {
             headers: { 'Authorization': authorization }
+        }).catch(error => {
+            console.warn(`[Gateway] MS-Conta falhou para CPF ${cpf} (esperado, saga pendente?): ${error.message}`);
+            return null;
         });
 
         const [clienteResponse, contaResponse] = await Promise.all([
@@ -116,21 +115,54 @@ router.get('/clientes/:cpf', verifyToken, async (req, res, next) => {
             contaRequest
         ]);
 
-        const clienteData = clienteResponse.data; 
-        const contaData = contaResponse.data;    
+        const clienteData = clienteResponse.data;
+
+        const cpfGerente = (clienteData && clienteData.cpfGerente) ? clienteData.cpfGerente : null;
+        console.log(cpfGerente);
+        let gerenteRequest;
+        if (cpfGerente) {
+            const gerenteUrl = `${process.env.MS_GERENTE_URL}/gerentes/${cpfGerente}`;
+            gerenteRequest = axios.get(gerenteUrl, {
+                headers: { 'Authorization': authorization }
+            }).catch(error => {
+                console.warn(`[Gateway] MS-Gerente falhou para CPF ${cpfGerente}: ${error.message}`);
+                return null;
+            });
+        } else {
+            gerenteRequest = Promise.resolve(null);
+        }
+
+        const gerenteResponse = await gerenteRequest;
+
+        const contaData = (contaResponse && contaResponse.data) ? contaResponse.data : null;
+        const gerenteData = (gerenteResponse && gerenteResponse.data) ? gerenteResponse.data : null;
+
+        const limite = contaData ? contaData.limite : null;
+        const saldo = contaData ? contaData.saldo : null;
+        const conta = contaData ? contaData.numConta : null; // Mantive seu 'numConta'
+
+        const gerente = gerenteData ? gerenteData.cpf : null;
+        const gerente_email = gerenteData ? gerenteData.email : null;
+        const gerente_nome = gerenteData ? gerenteData.nome : null;
 
         const compositeResponse = {
             ...clienteData,
-            limite: contaData.limite 
+            limite: limite,
+            conta: conta,
+            saldo: saldo,
+            gerente: gerente,
+            gerente_nome: gerente_nome,
+            gerente_email: gerente_email
         };
 
         res.status(200).json(compositeResponse);
 
     } catch (error) {
-        console.error(`Erro ao buscar dados para CPF ${cpf}:`, error.message);
-        
-        res.status(500).json({ 
-            message: 'Erro ao compor a resposta dos microsserviços.',
+        console.error(`[Gateway] Erro CRÍTICO ao buscar dados primários do cliente ${cpf}:`, error.message);
+
+        const status = error.response?.status || 500;
+        res.status(status).json({
+            message: 'Erro ao buscar dados primários do cliente.',
             serviceError: error.message
         });
     }

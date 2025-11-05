@@ -100,6 +100,12 @@ services:
       - SPRING_JWT_SECRET=Nf3oai8aakCw0TF7Wv0PAGQyiNEv6vuOgSFLmKefxUi
     ports:
       - "8094:8084"
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://localhost:8084/actuator/health || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   ms-orquestrador:
     build: './ms-orquestrador'

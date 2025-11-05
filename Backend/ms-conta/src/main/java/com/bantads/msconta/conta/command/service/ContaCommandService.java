@@ -142,7 +142,7 @@ public class ContaCommandService {
         }
     }
 
-    public void criarConta(AutoCadastroInfo autoCadastroInfo){
+    public Conta criarConta(AutoCadastroInfo autoCadastroInfo){
         String cpfGerente = buscarCpfGerenteComMenosContas();
         
         var conta = Conta
@@ -157,6 +157,8 @@ public class ContaCommandService {
                 .build();
         
         contaRepository.save(conta);
+
+        return conta;
     }
 
     public void atualizarLimite(PerfilInfo perfilInfo, String cpf){

@@ -16,7 +16,7 @@ public class TransferenciaResponse {
 
     private String conta;
     private LocalDateTime data;
-    private String numContaDestino;
+    private String destino;
     private BigDecimal saldo;
     private BigDecimal valor;
 }

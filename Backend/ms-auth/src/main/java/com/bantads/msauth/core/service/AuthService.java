@@ -51,13 +51,14 @@ public class AuthService {
             .orElseThrow(() -> new UsuarioNotFoundException(String.format("Usuario com '%s' não encontrado", login)));
     }
 
-    public void cadastrarUsuario(AutoCadastroInfo autoCadastroInfo){
+    public void cadastrarUsuarioCliente(AutoCadastroInfo autoCadastroInfo){
         var usuario = Usuario
             .builder()
             .email(autoCadastroInfo.getEmail())
             .senha(gerarSenha())
             .cpf(autoCadastroInfo.getCpf())
             .tipoUsuario(TipoUsuario.CLIENTE)
+            .ativo(false)
             .build();
         
         authRepository.save(usuario);

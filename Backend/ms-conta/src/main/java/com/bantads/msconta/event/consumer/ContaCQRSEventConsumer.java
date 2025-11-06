@@ -1,6 +1,5 @@
 package com.bantads.msconta.event.consumer;
 
-import com.bantads.msconta.common.dto.Evento;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -81,7 +80,7 @@ public class ContaCQRSEventConsumer {
                     .cpfClienteOrigem(movOriginal.getCpfClienteOrigem())
                     .cpfClienteDestino(movOriginal.getCpfClienteDestino())
                     .numContaOrigem(contaViewOrigem.getConta())
-                    .numContaDestino(contaViewDestino != null ? contaViewDestino.getConta() : null)
+                    .destino(contaViewDestino != null ? contaViewDestino.getConta() : null)
                     .valor(movOriginal.getValor())
                     .build();
 

@@ -154,9 +154,28 @@ router.put('/clientes/:cpf', verifyToken, (req, res, next) => {
     orquestradorServiceProxy(req, res, next);
 });
 
-router.post('/gerentes', verifyToken, checkRole(['ADMINISTRADOR']), (req, res, next) => {
-    req.url = '/saga/inserirGerente';
-    orquestradorServiceProxy(req, res, next);
+router.post('/gerentes', verifyToken, checkRole(['ADMINISTRADOR']), async (req, res, next) => {
+    try {
+        const { cpf } = req.body;
+
+        if (!cpf) {
+            return res.status(400).json({ message: "CPF é obrigatório." });
+        }
+
+        const clienteUrl = `${process.env.MS_GERENTE_URL}/gerentes/checkCpf/${cpf}`;
+        await axios.get(clienteUrl);
+
+        console.log("indo para a saga");
+        req.url = '/saga/inserirGerente';
+        orquestradorServiceProxy(req, res, next);
+
+    } catch (error) {
+        if (error.response && error.response.status === 409) {
+            return res.status(409).json(error.response.data);
+        }
+
+        next(error);
+    }
 });
 
 router.delete('/gerentes/:cpf', verifyToken, checkRole(['ADMINISTRADOR']), (req, res, next) => {
@@ -197,7 +216,7 @@ router.get('/clientes/:cpf', verifyToken, async (req, res, next) => {
 
         const clienteData = clienteResponse.data;
 
-        const cpfGerente = (clienteData && clienteData.cpfGerente) ? clienteData.cpfGerente : null;
+        const cpfGerente = (clienteData && clienteData.gerente) ? clienteData.gerente : null;
         console.log(cpfGerente);
         let gerenteRequest;
         if (cpfGerente) {

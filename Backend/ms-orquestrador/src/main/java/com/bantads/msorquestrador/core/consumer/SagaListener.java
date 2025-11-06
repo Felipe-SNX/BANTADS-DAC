@@ -39,7 +39,7 @@ public class SagaListener {
                 var sagaStep = sagaProcessor.processNextStep(evento, handler);
 
                 if(sagaStep.getProximoTopico().equals(ETopics.FINISH_FAIL)){
-                    log.info("A saga falou {} falhou, necessário verificação. Evento: {}", evento.getSaga(), evento);
+                    log.info("A saga {} falhou, necessário verificação. Evento: {}", evento.getSaga(), evento);
                 }
                 else if(!sagaStep.getProximoTopico().equals(ETopics.FINISH_SUCCESS)){
                     sagaEventProducer.sendEvent(sagaStep.getProximoTopico(), sagaStep.getEventoParaEnviar());

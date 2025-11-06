@@ -2,6 +2,11 @@ package com.bantads.msconta.event.consumer;
 
 import com.bantads.msconta.conta.command.model.Conta;
 import com.bantads.msconta.event.producer.ContaEventCQRSProducer;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -15,9 +20,12 @@ import com.bantads.msconta.common.enums.ESagaStatus;
 import com.bantads.msconta.common.enums.ETopics;
 import com.bantads.msconta.config.rabbitmq.RabbitMQConstantes;
 import com.bantads.msconta.conta.command.service.ContaCommandService;
+import com.bantads.msconta.conta.dto.GerentesNumeroContasDto;
 import com.bantads.msconta.event.dto.AutoCadastroInfo;
 import com.bantads.msconta.event.dto.PerfilInfo;
 import com.bantads.msconta.event.producer.ContaEventSagaProducer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -61,10 +69,12 @@ public class ContaEventSagaConsumer {
                 case AUTOCADASTRO_SAGA:
                     JsonNode autoCadastroNode = rootNode.path("autoCadastroInfo");
                     AutoCadastroInfo autoCadastroInfo = objectMapper.treeToValue(autoCadastroNode, AutoCadastroInfo.class);
-                    Conta conta = contaCommandService.criarConta(autoCadastroInfo);
+                    List<GerentesNumeroContasDto> numeroContasGerente = contaCommandService.buscarNumeroDeContasPorGerente();
+                    Map<String, Object> novoMap = new HashMap<>();
+                    novoMap.put("autoCadastroInfo", autoCadastroInfo);
+                    novoMap.put("numeroContasGerente", numeroContasGerente);
                     evento.setSource(EEventSource.CONTA_SERVICE);
                     evento.setStatus(ESagaStatus.SUCCESS);
-                    contaEventCQRSProducer.sendSyncReadDatabaseEvent(conta);
                     contaEventProducer.sendEvent(ETopics.EVT_CONTA_SUCCESS, evento);
                     break;
                 case ALTERACAO_PERFIL_SAGA:
@@ -123,5 +133,16 @@ public class ContaEventSagaConsumer {
             evento.setStatus(ESagaStatus.COMPENSATE_FAILED);
             contaEventProducer.sendEvent(ETopics.EVT_CONTA_FAIL, evento);
         }
-    }                  
+    }    
+    
+    private void criarConta(Evento evento) throws JsonMappingException, JsonProcessingException{
+        JsonNode rootNode = objectMapper.readTree(evento.getPayload());
+        JsonNode autoCadastroNode = rootNode.path("autoCadastroInfo");
+        AutoCadastroInfo autoCadastroInfo = objectMapper.treeToValue(autoCadastroNode, AutoCadastroInfo.class);
+        Conta conta = contaCommandService.criarConta(autoCadastroInfo);
+        evento.setSource(EEventSource.CONTA_SERVICE);
+        evento.setStatus(ESagaStatus.SUCCESS);
+        contaEventCQRSProducer.sendSyncReadDatabaseEvent(conta);
+        contaEventProducer.sendEvent(ETopics.EVT_CONTA_SUCCESS, evento);
+    }
 }

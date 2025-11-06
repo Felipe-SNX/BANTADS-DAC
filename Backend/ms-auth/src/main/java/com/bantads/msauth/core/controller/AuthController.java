@@ -4,7 +4,6 @@ import com.bantads.msauth.config.exception.ErrorMessage;
 import com.bantads.msauth.core.dto.LoginInfo;
 import com.bantads.msauth.core.dto.LoginResponseDto;
 import com.bantads.msauth.core.dto.LogoutResponse;
-import com.bantads.msauth.core.jwt.JwtToken;
 import com.bantads.msauth.core.jwt.JwtUserDetailsService;
 import com.bantads.msauth.core.service.AuthService;
 import com.bantads.msauth.core.service.DataService;

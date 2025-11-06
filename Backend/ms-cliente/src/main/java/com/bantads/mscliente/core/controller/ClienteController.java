@@ -100,8 +100,9 @@ public class ClienteController {
     }
 
     @PostMapping("/{cpf}/aprovar")
-    public ResponseEntity<Void> aprovarCliente(@RequestBody ClienteParaAprovarRequest clienteParaAprovarRequest, @PathVariable String cpf) {
-        clienteService.aprovarCliente(clienteParaAprovarRequest, cpf);
+    public ResponseEntity<Void> aprovarCliente(@RequestBody ClienteParaAprovarRequest clienteParaAprovarRequest, 
+                                               @PathVariable String cpf) {
+        clienteService.aprovarCliente(cpf);
         return ResponseEntity.ok().build();
     }
 

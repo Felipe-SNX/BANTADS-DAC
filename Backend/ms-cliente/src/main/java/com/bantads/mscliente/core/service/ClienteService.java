@@ -187,9 +187,8 @@ public class ClienteService {
         clienteEventProducer.sendEvent(ETopics.EVT_CLIENTE_SUCCESS, evento);
     }
 
-    public void aprovarCliente(ClienteParaAprovarRequest clienteParaAprovarRequest, String cpf){
+    public void aprovarCliente(String cpf){
         Cliente cliente = getCliente(cpf, false);
-        cliente.setGerente(clienteParaAprovarRequest.getCpf());
         cliente.setAprovado(true);
         clienteRepository.save(cliente);
     }
@@ -201,6 +200,11 @@ public class ClienteService {
         cliente.setMotivoRejeicao(clienteRejeitadoDto.getMotivo());
         cliente.setGerente(clienteRejeitadoDto.getUsuario().getCpf());
         clienteRepository.save(cliente);
+    }
+
+    public void atribuirGerente(String cpfCliente, String cpfGerente){
+        Cliente cliente = getCliente(cpfCliente, false);
+        cliente.setGerente(cpfGerente);
     }
 
     private Cliente getCliente(String cpf, boolean aprovado){

@@ -44,5 +44,5 @@ public class MovimentacaoView {
     private BigDecimal valor;
 
     private String numContaOrigem;
-    private String numContaDestino;
+    private String destino;
 }

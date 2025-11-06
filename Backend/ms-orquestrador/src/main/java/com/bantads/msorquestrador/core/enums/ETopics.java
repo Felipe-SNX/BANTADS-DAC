@@ -3,6 +3,7 @@ package com.bantads.msorquestrador.core.enums;
 public enum ETopics {
 
     CMD_CLIENTE_CREATE("cmd.cliente.create"),
+    CMD_CLIENTE_SET_GERENTE("cmd.cliente.set.gerente"),
     CMD_CLIENTE_COMPENSATE("cmd.cliente.compensate"),
 
     CMD_AUTH_CREATE("cmd.auth.create"),

@@ -30,7 +30,7 @@ public class MovimentacaoQueryService {
                     .data(movimentacaoView.getData())
                     .tipo(movimentacaoView.getTipo())
                     .numContaOrigem(movimentacaoView.getNumContaOrigem())
-                    .numContaDestino(movimentacaoView.getNumContaDestino())
+                    .destino(movimentacaoView.getDestino())
                     .valor(movimentacaoView.getValor())
                     .build();
 

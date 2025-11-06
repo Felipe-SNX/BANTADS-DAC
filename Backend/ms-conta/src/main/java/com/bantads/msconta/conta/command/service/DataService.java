@@ -169,7 +169,7 @@ public class DataService {
                 .cpfClienteOrigem(mov.getCpfClienteOrigem())
                 .cpfClienteDestino(mov.getCpfClienteDestino())
                 .numContaOrigem(numContaOrigem)
-                .numContaDestino(numContaDestino)
+                .destino(numContaDestino)
                 .build();
     }
 }

@@ -2,6 +2,7 @@ package com.bantads.msgerente.core.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.bantads.msgerente.core.dto.DadoGerenteAtualizacao;
 import com.bantads.msgerente.core.enums.TipoGerente;
@@ -24,6 +25,10 @@ import lombok.extern.slf4j.Slf4j;
 public class  GerenteService {
 
     private final GerenteRepository repository;
+
+    public Optional<Gerente> checkCpf(String cpf){
+        return repository.findByCpf(cpf);
+    }
 
     public List<GerentesResponse> listarGerentes() {
         List<Gerente> gerentes = repository.findAllByTipo(TipoGerente.GERENTE);

@@ -4,6 +4,7 @@ import com.bantads.msconta.common.dto.DadoGerenteInsercao;
 import com.bantads.msconta.conta.command.model.Conta;
 import com.bantads.msconta.conta.command.model.Movimentacao;
 import com.bantads.msconta.conta.command.repository.ContaWriteRepository;
+import com.bantads.msconta.conta.dto.GerentesNumeroContasDto;
 import com.bantads.msconta.conta.dto.OperacaoRequest;
 import com.bantads.msconta.conta.dto.OperacaoResponse;
 import com.bantads.msconta.conta.dto.TransferenciaRequest;
@@ -125,7 +126,7 @@ public class ContaCommandService {
                 .builder()
                 .conta(numConta)
                 .data(LocalDateTime.now())
-                .numContaDestino(contaDestino.getConta())
+                .destino(contaDestino.getConta())
                 .saldo(posSaque.getSaldo())
                 .valor(transferencia.getValor())
                 .build();
@@ -194,6 +195,10 @@ public class ContaCommandService {
                 contaRepository.save(conta);
         }
 
+    }
+
+    public List<GerentesNumeroContasDto> buscarNumeroDeContasPorGerente(){
+        return contaRepository.buscarNumeroDeContasPorGerente();
     }
 
     private Conta buscarContaPorCpfCliente(String cpf){

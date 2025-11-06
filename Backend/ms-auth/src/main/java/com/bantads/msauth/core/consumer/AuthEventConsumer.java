@@ -53,8 +53,7 @@ public class AuthEventConsumer {
                 case AUTOCADASTRO_SAGA:
                     JsonNode clienteNode = rootNode.path("autoCadastroInfo");
                     AutoCadastroInfo autoCadastroInfo = objectMapper.treeToValue(clienteNode, AutoCadastroInfo.class);
-                    authService.cadastrarUsuario(autoCadastroInfo);
-                    log.info("produzindo o evento de sucesso");
+                    authService.cadastrarUsuarioCliente(autoCadastroInfo);
                     evento.setSource(EEventSource.AUTH_SERVICE);
                     evento.setStatus(ESagaStatus.SUCCESS);
                     authEventProducer.sendEvent(ETopics.EVT_AUTH_SUCCESS, evento);

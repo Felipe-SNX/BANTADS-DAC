@@ -19,6 +19,6 @@ public class ItemExtratoResponse {
     private LocalDateTime data;
     private TipoMovimentacao tipo;
     private String numContaOrigem;
-    private String numContaDestino;
+    private String destino;
     private BigDecimal valor;
 }

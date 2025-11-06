@@ -7,7 +7,6 @@ import com.bantads.msgerente.core.enums.EEventSource;
 import com.bantads.msgerente.core.enums.ESaga;
 import com.bantads.msgerente.core.enums.ESagaStatus;
 import com.bantads.msgerente.core.enums.ETopics;
-import com.bantads.msgerente.core.model.Gerente;
 import com.bantads.msgerente.core.producer.GerenteEventProducer;
 import com.bantads.msgerente.core.service.GerenteService;
 import com.fasterxml.jackson.databind.JsonNode;

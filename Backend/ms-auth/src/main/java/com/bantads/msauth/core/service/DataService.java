@@ -31,6 +31,7 @@ public class DataService {
             .email("cli1@bantads.com.br")
             .senha(passwordEncoder.encode("tads")) 
             .cpf("12912861012")
+            .ativo(true)
             .build();
 
         Usuario auth2 = Usuario.builder()
@@ -38,6 +39,7 @@ public class DataService {
             .email("cli2@bantads.com.br")
             .senha(passwordEncoder.encode("tads")) 
             .cpf("09506382000")
+            .ativo(true)
             .build();
 
         Usuario auth3 = Usuario.builder()
@@ -45,6 +47,7 @@ public class DataService {
             .email("cli3@bantads.com.br")
             .senha(passwordEncoder.encode("tads")) 
             .cpf("85733854057")
+            .ativo(true)
             .build();
 
         Usuario auth4 = Usuario.builder()
@@ -52,6 +55,7 @@ public class DataService {
             .email("cli4@bantads.com.br")
             .senha(passwordEncoder.encode("tads"))
             .cpf("58872160006")
+            .ativo(true)
             .build();
 
         Usuario auth5 = Usuario.builder()
@@ -59,6 +63,7 @@ public class DataService {
             .email("cli5@bantads.com.br")
             .senha(passwordEncoder.encode("tads")) 
             .cpf("76179646090")
+            .ativo(true)
             .build();
 
         Usuario auth6 = Usuario.builder()
@@ -66,6 +71,7 @@ public class DataService {
             .email("ger1@bantads.com.br")
             .senha(passwordEncoder.encode("tads")) 
             .cpf("98574307084")
+            .ativo(true)
             .build();
 
         Usuario auth7 = Usuario.builder()
@@ -73,6 +79,7 @@ public class DataService {
             .email("ger2@bantads.com.br")
             .senha(passwordEncoder.encode("tads")) 
             .cpf("64065268052")
+            .ativo(true)
             .build();
 
         Usuario auth8 = Usuario.builder()
@@ -80,6 +87,7 @@ public class DataService {
             .email("ger3@bantads.com.br")
             .senha(passwordEncoder.encode("tads")) 
             .cpf("23862179060")
+            .ativo(true)
             .build();
 
         Usuario auth9 = Usuario.builder()
@@ -87,6 +95,7 @@ public class DataService {
             .email("adm1@bantads.com.br")
             .senha(passwordEncoder.encode("tads"))
             .cpf("40501740066")
+            .ativo(true)
             .build();
 
         List<Usuario> usuarios = List.of(

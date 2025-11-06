@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +61,7 @@ public class ClienteService {
             clientes = clienteRepository.findAll();
         }
         else{
-            clientes = listarMelhoresClientes();
+            clientes = top3Clientes();
         }
 
         List<ClienteParaAprovarResponse> clienteParaAprovarResponse = new ArrayList<>();
@@ -76,12 +79,14 @@ public class ClienteService {
         return clienteParaAprovarResponse;
     }
 
-    private List<Cliente> listarClientesParaAprovar(){
-        return clienteRepository.findAllByAprovado(false);
+    private List<Cliente> top3Clientes(){
+        Pageable topTres = PageRequest.of(0, 3);
+        Page<Cliente> paginaClientes = clienteRepository.findMelhoresClientes(true, topTres);
+        return paginaClientes.getContent();
     }
 
-    private List<Cliente> listarMelhoresClientes(){
-        return clienteRepository.findThreeBestClientes();
+    private List<Cliente> listarClientesParaAprovar(){
+        return clienteRepository.findAllByAprovado(false);
     }
 
     @Transactional
@@ -184,7 +189,7 @@ public class ClienteService {
 
     public void aprovarCliente(ClienteParaAprovarRequest clienteParaAprovarRequest, String cpf){
         Cliente cliente = getCliente(cpf, false);
-        cliente.setCpfGerente(clienteParaAprovarRequest.getCpf());
+        cliente.setGerente(clienteParaAprovarRequest.getCpf());
         cliente.setAprovado(true);
         clienteRepository.save(cliente);
     }
@@ -194,7 +199,7 @@ public class ClienteService {
 
         cliente.setAprovado(false);
         cliente.setMotivoRejeicao(clienteRejeitadoDto.getMotivo());
-        cliente.setCpfGerente(clienteRejeitadoDto.getUsuario().getCpf());
+        cliente.setGerente(clienteRejeitadoDto.getUsuario().getCpf());
         clienteRepository.save(cliente);
     }
 

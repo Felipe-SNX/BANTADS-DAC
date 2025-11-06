@@ -1,4 +1,4 @@
-package com.bantads.mscliente.core.dto;
+package com.bantads.msorquestrador.core.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,14 +11,14 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClienteParaAprovarResponse {
+public class PerfilInfoResponse{
 
     private String cpf;
     private String nome;
     private String email;
     private BigDecimal salario;
     private String endereco;
+    private String cep;
     private String cidade;
     private String estado;
-    private String saldo;
 }

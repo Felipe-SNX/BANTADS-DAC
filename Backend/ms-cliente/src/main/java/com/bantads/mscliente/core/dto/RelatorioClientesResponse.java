@@ -22,5 +22,5 @@ public class RelatorioClientesResponse {
     private BigDecimal salario;
     private BigDecimal limite;
     private String conta;
-    private String cpfGerente;
+    private String gerente;
 }

@@ -150,7 +150,7 @@ router.post('/clientes', async (req, res, next) => {
 });
 
 router.put('/clientes/:cpf', verifyToken, (req, res, next) => {
-    req.url = '/saga/alterarPerfil/:cpf';
+    req.url = `/saga/alterarPerfil/${req.params.cpf}`;
     orquestradorServiceProxy(req, res, next);
 });
 
@@ -160,7 +160,7 @@ router.post('/gerentes', verifyToken, checkRole(['ADMINISTRADOR']), (req, res, n
 });
 
 router.delete('/gerentes/:cpf', verifyToken, checkRole(['ADMINISTRADOR']), (req, res, next) => {
-    req.url = '/saga/removerGerente/:cpf';
+    req.url = `/saga/removerGerente/${req.params.cpf}`;
     orquestradorServiceProxy(req, res, next);
 });
 
@@ -219,7 +219,7 @@ router.get('/clientes/:cpf', verifyToken, async (req, res, next) => {
 
         const limite = contaData ? contaData.limite : null;
         const saldo = contaData ? contaData.saldo : null;
-        const conta = contaData ? contaData.numConta : null; 
+        const conta = contaData ? contaData.conta : null;
 
         const gerente = gerenteData ? gerenteData.cpf : null;
         const gerente_email = gerenteData ? gerenteData.email : null;

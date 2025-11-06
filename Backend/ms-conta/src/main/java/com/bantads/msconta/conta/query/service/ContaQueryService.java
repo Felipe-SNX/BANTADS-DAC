@@ -12,7 +12,6 @@ import com.bantads.msconta.conta.dto.SaldoResponse;
 import com.bantads.msconta.conta.exception.ContaNaoEncontradaException;
 import com.bantads.msconta.conta.mapper.ContaViewMapper;
 import com.bantads.msconta.conta.query.model.ContaView;
-import com.bantads.msconta.conta.query.model.MovimentacaoView;
 import com.bantads.msconta.conta.query.repository.ContaViewRepository;
 
 import lombok.AllArgsConstructor;
@@ -28,28 +27,28 @@ public class ContaQueryService {
 
     @Transactional(readOnly = true)
     public SaldoResponse consultarSaldo(String numConta) {
-        ContaView conta = contaRepository.findByNumConta(numConta)
+        ContaView conta = contaRepository.findByConta(numConta)
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta", numConta));
         return ContaViewMapper.toSaldoResponse(conta);
     }
 
     @Transactional(readOnly = true)
     public DadoConta getContaByClienteCpf(String cpf) {
-        ContaView conta = contaRepository.findByCpfCliente(cpf)
+        ContaView conta = contaRepository.findByCliente(cpf)
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta", cpf));
         return ContaViewMapper.toDadoConta(conta);
     }
 
     @Transactional(readOnly = true)
     public ExtratoResponse extrato(String numConta) {
-        ContaView conta = contaRepository.findByNumConta(numConta)
+        ContaView conta = contaRepository.findByConta(numConta)
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta", numConta));
 
-        List<ItemExtratoResponse> movimentacoes = movimentacaoService.buscarMovimentacoesPorCpf(conta.getCpfCliente());
+        List<ItemExtratoResponse> movimentacoes = movimentacaoService.buscarMovimentacoesPorCpf(conta.getCliente());
 
         return ExtratoResponse
                 .builder()
-                .numConta(numConta)
+                .conta(numConta)
                 .saldo(conta.getSaldo())
                 .movimentacoes(movimentacoes)
                 .build();

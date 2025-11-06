@@ -1,6 +1,9 @@
 package com.bantads.msorquestrador.core.controller;
 
+import com.bantads.msorquestrador.core.dto.PerfilInfoResponse;
+import com.bantads.msorquestrador.core.dto.mapper.PerfilInfoMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.bantads.msorquestrador.core.dto.AutoCadastroInfo;
@@ -26,16 +29,20 @@ public class SagaController {
     private final SagaService sagaService;
 
     @PostMapping("/autocadastro")
-    public void iniciarSagaAutocadastro(@RequestBody AutoCadastroInfo autoCadastroInfo) {
+    public ResponseEntity<AutoCadastroInfo> iniciarSagaAutocadastro(@RequestBody AutoCadastroInfo autoCadastroInfo) {
         log.info("Iniciando saga autocadastro");
         sagaService.iniciarSagaAutocadastro(autoCadastroInfo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(autoCadastroInfo);
     }
 
 
     @PutMapping("/alterarPerfil/{cpf}")
-    public void iniciarSagaAlterarPerfil(@RequestBody PerfilInfo perfilInfo, @PathVariable String cpf) {
+    public ResponseEntity<PerfilInfoResponse> iniciarSagaAlterarPerfil(@RequestBody PerfilInfo perfilInfo, @PathVariable String cpf) {
         log.info("Iniciando saga alterar perfil");
         sagaService.iniciarSagaAlterarPerfil(perfilInfo, cpf);
+        PerfilInfoResponse perfilInfoResponse = PerfilInfoMapper.toPerfilInfoResponse(perfilInfo);
+        perfilInfoResponse.setCpf(cpf);
+        return ResponseEntity.status(HttpStatus.OK).body(perfilInfoResponse);
     }
 
     @PostMapping("/inserirGerente")

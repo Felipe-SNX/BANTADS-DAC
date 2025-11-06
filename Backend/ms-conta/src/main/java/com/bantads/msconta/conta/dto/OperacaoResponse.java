@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class OperacaoResponse {
 
-    private String numConta;
+    private String conta;
     private LocalDateTime data;
     private BigDecimal saldo;
 }

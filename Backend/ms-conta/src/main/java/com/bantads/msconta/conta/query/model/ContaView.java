@@ -24,7 +24,7 @@ public class ContaView {
     private Long id; 
 
     @Column(nullable = false)
-    private String numConta;
+    private String conta;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
@@ -36,7 +36,7 @@ public class ContaView {
     private BigDecimal limite;
 
     @Column(nullable = false)
-    private String cpfCliente;
+    private String cliente;
 
     @Column(nullable = false)
     private String cpfGerente;

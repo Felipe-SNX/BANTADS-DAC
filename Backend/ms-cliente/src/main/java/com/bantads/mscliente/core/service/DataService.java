@@ -65,8 +65,9 @@ public class DataService {
         cliente1.setTelefone("4199999999");
         cliente1.setSalario(BigDecimal.valueOf(10000.00));
         cliente1.setIdEndereco(endereco1.getId());
-        cliente1.setCpfGerente("98574307084");
+        cliente1.setGerente("98574307084");
         cliente1.setAprovado(true);
+        cliente1.setSaldo(BigDecimal.valueOf(800.00));
 
         Cliente cliente2 = new Cliente();
         cliente2.setNome("Cleuddônio");
@@ -75,8 +76,9 @@ public class DataService {
         cliente2.setTelefone("4498888888");
         cliente2.setSalario(BigDecimal.valueOf(20000.00));
         cliente2.setIdEndereco(endereco2.getId());
-        cliente2.setCpfGerente("64065268052");
+        cliente2.setGerente("64065268052");
         cliente2.setAprovado(true);
+        cliente2.setSaldo(BigDecimal.valueOf(-10000.00));
 
         Cliente cliente3 = new Cliente();
         cliente3.setNome("Catianna");
@@ -85,8 +87,9 @@ public class DataService {
         cliente3.setTelefone("47977777777");
         cliente3.setSalario(BigDecimal.valueOf(3000.00));
         cliente3.setIdEndereco(endereco3.getId());
-        cliente3.setCpfGerente("23862179060");
+        cliente3.setGerente("23862179060");
         cliente3.setAprovado(true);
+        cliente3.setSaldo(BigDecimal.valueOf(-1000.00));
 
         Cliente cliente4 = new Cliente();
         cliente4.setNome("Cutardo");
@@ -95,8 +98,9 @@ public class DataService {
         cliente4.setTelefone("4998000000");
         cliente4.setSalario(BigDecimal.valueOf(500.00));
         cliente4.setIdEndereco(endereco1.getId());
-        cliente4.setCpfGerente("98574307084");
+        cliente4.setGerente("98574307084");
         cliente4.setAprovado(true);
+        cliente4.setSaldo(BigDecimal.valueOf(150000.00));
 
         Cliente cliente5 = new Cliente();
         cliente5.setNome("Coândrya");
@@ -105,8 +109,9 @@ public class DataService {
         cliente5.setTelefone("49989896976");
         cliente5.setSalario(BigDecimal.valueOf(1500.00));
         cliente5.setIdEndereco(endereco2.getId());
-        cliente5.setCpfGerente("64065268052");
+        cliente5.setGerente("64065268052");
         cliente5.setAprovado(true);
+        cliente5.setSaldo(BigDecimal.valueOf(1500.00));
 
         List<Cliente> clientes = Arrays.asList(cliente1, cliente2, cliente3, cliente4, cliente5);
 

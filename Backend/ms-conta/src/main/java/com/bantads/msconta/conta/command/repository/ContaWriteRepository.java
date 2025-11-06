@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface ContaWriteRepository extends JpaRepository<Conta, Long> {
 
-    Optional<Conta> findByNumConta(String numConta);
+    Optional<Conta> findByConta(String conta);
 
     @Query("SELECT c.cpfGerente FROM Conta c GROUP BY c.cpfGerente ORDER BY COUNT(c.cpfGerente) DESC LIMIT 1")
     String findCpfGerenteComMaisContas();
@@ -20,7 +20,7 @@ public interface ContaWriteRepository extends JpaRepository<Conta, Long> {
 
     Optional<Conta> findFirstByCpfGerenteOrderByDataCriacaoAsc(String cpfGerente);
 
-    Optional<Conta> findByCpfCliente(String cpf);
+    Optional<Conta> findByCliente(String cpf);
 
     List<Conta> findAllByCpfGerente(String cpf);
 

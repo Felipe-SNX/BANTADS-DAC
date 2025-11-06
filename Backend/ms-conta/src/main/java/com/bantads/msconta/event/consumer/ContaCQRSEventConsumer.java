@@ -38,9 +38,9 @@ public class ContaCQRSEventConsumer {
             var contaView = ContaView
                     .builder()
                     .id(evento.getId())
-                    .numConta(evento.getNumConta())
+                    .conta(evento.getConta())
                     .dataCriacao(evento.getDataCriacao())
-                    .cpfCliente(evento.getCpfCliente())
+                    .cliente(evento.getCliente())
                     .cpfGerente(evento.getCpfGerente())
                     .saldo(evento.getSaldo())
                     .limite(evento.getLimite())
@@ -80,8 +80,8 @@ public class ContaCQRSEventConsumer {
                     .tipo(movOriginal.getTipo())
                     .cpfClienteOrigem(movOriginal.getCpfClienteOrigem())
                     .cpfClienteDestino(movOriginal.getCpfClienteDestino())
-                    .numContaOrigem(contaViewOrigem.getNumConta())
-                    .numContaDestino(contaViewDestino != null ? contaViewDestino.getNumConta() : null)
+                    .numContaOrigem(contaViewOrigem.getConta())
+                    .numContaDestino(contaViewDestino != null ? contaViewDestino.getConta() : null)
                     .valor(movOriginal.getValor())
                     .build();
 

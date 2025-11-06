@@ -1,13 +1,23 @@
 package com.bantads.msorquestrador.core.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 
-public record PerfilInfo(
-    String nome,
-    String email,
-    BigDecimal salario,
-    String endereco,
-    String cep,
-    String cidade,
-    String estado
-) {}
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class PerfilInfo {
+
+    private String nome;
+    private String email;
+    private BigDecimal salario;
+    private String endereco;
+    private String cep;
+    private String cidade;
+    private String estado;
+}

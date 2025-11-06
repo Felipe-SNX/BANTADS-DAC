@@ -72,9 +72,10 @@ public class ContaEventSagaConsumer {
                     JsonNode cpfNode = rootNode.path("cpf");
                     PerfilInfo perfilInfo = objectMapper.treeToValue(perfilInfoNode, PerfilInfo.class);
                     String cpf = objectMapper.treeToValue(cpfNode, String.class);
-                    contaCommandService.atualizarLimite(perfilInfo, cpf);
+                    Conta contaAtualizada = contaCommandService.atualizarLimite(perfilInfo, cpf);
                     evento.setSource(EEventSource.CONTA_SERVICE);
                     evento.setStatus(ESagaStatus.SUCCESS);
+                    contaEventCQRSProducer.sendSyncReadDatabaseEvent(contaAtualizada);
                     contaEventProducer.sendEvent(ETopics.EVT_CONTA_SUCCESS, evento);
                     break;
                 case INSERCAO_GERENTE_SAGA:

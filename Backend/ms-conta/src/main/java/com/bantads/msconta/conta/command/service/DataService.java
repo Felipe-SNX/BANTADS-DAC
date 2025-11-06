@@ -44,11 +44,11 @@ public class DataService {
         Conta conta1 = new Conta("1291", new BigDecimal("5000.00"), "12912861012", "98574307084");
         conta1.depositar(new BigDecimal("800.00"));
 
-        Conta conta2 = new Conta("950", new BigDecimal("10000.00"), "09506382000", "64065268052");
-        conta2.sacar(new BigDecimal("10000.00")); 
+        Conta conta2 = new Conta("0950", new BigDecimal("10000.00"), "09506382000", "64065268052");
+        conta2.sacar(new BigDecimal("10000.00"));
 
         Conta conta3 = new Conta("8573", new BigDecimal("1500.00"), "85733854057", "23862179060");
-        conta3.sacar(new BigDecimal("1000.00")); 
+        conta3.sacar(new BigDecimal("1000.00"));
 
         Conta conta4 = new Conta("5887", new BigDecimal("0.00"), "58872160006", "98574307084");
         conta4.depositar(new BigDecimal("150000.00"));
@@ -64,11 +64,11 @@ public class DataService {
             var contaView = ContaView
                 .builder()
                 .id(conta.getId())
-                .numConta(conta.getNumConta())
+                .conta(conta.getConta())
                 .dataCriacao(conta.getDataCriacao())
                 .saldo(conta.getSaldo())
                 .limite(conta.getLimite())
-                .cpfCliente(conta.getCpfCliente())
+                .cliente(conta.getCliente())
                 .cpfGerente(conta.getCpfGerente())
                 .build();
                     
@@ -80,7 +80,7 @@ public class DataService {
         log.info("Criando mapa de CPF para Numero de Conta para enriquecimento da view...");
         Map<String, String> cpfParaNumContaMap = new HashMap<>();
         for (Conta conta : contas) {
-            cpfParaNumContaMap.put(conta.getCpfCliente(), conta.getNumConta());
+            cpfParaNumContaMap.put(conta.getCliente(), conta.getConta());
         }
 
         log.info("Carga inicial das movimentacoes iniciada. ");

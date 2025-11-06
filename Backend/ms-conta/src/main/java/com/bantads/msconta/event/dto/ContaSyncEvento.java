@@ -20,11 +20,11 @@ import lombok.Data;
 public class ContaSyncEvento implements Serializable{
 
     private Long id;
-    private String numConta;
+    private String conta;
     private LocalDateTime dataCriacao;
     private BigDecimal saldo;
     private BigDecimal limite;
-    private String cpfCliente;
+    private String cliente;
     private String cpfGerente;
     private boolean ativo;
     private Long contaIdOrigem;

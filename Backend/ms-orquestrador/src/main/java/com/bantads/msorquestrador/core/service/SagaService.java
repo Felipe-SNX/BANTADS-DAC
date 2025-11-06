@@ -34,7 +34,7 @@ public class SagaService {
 
 
     public void iniciarSagaAutocadastro(AutoCadastroInfo autoCadastroInfo) {
-        log.info("Saga de Autocadastro iniciada para o cliente: {}", autoCadastroInfo.nome());
+        log.info("Saga de Autocadastro iniciada para o cliente: {}", autoCadastroInfo.getNome());
 
         Map<String, Object> autoCadastroInfoMap = new HashMap<>();
         autoCadastroInfoMap.put("autoCadastroInfo", autoCadastroInfo);
@@ -48,7 +48,7 @@ public class SagaService {
     }
 
     public void iniciarSagaAlterarPerfil(PerfilInfo perfilInfo, String cpf) {
-        log.info("Saga de alterar perfil iniciada para o cliente: {}", perfilInfo.nome());
+        log.info("Saga de alterar perfil iniciada para o cliente: {}", perfilInfo.getNome());
 
 
         Map<String, Object> alterarPerfilInfo = new HashMap<>();
@@ -64,7 +64,7 @@ public class SagaService {
     }
 
     public void iniciarSagaInserirGerente(DadoGerenteInsercao dadoGerenteInsercao) {
-        log.info("Saga de inserir gerente iniciada para o gerente: {}", dadoGerenteInsercao.nome());
+        log.info("Saga de inserir gerente iniciada para o gerente: {}", dadoGerenteInsercao.getNome());
 
         Map<String, Object> inserirGerenteInfo = new HashMap<>();
         inserirGerenteInfo.put("dadoGerenteInsercao", dadoGerenteInsercao);

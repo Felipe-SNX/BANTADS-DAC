@@ -42,7 +42,7 @@ public class ContaCommandService {
 
     @Transactional
     public OperacaoResponse depositar(OperacaoRequest operacao, String numConta) {
-        Conta conta = contaRepository.findByNumConta(numConta)
+        Conta conta = contaRepository.findByConta(numConta)
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta", numConta));
 
         conta.depositar(operacao.getValor());
@@ -53,7 +53,7 @@ public class ContaCommandService {
                 .builder()
                 .data(LocalDateTime.now())
                 .tipo(TipoMovimentacao.DEPOSITO)
-                .cpfClienteOrigem(conta.getCpfCliente())
+                .cpfClienteOrigem(conta.getCliente())
                 .cpfClienteDestino(null)
                 .valor(operacao.getValor())
                 .build();
@@ -67,7 +67,7 @@ public class ContaCommandService {
 
     @Transactional
     public OperacaoResponse sacar(OperacaoRequest operacao, String numConta) {
-        Conta conta = contaRepository.findByNumConta(numConta)
+        Conta conta = contaRepository.findByConta(numConta)
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta", numConta));
 
         conta.sacar(operacao.getValor());
@@ -78,7 +78,7 @@ public class ContaCommandService {
                 .builder()
                 .data(LocalDateTime.now())
                 .tipo(TipoMovimentacao.SAQUE)
-                .cpfClienteOrigem(conta.getCpfCliente())
+                .cpfClienteOrigem(conta.getCliente())
                 .cpfClienteDestino(null)
                 .valor(operacao.getValor())
                 .build();
@@ -92,13 +92,13 @@ public class ContaCommandService {
 
     @Transactional
     public TransferenciaResponse transferir(TransferenciaRequest transferencia, String numConta) {
-        Conta contaOrigem = contaRepository.findByNumConta(numConta)
+        Conta contaOrigem = contaRepository.findByConta(numConta)
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta", numConta));
 
-        Conta contaDestino = contaRepository.findByNumConta(transferencia.getDestino())
+        Conta contaDestino = contaRepository.findByConta(transferencia.getDestino())
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta", numConta));
         
-        if(contaOrigem.getNumConta().equals(contaDestino.getNumConta())){
+        if(contaOrigem.getConta().equals(contaDestino.getConta())){
                 throw new TransferenciaInvalidaException("Não é possível transferir para a mesma conta"); 
         }
 
@@ -112,8 +112,8 @@ public class ContaCommandService {
                 .builder()
                 .data(LocalDateTime.now())
                 .tipo(TipoMovimentacao.TRANSFERENCIA)
-                .cpfClienteOrigem(contaOrigem.getCpfCliente())
-                .cpfClienteDestino(contaDestino.getCpfCliente())
+                .cpfClienteOrigem(contaOrigem.getCliente())
+                .cpfClienteDestino(contaDestino.getCliente())
                 .valor(transferencia.getValor())
                 .build();
 
@@ -123,9 +123,9 @@ public class ContaCommandService {
 
         return TransferenciaResponse
                 .builder()
-                .numConta(numConta)
+                .conta(numConta)
                 .data(LocalDateTime.now())
-                .numContaDestino(contaDestino.getNumConta())
+                .numContaDestino(contaDestino.getConta())
                 .saldo(posSaque.getSaldo())
                 .valor(transferencia.getValor())
                 .build();
@@ -147,11 +147,11 @@ public class ContaCommandService {
         
         var conta = Conta
                 .builder()
-                .numConta(gerarNumConta())
+                .conta(gerarNumConta())
                 .dataCriacao(LocalDateTime.now())
                 .saldo(BigDecimal.valueOf(0))
                 .limite(calcularLimite(autoCadastroInfo.getSalario()))
-                .cpfCliente(autoCadastroInfo.getCpf())
+                .cliente(autoCadastroInfo.getCpf())
                 .cpfGerente(cpfGerente)
                 .ativo(false)
                 .build();
@@ -161,7 +161,7 @@ public class ContaCommandService {
         return conta;
     }
 
-    public void atualizarLimite(PerfilInfo perfilInfo, String cpf){
+    public Conta atualizarLimite(PerfilInfo perfilInfo, String cpf){
         Conta conta = buscarContaPorCpfCliente(cpf);
 
         BigDecimal novoLimite = calcularLimite(perfilInfo.getSalario());
@@ -172,13 +172,13 @@ public class ContaCommandService {
         BigDecimal zero = BigDecimal.ZERO;
         BigDecimal resultado = saldoAtual.add(novoLimite); 
         if (resultado.compareTo(zero) < 0) {
-                conta.setLimite(saldoAtual.multiply(BigDecimal.valueOf(-1)));  
+            conta.setLimite(saldoAtual.multiply(BigDecimal.valueOf(-1)));
         }       
         else{
-                conta.setLimite(novoLimite);
+            conta.setLimite(novoLimite);
         }
 
-        contaRepository.save(conta);
+        return contaRepository.save(conta);
     }
 
     public void remanejarGerentes(String cpf){
@@ -197,7 +197,7 @@ public class ContaCommandService {
     }
 
     private Conta buscarContaPorCpfCliente(String cpf){
-        return contaRepository.findByCpfCliente(cpf)
+        return contaRepository.findByCliente(cpf)
                 .orElseThrow(() -> new ContaNaoEncontradaException("Conta", cpf));
     }
 

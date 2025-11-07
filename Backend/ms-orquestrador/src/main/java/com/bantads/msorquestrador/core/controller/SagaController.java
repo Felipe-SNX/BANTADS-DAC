@@ -39,7 +39,6 @@ public class SagaController {
         return ResponseEntity.ok().build();
     }
 
-
     @PutMapping("/alterarPerfil/{cpf}")
     public ResponseEntity<PerfilInfoResponse> iniciarSagaAlterarPerfil(@RequestBody PerfilInfo perfilInfo, @PathVariable String cpf) {
         log.info("Iniciando saga alterar perfil");

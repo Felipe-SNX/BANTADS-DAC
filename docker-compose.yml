@@ -1,7 +1,7 @@
 services:
   api-gateway:
     build:
-      context: ./api-gateway
+      context: ./Backend/api-gateway
     container_name: api-gateway
     ports:
       - "3000:3000"
@@ -24,6 +24,20 @@ services:
         condition: service_healthy
       ms-auth:
         condition: service_healthy
+  
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: bantads-frontend
+    image: bantads-frontend
+    ports:
+      - "4200:80"
+    networks:
+      - bantads-network
+    depends_on:
+      - api-gateway
+    restart: unless-stopped
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -57,7 +71,7 @@ services:
     networks:
       - bantads-network
     volumes:
-      - ./init-db:/docker-entrypoint-initdb.d
+      - ./Backend/init-db:/docker-entrypoint-initdb.d
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d bantads_db"]
@@ -84,7 +98,7 @@ services:
       start_period: 40s
 
   ms-auth:
-    build: './ms-auth'
+    build: './Backend/ms-auth'
     container_name: ms-auth
     depends_on:
       rabbitmq:
@@ -110,7 +124,7 @@ services:
       start_period: 50s
 
   ms-orquestrador:
-    build: './ms-orquestrador'
+    build: './Backend/ms-orquestrador'
     container_name: ms-orquestrador
     depends_on:
       rabbitmq:
@@ -131,7 +145,7 @@ services:
       - "8093:8083"
 
   ms-conta:
-    build: './ms-conta'
+    build: './Backend/ms-conta'
     container_name: ms-conta
     ports:
       - "8090:8080"
@@ -157,7 +171,7 @@ services:
       start_period: 50s
 
   ms-gerente:
-    build: './ms-gerente'
+    build: './Backend/ms-gerente'
     container_name: ms-gerente
     ports:
       - "8091:8081"
@@ -184,7 +198,7 @@ services:
       start_period: 50s
 
   ms-cliente:
-    build: './ms-cliente'
+    build: './Backend/ms-cliente'
     container_name: ms-cliente
     ports:
       - "8092:8082"

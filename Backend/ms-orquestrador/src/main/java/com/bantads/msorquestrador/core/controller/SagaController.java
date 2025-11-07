@@ -49,10 +49,11 @@ public class SagaController {
     }
 
     @PostMapping("/inserirGerente")
-    public void inserirGerente(@RequestBody DadoGerenteInsercao dadoGerenteInsercao) {
+    public ResponseEntity<DadoGerenteInsercao> inserirGerente(@RequestBody DadoGerenteInsercao dadoGerenteInsercao) {
         log.info("Iniciando saga inserir gerente");
         log.info("Saga inserir gerente: {}", dadoGerenteInsercao);
         sagaService.iniciarSagaInserirGerente(dadoGerenteInsercao);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dadoGerenteInsercao);
     }
 
     @DeleteMapping("/removerGerente/{cpf}")

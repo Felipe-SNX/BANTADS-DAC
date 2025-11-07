@@ -53,7 +53,7 @@ public class ContaCommandService {
         var novaMovimentacao = Movimentacao
                 .builder()
                 .data(LocalDateTime.now())
-                .tipo(TipoMovimentacao.DEPOSITO)
+                .tipo(TipoMovimentacao.depósito)
                 .cpfClienteOrigem(conta.getCliente())
                 .cpfClienteDestino(null)
                 .valor(operacao.getValor())
@@ -78,7 +78,7 @@ public class ContaCommandService {
         var novaMovimentacao = Movimentacao
                 .builder()
                 .data(LocalDateTime.now())
-                .tipo(TipoMovimentacao.SAQUE)
+                .tipo(TipoMovimentacao.saque)
                 .cpfClienteOrigem(conta.getCliente())
                 .cpfClienteDestino(null)
                 .valor(operacao.getValor())
@@ -112,7 +112,7 @@ public class ContaCommandService {
         var novaMovimentacao = Movimentacao
                 .builder()
                 .data(LocalDateTime.now())
-                .tipo(TipoMovimentacao.TRANSFERENCIA)
+                .tipo(TipoMovimentacao.transferência)
                 .cpfClienteOrigem(contaOrigem.getCliente())
                 .cpfClienteDestino(contaDestino.getCliente())
                 .valor(transferencia.getValor())

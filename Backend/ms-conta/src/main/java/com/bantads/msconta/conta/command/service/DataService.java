@@ -87,29 +87,29 @@ public class DataService {
 
         if (movimentacaoWriteRepository.count() == 0) {
             List<Movimentacao> movimentacoes = List.of(
-                criarMov("2020-01-01 10:00:00", TipoMovimentacao.DEPOSITO, "12912861012", "1000.00"),
-                criarMov("2020-01-01 11:00:00", TipoMovimentacao.DEPOSITO, "12912861012", "900.00"),
-                criarMov("2020-01-01 12:00:00", TipoMovimentacao.SAQUE, "12912861012", "550.00"),
-                criarMov("2020-01-01 13:00:00", TipoMovimentacao.SAQUE, "12912861012", "350.00"),
-                criarMov("2020-01-10 15:00:00", TipoMovimentacao.DEPOSITO, "12912861012", "2000.00"),
-                criarMov("2020-01-15 08:00:00", TipoMovimentacao.SAQUE, "12912861012", "500.00"),
-                criarMov("2020-01-20 12:00:00", TipoMovimentacao.TRANSFERENCIA, "12912861012", "09506382000", "1700.00"),
+                criarMov("2020-01-01 10:00:00", TipoMovimentacao.depósito, "12912861012", "1000.00"),
+                criarMov("2020-01-01 11:00:00", TipoMovimentacao.depósito, "12912861012", "900.00"),
+                criarMov("2020-01-01 12:00:00", TipoMovimentacao.saque, "12912861012", "550.00"),
+                criarMov("2020-01-01 13:00:00", TipoMovimentacao.saque, "12912861012", "350.00"),
+                criarMov("2020-01-10 15:00:00", TipoMovimentacao.depósito, "12912861012", "2000.00"),
+                criarMov("2020-01-15 08:00:00", TipoMovimentacao.saque, "12912861012", "500.00"),
+                criarMov("2020-01-20 12:00:00", TipoMovimentacao.transferência, "12912861012", "09506382000", "1700.00"),
 
                 // Movimentações do Cliente 2 (Cleuddônio)
-                criarMov("2025-01-01 12:00:00", TipoMovimentacao.DEPOSITO, "09506382000", "1000.00"),
-                criarMov("2025-01-02 10:00:00", TipoMovimentacao.DEPOSITO, "09506382000", "5000.00"),
-                criarMov("2025-01-10 10:00:00", TipoMovimentacao.SAQUE, "09506382000", "200.00"),
-                criarMov("2025-02-05 10:00:00", TipoMovimentacao.DEPOSITO, "09506382000", "7000.00"),
+                criarMov("2025-01-01 12:00:00", TipoMovimentacao.depósito, "09506382000", "1000.00"),
+                criarMov("2025-01-02 10:00:00", TipoMovimentacao.depósito, "09506382000", "5000.00"),
+                criarMov("2025-01-10 10:00:00", TipoMovimentacao.saque, "09506382000", "200.00"),
+                criarMov("2025-02-05 10:00:00", TipoMovimentacao.depósito, "09506382000", "7000.00"),
 
                 // Movimentações do Cliente 3 (Catianna)
-                criarMov("2025-05-05 00:00:00", TipoMovimentacao.DEPOSITO, "85733854057", "1000.00"),
-                criarMov("2025-05-06 00:00:00", TipoMovimentacao.SAQUE, "85733854057", "2000.00"),
+                criarMov("2025-05-05 00:00:00", TipoMovimentacao.depósito, "85733854057", "1000.00"),
+                criarMov("2025-05-06 00:00:00", TipoMovimentacao.saque, "85733854057", "2000.00"),
 
                 // Movimentações do Cliente 4 (Cutardo)
-                criarMov("2025-06-01 00:00:00", TipoMovimentacao.DEPOSITO, "58872160006", "150000.00"),
+                criarMov("2025-06-01 00:00:00", TipoMovimentacao.depósito, "58872160006", "150000.00"),
 
                 // Movimentações do Cliente 5 (Coândrya)
-                criarMov("2025-07-01 00:00:00", TipoMovimentacao.DEPOSITO, "76179646090", "1500.00")
+                criarMov("2025-07-01 00:00:00", TipoMovimentacao.depósito, "76179646090", "1500.00")
             );
 
             movimentacaoWriteRepository.saveAll(movimentacoes);
@@ -168,7 +168,7 @@ public class DataService {
                 .valor(mov.getValor())
                 .cpfClienteOrigem(mov.getCpfClienteOrigem())
                 .cpfClienteDestino(mov.getCpfClienteDestino())
-                .numContaOrigem(numContaOrigem)
+                .origem(numContaOrigem)
                 .destino(numContaDestino)
                 .build();
     }

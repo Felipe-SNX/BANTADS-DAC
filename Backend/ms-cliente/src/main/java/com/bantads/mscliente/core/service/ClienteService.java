@@ -58,7 +58,7 @@ public class ClienteService {
             clientes = listarClientesParaAprovar();
         }
         else if(filtro.equals("adm_relatorio_clientes")){
-            clientes = clienteRepository.findAll();
+            clientes = clienteRepository.findAllByAprovadoOrderByNomeAsc(true);
         }
         else{
             clientes = top3Clientes();

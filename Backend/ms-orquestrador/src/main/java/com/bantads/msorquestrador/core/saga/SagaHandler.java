@@ -89,7 +89,12 @@ public final class SagaHandler {
         { EEventSource.GERENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_CONTA_CREATE },
 
         { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.CMD_GERENTE_COMPENSATE },
-        { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.FINISH_SUCCESS }
+        { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE, ETopics.CMD_CLIENTE_COMPENSATE },
+        { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
+        { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.FINISH_SUCCESS },
+
+        { EEventSource.AUTH_SERVICE, ESagaStatus.FAIL, ETopics.CMD_CONTA_COMPENSATE },
+        { EEventSource.AUTH_SERVICE, ESagaStatus.FINISHED, ETopics.FINISH_SUCCESS }
     };
 
     private static final Map<ESaga, Object[][]> SAGA_HANDLERS = Map.of(

@@ -64,7 +64,7 @@ public class ContaCQRSEventConsumer {
 
             ContaView contaViewDestino = null;
 
-            if (movOriginal.getTipo().equals(TipoMovimentacao.TRANSFERENCIA)) {
+            if (movOriginal.getTipo().equals(TipoMovimentacao.transferência)) {
                 contaViewDestino = contaViewRepository.findById(evento.getContaIdDestino())
                         .orElse(new ContaView());
                 contaViewDestino.setId(evento.getContaIdDestino());
@@ -79,7 +79,7 @@ public class ContaCQRSEventConsumer {
                     .tipo(movOriginal.getTipo())
                     .cpfClienteOrigem(movOriginal.getCpfClienteOrigem())
                     .cpfClienteDestino(movOriginal.getCpfClienteDestino())
-                    .numContaOrigem(contaViewOrigem.getConta())
+                    .origem(contaViewOrigem.getConta())
                     .destino(contaViewDestino != null ? contaViewDestino.getConta() : null)
                     .valor(movOriginal.getValor())
                     .build();

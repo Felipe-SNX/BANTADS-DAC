@@ -67,6 +67,14 @@ public class AuthEventConsumer {
                     evento.setStatus(ESagaStatus.FINISHED);
                     authEventProducer.sendEvent(ETopics.EVT_AUTH_SUCCESS, evento);
                     break;
+                case INSERCAO_GERENTE_SAGA:
+                    JsonNode dadosClienteContaNode = rootNode.path("dadoGerenteInsercao");
+                    DadosClienteConta dadosClienteConta = objectMapper.treeToValue(dadosClienteContaNode, DadosClienteConta.class);
+                    authService.enviarEmailAprovado(dadosClienteConta);
+                    evento.setSource(EEventSource.AUTH_SERVICE);
+                    evento.setStatus(ESagaStatus.FINISHED);
+                    authEventProducer.sendEvent(ETopics.EVT_AUTH_SUCCESS, evento);
+                    break;
                 default:
                     break;
             }

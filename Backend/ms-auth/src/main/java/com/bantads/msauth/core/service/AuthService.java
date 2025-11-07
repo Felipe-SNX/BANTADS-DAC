@@ -2,6 +2,7 @@ package com.bantads.msauth.core.service;
 
 import com.bantads.msauth.core.document.Usuario;
 import com.bantads.msauth.core.dto.AutoCadastroInfo;
+import com.bantads.msauth.core.dto.DadosClienteConta;
 import com.bantads.msauth.core.dto.LogoutResponse;
 import com.bantads.msauth.core.enums.TipoUsuario;
 import com.bantads.msauth.core.exception.UsuarioNotFoundException;
@@ -67,8 +68,16 @@ public class AuthService {
     private String gerarSenha(){
         String senhaPura = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 8);
         log.info("Essa é a senha gerada: {}", senhaPura);
-        //Aqui é necessário enviar a senha original para o cliente
         return passwordEncoder.encode(senhaPura);
+    }
+
+    public void enviarEmail(DadosClienteConta dadosClienteConta){
+        Usuario usuario = authRepository.findByCpf(dadosClienteConta.getCpfCliente())
+                .orElseThrow(() -> new UsuarioNotFoundException(String.format("Usuario com '%s' não encontrado", dadosClienteConta.getCpfCliente())));
+
+        usuario.setAtivo(true);
+        usuario.setSenha(gerarSenha());
+        authRepository.save(usuario);
     }
 
 }

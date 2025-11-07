@@ -187,10 +187,15 @@ public class ClienteService {
         clienteEventProducer.sendEvent(ETopics.EVT_CLIENTE_SUCCESS, evento);
     }
 
-    public void aprovarCliente(String cpf){
+    public DadosClienteConta aprovarCliente(String cpf){
         Cliente cliente = getCliente(cpf, false);
         cliente.setAprovado(true);
         clienteRepository.save(cliente);
+        DadosClienteConta dadosClienteConta = new DadosClienteConta();
+        dadosClienteConta.setCpfCliente(cliente.getCpf());
+        dadosClienteConta.setSalario(cliente.getSalario());
+        dadosClienteConta.setCpfGerente(cliente.getGerente());
+        return dadosClienteConta;
     }
 
     public void rejeitarCliente(ClienteRejeitadoDto clienteRejeitadoDto, String cpf){

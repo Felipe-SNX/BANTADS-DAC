@@ -1,17 +1,13 @@
 package com.bantads.msgerente.core.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import com.bantads.msgerente.core.dto.DadoGerenteAtualizacao;
+import com.bantads.msgerente.core.dto.*;
 import com.bantads.msgerente.core.enums.TipoGerente;
 import com.bantads.msgerente.core.exception.GerenteNaoEncontradoException;
 import org.springframework.stereotype.Service;
 
-import com.bantads.msgerente.core.dto.DadoGerente;
-import com.bantads.msgerente.core.dto.DadoGerenteInsercao;
-import com.bantads.msgerente.core.dto.GerentesResponse;
 import com.bantads.msgerente.core.dto.mapper.GerenteMapper;
 import com.bantads.msgerente.core.model.Gerente;
 import com.bantads.msgerente.core.repository.GerenteRepository;
@@ -54,6 +50,38 @@ public class  GerenteService {
                 .orElseThrow(() -> new GerenteNaoEncontradoException("Gerente", cpf));
 
         return GerenteMapper.toGerentesResponse(gerente);
+    }
+
+    public GerenteNumeroContasDto selecionarGerente(List<GerenteNumeroContasDto> listaContasClientes) {
+        List<Gerente> gerentesAtivos = repository.findAllByTipo(TipoGerente.GERENTE);
+
+        if (gerentesAtivos.isEmpty()) {
+            throw new RuntimeException("Não há gerentes ativos cadastrados para alocar o cliente.");
+        }
+
+        Set<String> cpfsGerentesAtivos = gerentesAtivos.stream()
+                .map(Gerente::getCpf)
+                .collect(Collectors.toSet());
+
+        Map<String, Long> mapaContas = listaContasClientes.stream()
+                .filter(dto -> cpfsGerentesAtivos.contains(dto.getCpfGerente()))
+                .collect(Collectors.toMap(
+                        GerenteNumeroContasDto::getCpfGerente,
+                        GerenteNumeroContasDto::getQuantidade
+                ));
+
+        for (Gerente gerenteAtivo : gerentesAtivos) {
+            if (!mapaContas.containsKey(gerenteAtivo.getCpf())) {
+                return new GerenteNumeroContasDto(gerenteAtivo.getCpf(), 0L);
+            }
+        }
+
+        return mapaContas.entrySet().stream()
+                .min(Map.Entry.comparingByValue())
+                .map(entry -> new GerenteNumeroContasDto(entry.getKey(), entry.getValue()))
+                .orElseThrow(() -> new RuntimeException(
+                        "Falha ao selecionar gerente. Não foi encontrado nenhum gerente válido com contas."
+                ));
     }
 
     public GerentesResponse deletarGerentePorCpf(String cpf) {

@@ -28,6 +28,10 @@ public interface ContaWriteRepository extends JpaRepository<Conta, Long> {
 
     @Query("SELECT c.cpfGerente FROM Conta c WHERE c.cpfGerente != :cpf GROUP BY c.cpfGerente ORDER BY COUNT(c.cpfGerente) ASC LIMIT 1")
     String findCpfGerenteComMenosContasRemanejar(String cpf);
-    
-    List<GerentesNumeroContasDto> buscarNumeroDeContasPorGerente();
+
+    @Query("SELECT new com.bantads.msconta.conta.dto.GerentesNumeroContasDto(c.cpfGerente, COUNT(c.cpfGerente)) " +
+            "FROM Conta c " +
+            "WHERE c.cpfGerente IS NOT NULL " +
+            "GROUP BY c.cpfGerente")
+    List<GerentesNumeroContasDto> countContasByGerente();
 }

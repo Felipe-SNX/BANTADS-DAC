@@ -1,6 +1,7 @@
 package com.bantads.msconta.event.consumer;
 
 import com.bantads.msconta.conta.command.model.Conta;
+import com.bantads.msconta.event.dto.DadosClienteConta;
 import com.bantads.msconta.event.producer.ContaEventCQRSProducer;
 
 import java.util.HashMap;
@@ -73,6 +74,7 @@ public class ContaEventSagaConsumer {
                     Map<String, Object> novoMap = new HashMap<>();
                     novoMap.put("autoCadastroInfo", autoCadastroInfo);
                     novoMap.put("numeroContasGerente", numeroContasGerente);
+                    evento.setPayload(objectMapper.writeValueAsString(novoMap));
                     evento.setSource(EEventSource.CONTA_SERVICE);
                     evento.setStatus(ESagaStatus.SUCCESS);
                     contaEventProducer.sendEvent(ETopics.EVT_CONTA_SUCCESS, evento);
@@ -86,6 +88,15 @@ public class ContaEventSagaConsumer {
                     evento.setSource(EEventSource.CONTA_SERVICE);
                     evento.setStatus(ESagaStatus.SUCCESS);
                     contaEventCQRSProducer.sendSyncReadDatabaseEvent(contaAtualizada);
+                    contaEventProducer.sendEvent(ETopics.EVT_CONTA_SUCCESS, evento);
+                    break;
+                case APROVAR_CLIENTE_SAGA:
+                    JsonNode usuarioNode = rootNode.path("dadosClienteConta");
+                    DadosClienteConta dadosClienteConta = objectMapper.treeToValue(usuarioNode, DadosClienteConta.class);
+                    Conta conta = contaCommandService.criarConta(dadosClienteConta);
+                    evento.setSource(EEventSource.CONTA_SERVICE);
+                    evento.setStatus(ESagaStatus.SUCCESS);
+                    contaEventCQRSProducer.sendSyncReadDatabaseEvent(conta);
                     contaEventProducer.sendEvent(ETopics.EVT_CONTA_SUCCESS, evento);
                     break;
                 case INSERCAO_GERENTE_SAGA:
@@ -133,16 +144,5 @@ public class ContaEventSagaConsumer {
             evento.setStatus(ESagaStatus.COMPENSATE_FAILED);
             contaEventProducer.sendEvent(ETopics.EVT_CONTA_FAIL, evento);
         }
-    }    
-    
-    private void criarConta(Evento evento) throws JsonMappingException, JsonProcessingException{
-        JsonNode rootNode = objectMapper.readTree(evento.getPayload());
-        JsonNode autoCadastroNode = rootNode.path("autoCadastroInfo");
-        AutoCadastroInfo autoCadastroInfo = objectMapper.treeToValue(autoCadastroNode, AutoCadastroInfo.class);
-        Conta conta = contaCommandService.criarConta(autoCadastroInfo);
-        evento.setSource(EEventSource.CONTA_SERVICE);
-        evento.setStatus(ESagaStatus.SUCCESS);
-        contaEventCQRSProducer.sendSyncReadDatabaseEvent(conta);
-        contaEventProducer.sendEvent(ETopics.EVT_CONTA_SUCCESS, evento);
     }
 }

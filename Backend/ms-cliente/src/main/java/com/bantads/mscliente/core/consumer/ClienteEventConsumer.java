@@ -1,5 +1,7 @@
 package com.bantads.mscliente.core.consumer;
 
+import com.bantads.mscliente.core.dto.*;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -11,8 +13,6 @@ import com.bantads.mscliente.common.enums.ESaga;
 import com.bantads.mscliente.common.enums.ESagaStatus;
 import com.bantads.mscliente.common.enums.ETopics;
 import com.bantads.mscliente.config.rabbitmq.RabbitMQConstantes;
-import com.bantads.mscliente.core.dto.AutoCadastroInfo;
-import com.bantads.mscliente.core.dto.PerfilInfo;
 import com.bantads.mscliente.core.producer.ClienteEventProducer;
 import com.bantads.mscliente.core.service.ClienteService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -77,6 +77,31 @@ public class ClienteEventConsumer {
                     evento.setStatus(ESagaStatus.SUCCESS);
                     clienteEventProducer.sendEvent(ETopics.EVT_CLIENTE_SUCCESS, evento);
                     break;
+                case APROVAR_CLIENTE_SAGA:
+                    JsonNode usuarioNode = rootNode.path("clienteParaAprovarRequest");
+                    ClienteParaAprovarRequest usuario = objectMapper.treeToValue(usuarioNode, ClienteParaAprovarRequest.class);
+                    DadosClienteConta dadosClienteConta = clienteService.aprovarCliente(usuario.getCpf());
+
+                    //Verifica se o retorno não é nulo
+                    if (dadosClienteConta == null) {
+                        evento.setSource(EEventSource.CLIENTE_SERVICE);
+                        evento.setStatus(ESagaStatus.FAIL);
+                        break;
+                    }
+
+                    JsonNode gerenteNode = objectMapper.valueToTree(dadosClienteConta);
+
+                    if (rootNode instanceof ObjectNode) {
+                        ((ObjectNode) rootNode).set("dadosClienteConta", gerenteNode);
+                    } else {
+                        throw new RuntimeException("Payload da saga (rootNode) não é um objeto JSON.");
+                    }
+
+                    evento.setPayload(objectMapper.writeValueAsString(rootNode));
+                    evento.setSource(EEventSource.CLIENTE_SERVICE);
+                    evento.setStatus(ESagaStatus.SUCCESS);
+                    clienteEventProducer.sendEvent(ETopics.EVT_CLIENTE_SUCCESS, evento);
+                    break;
                 default:
                     break;
             }
@@ -100,11 +125,13 @@ public class ClienteEventConsumer {
         JsonNode rootNode = objectMapper.readTree(evento.getPayload());
         JsonNode autoCadastroNode = rootNode.path("autoCadastroInfo");
         AutoCadastroInfo autoCadastroInfo = objectMapper.treeToValue(autoCadastroNode, AutoCadastroInfo.class);
+        JsonNode gerenteEscolhido = rootNode.path("gerenteEscolhido");
+        GerenteNumeroContasDto gerenteInfo = objectMapper.treeToValue(gerenteEscolhido, GerenteNumeroContasDto.class);
         String cpfCliente = autoCadastroInfo.getCpf();
-        JsonNode cpfGerenteNode = rootNode.path("cpfGerente");
-        String cpfGerente = objectMapper.treeToValue(cpfGerenteNode, String.class);
-        clienteService.atribuirGerente(cpfCliente, cpfGerente);
-        return marcarComoSucesso(evento);
+        clienteService.atribuirGerente(cpfCliente, gerenteInfo.getCpfGerente());
+        evento.setSource(EEventSource.CLIENTE_SERVICE);
+        evento.setStatus(ESagaStatus.FINISHED);
+        return evento;
     }
 
     private Evento marcarComoSucesso(Evento evento){

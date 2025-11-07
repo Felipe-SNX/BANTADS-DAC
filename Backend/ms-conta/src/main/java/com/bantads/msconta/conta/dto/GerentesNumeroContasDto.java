@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class GerentesNumeroContasDto {
 
     private String cpfGerente;
-    private Number quantidade;
+    private Long quantidade;
 }

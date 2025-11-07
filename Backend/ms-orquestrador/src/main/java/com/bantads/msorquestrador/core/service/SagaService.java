@@ -3,14 +3,10 @@ package com.bantads.msorquestrador.core.service;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.bantads.msorquestrador.core.dto.*;
 import com.bantads.msorquestrador.core.exception.ErroAoConverterJsonException;
 import org.springframework.stereotype.Service;
 
-import com.bantads.msorquestrador.core.dto.AutoCadastroInfo;
-import com.bantads.msorquestrador.core.dto.DadoGerenteInsercao;
-import com.bantads.msorquestrador.core.dto.Evento;
-import com.bantads.msorquestrador.core.dto.Historico;
-import com.bantads.msorquestrador.core.dto.PerfilInfo;
 import com.bantads.msorquestrador.core.enums.EEventSource;
 import com.bantads.msorquestrador.core.enums.ESaga;
 import com.bantads.msorquestrador.core.enums.ESagaStatus;
@@ -44,6 +40,21 @@ public class SagaService {
             publicarEvento(evento);
         } catch (JsonProcessingException e) {
             throw new ErroAoConverterJsonException("Saga Alterar Perfil", e.getMessage());
+        }
+    }
+
+    public void iniciarSagaAprovarCliente(ClienteParaAprovarRequest clienteParaAprovarRequest, String cpf) {
+        log.info("Saga de aprovar cliente iniciada para o cliente: {}", clienteParaAprovarRequest.getNome());
+
+
+        Map<String, Object> clienteParaAprovarRequestInfo = new HashMap<>();
+        clienteParaAprovarRequestInfo.put("clienteParaAprovarRequest", clienteParaAprovarRequest);
+
+        try {
+            Evento evento = criarEvento(clienteParaAprovarRequestInfo, ESaga.APROVAR_CLIENTE_SAGA, EEventSource.ORQUESTRADOR);
+            publicarEvento(evento);
+        } catch (JsonProcessingException e) {
+            throw new ErroAoConverterJsonException("Saga Aprovar Cliente Perfil", e.getMessage());
         }
     }
 

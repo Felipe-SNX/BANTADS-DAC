@@ -188,7 +188,11 @@ router.put('/gerentes/:cpf', verifyToken, checkRole(['ADMINISTRADOR']), (req, re
 });
 
 router.post('/clientes/:cpf/rejeitar', verifyToken, checkRole(['GERENTE']), clientesServiceProxy);
-router.post('/clientes/:cpf/aprovar', verifyToken, checkRole(['GERENTE']), clientesServiceProxy);
+
+router.post('/clientes/:cpf/aprovar', verifyToken, checkRole(['GERENTE']), (req, res, next) => {
+    req.url = `/saga/${req.params.cpf}/aprovar`;
+    orquestradorServiceProxy(req, res, next);
+});
 
 router.get('/clientes/:cpf', verifyToken, async (req, res, next) => {
     const { cpf } = req.params;

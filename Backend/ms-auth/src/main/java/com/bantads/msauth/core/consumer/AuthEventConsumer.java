@@ -7,6 +7,7 @@ import com.bantads.msauth.common.enums.ESagaStatus;
 import com.bantads.msauth.common.enums.ETopics;
 import com.bantads.msauth.config.rabbitmq.RabbitMQConstantes;
 import com.bantads.msauth.core.dto.AutoCadastroInfo;
+import com.bantads.msauth.core.dto.DadosClienteConta;
 import com.bantads.msauth.core.producer.AuthEventProducer;
 import com.bantads.msauth.core.service.AuthService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -56,6 +57,14 @@ public class AuthEventConsumer {
                     authService.cadastrarUsuarioCliente(autoCadastroInfo);
                     evento.setSource(EEventSource.AUTH_SERVICE);
                     evento.setStatus(ESagaStatus.SUCCESS);
+                    authEventProducer.sendEvent(ETopics.EVT_AUTH_SUCCESS, evento);
+                    break;
+                case APROVAR_CLIENTE_SAGA:
+                    JsonNode dadosClienteContaNode = rootNode.path("dadosClienteConta");
+                    DadosClienteConta dadosClienteConta = objectMapper.treeToValue(dadosClienteContaNode, DadosClienteConta.class);
+                    authService.enviarEmail(dadosClienteConta);
+                    evento.setSource(EEventSource.AUTH_SERVICE);
+                    evento.setStatus(ESagaStatus.FINISHED);
                     authEventProducer.sendEvent(ETopics.EVT_AUTH_SUCCESS, evento);
                     break;
                 default:

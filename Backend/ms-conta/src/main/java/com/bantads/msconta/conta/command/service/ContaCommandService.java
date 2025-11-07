@@ -13,8 +13,8 @@ import com.bantads.msconta.conta.enums.TipoMovimentacao;
 import com.bantads.msconta.conta.exception.ContaNaoEncontradaException;
 import com.bantads.msconta.conta.exception.TransferenciaInvalidaException;
 import com.bantads.msconta.conta.mapper.ContaMapper;
-import com.bantads.msconta.event.dto.AutoCadastroInfo;
 import com.bantads.msconta.event.dto.PerfilInfo;
+import com.bantads.msconta.event.dto.DadosClienteConta;
 import com.bantads.msconta.event.producer.ContaEventCQRSProducer;
 
 import lombok.AllArgsConstructor;
@@ -143,17 +143,16 @@ public class ContaCommandService {
         }
     }
 
-    public Conta criarConta(AutoCadastroInfo autoCadastroInfo){
-        String cpfGerente = buscarCpfGerenteComMenosContas();
-        
+    public Conta criarConta(DadosClienteConta dadosClienteConta){
+
         var conta = Conta
                 .builder()
                 .conta(gerarNumConta())
                 .dataCriacao(LocalDateTime.now())
                 .saldo(BigDecimal.valueOf(0))
-                .limite(calcularLimite(autoCadastroInfo.getSalario()))
-                .cliente(autoCadastroInfo.getCpf())
-                .cpfGerente(cpfGerente)
+                .limite(calcularLimite(dadosClienteConta.getSalario()))
+                .cliente(dadosClienteConta.getCpfCliente())
+                .cpfGerente(dadosClienteConta.getCpfGerente())
                 .ativo(false)
                 .build();
         
@@ -198,7 +197,7 @@ public class ContaCommandService {
     }
 
     public List<GerentesNumeroContasDto> buscarNumeroDeContasPorGerente(){
-        return contaRepository.buscarNumeroDeContasPorGerente();
+        return contaRepository.countContasByGerente();
     }
 
     private Conta buscarContaPorCpfCliente(String cpf){

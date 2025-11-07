@@ -1,14 +1,11 @@
 package com.bantads.msorquestrador.core.controller;
 
-import com.bantads.msorquestrador.core.dto.PerfilInfoResponse;
+import com.bantads.msorquestrador.core.dto.*;
 import com.bantads.msorquestrador.core.dto.mapper.PerfilInfoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.bantads.msorquestrador.core.dto.AutoCadastroInfo;
-import com.bantads.msorquestrador.core.dto.DadoGerenteInsercao;
-import com.bantads.msorquestrador.core.dto.PerfilInfo;
 import com.bantads.msorquestrador.core.service.SagaService;
 import lombok.AllArgsConstructor;
 
@@ -33,6 +30,13 @@ public class SagaController {
         log.info("Iniciando saga autocadastro");
         sagaService.iniciarSagaAutocadastro(autoCadastroInfo);
         return ResponseEntity.status(HttpStatus.CREATED).body(autoCadastroInfo);
+    }
+
+    @PostMapping("/{cpf}/aprovar")
+    public ResponseEntity<Void> iniciarSagaAprovarCliente(@RequestBody ClienteParaAprovarRequest clienteParaAprovarRequest,
+                                               @PathVariable String cpf) {
+        sagaService.iniciarSagaAprovarCliente(clienteParaAprovarRequest, cpf);
+        return ResponseEntity.ok().build();
     }
 
 

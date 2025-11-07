@@ -49,7 +49,7 @@ public class DataService {
         Gerente admin = new Gerente();
         admin.setNome("Adamântio");
         admin.setEmail("adm1@bantads.com.br");
-        admin.setCpf("23862179060");
+        admin.setCpf("40501740066");
         admin.setTelefone("4160606060");
         admin.setTipo(TipoGerente.ADMINISTRADOR);
 

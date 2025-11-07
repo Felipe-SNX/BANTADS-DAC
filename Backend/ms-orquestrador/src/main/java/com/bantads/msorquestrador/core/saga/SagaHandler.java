@@ -40,7 +40,7 @@ public final class SagaHandler {
     };
 
     public static final Object[][] SAGA_APROVAR_CLIENTE_HANDLER = {
-        { EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, ETopics.CMD_CONTA_CREATE },
+        { EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, ETopics.CMD_CLIENTE_CREATE },
 
         { EEventSource.CLIENTE_SERVICE, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
         { EEventSource.CLIENTE_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },

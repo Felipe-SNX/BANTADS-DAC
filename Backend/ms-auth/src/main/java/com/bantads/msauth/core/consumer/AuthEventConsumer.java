@@ -62,7 +62,7 @@ public class AuthEventConsumer {
                 case APROVAR_CLIENTE_SAGA:
                     JsonNode dadosClienteContaNode = rootNode.path("dadosClienteConta");
                     DadosClienteConta dadosClienteConta = objectMapper.treeToValue(dadosClienteContaNode, DadosClienteConta.class);
-                    authService.enviarEmail(dadosClienteConta);
+                    authService.enviarEmailAprovado(dadosClienteConta);
                     evento.setSource(EEventSource.AUTH_SERVICE);
                     evento.setStatus(ESagaStatus.FINISHED);
                     authEventProducer.sendEvent(ETopics.EVT_AUTH_SUCCESS, evento);

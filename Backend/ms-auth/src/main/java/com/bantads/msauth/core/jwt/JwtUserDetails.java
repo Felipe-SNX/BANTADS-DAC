@@ -9,12 +9,12 @@ public class JwtUserDetails extends User {
     private Usuario usuario;
 
     public JwtUserDetails(Usuario usuario) {
-        super(usuario.getLogin(), usuario.getSenha(), AuthorityUtils.createAuthorityList(usuario.getTipoUsuario().name()));
+        super(usuario.getEmail(), usuario.getSenha(), AuthorityUtils.createAuthorityList(usuario.getTipoUsuario().name()));
         this.usuario = usuario;
     }
 
-    public Long getId() {
-        return this.usuario.getIdUsuario();
+    public String getId() {
+        return this.usuario.getId();
     }
 
     public String getRole() {

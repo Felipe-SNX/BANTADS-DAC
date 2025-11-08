@@ -1,8 +1,9 @@
-package com.bantads.mscliente.core.dto;
+package com.bantads.mscliente.common.dto;
 
-import com.bantads.mscliente.core.enums.EEventSource;
-import com.bantads.mscliente.core.enums.ESaga;
-import com.bantads.mscliente.core.enums.ESagaStatus;
+import com.bantads.mscliente.common.enums.EEventSource;
+import com.bantads.mscliente.common.enums.ESaga;
+import com.bantads.mscliente.common.enums.ESagaStatus;
+
 import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;

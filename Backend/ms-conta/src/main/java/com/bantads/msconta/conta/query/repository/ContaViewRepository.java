@@ -8,6 +8,8 @@ import com.bantads.msconta.conta.query.model.ContaView;
 
 public interface ContaViewRepository extends JpaRepository<ContaView, Long> {
 
-    Optional<ContaView> findByNumConta(String numConta);
+    Optional<ContaView> findByConta(String conta);
+
+    Optional<ContaView> findByCliente(String cpf);
 }
 

@@ -3,14 +3,10 @@ package com.bantads.msorquestrador.core.service;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.bantads.msorquestrador.core.dto.*;
 import com.bantads.msorquestrador.core.exception.ErroAoConverterJsonException;
 import org.springframework.stereotype.Service;
 
-import com.bantads.msorquestrador.core.dto.AutoCadastroInfo;
-import com.bantads.msorquestrador.core.dto.DadoGerenteInsercao;
-import com.bantads.msorquestrador.core.dto.Evento;
-import com.bantads.msorquestrador.core.dto.Historico;
-import com.bantads.msorquestrador.core.dto.PerfilInfo;
 import com.bantads.msorquestrador.core.enums.EEventSource;
 import com.bantads.msorquestrador.core.enums.ESaga;
 import com.bantads.msorquestrador.core.enums.ESagaStatus;
@@ -32,22 +28,38 @@ public class SagaService {
     private final SagaProcessor sagaProcessor;
     private final SagaEventProducer sagaEventProducer;
 
-    public void iniciarSagaAutocadastro(AutoCadastroInfo autoCadastroInfo) {
-        log.info("Saga de autocadastro iniciada para o cliente: {}", autoCadastroInfo.nome());
 
-        Map<String, Object> autocadastro = new HashMap<>();
-        autocadastro.put("autoCadastroInfo", autoCadastroInfo);
+    public void iniciarSagaAutocadastro(AutoCadastroInfo autoCadastroInfo) {
+        log.info("Saga de Autocadastro iniciada para o cliente: {}", autoCadastroInfo.getNome());
+
+        Map<String, Object> autoCadastroInfoMap = new HashMap<>();
+        autoCadastroInfoMap.put("autoCadastroInfo", autoCadastroInfo);
 
         try {
-            Evento evento = criarEvento(autocadastro, ESaga.AUTOCADASTRO_SAGA, EEventSource.ORQUESTRADOR);
+            Evento evento = criarEvento(autoCadastroInfoMap, ESaga.AUTOCADASTRO_SAGA, EEventSource.ORQUESTRADOR);
             publicarEvento(evento);
         } catch (JsonProcessingException e) {
-            throw new ErroAoConverterJsonException("Saga Autocadastro", e.getMessage());
+            throw new ErroAoConverterJsonException("Saga Alterar Perfil", e.getMessage());
+        }
+    }
+
+    public void iniciarSagaAprovarCliente(ClienteParaAprovarRequest clienteParaAprovarRequest, String cpf) {
+        log.info("Saga de aprovar cliente iniciada para o cliente: {}", clienteParaAprovarRequest.getNome());
+
+
+        Map<String, Object> clienteParaAprovarRequestInfo = new HashMap<>();
+        clienteParaAprovarRequestInfo.put("clienteParaAprovarRequest", clienteParaAprovarRequest);
+
+        try {
+            Evento evento = criarEvento(clienteParaAprovarRequestInfo, ESaga.APROVAR_CLIENTE_SAGA, EEventSource.ORQUESTRADOR);
+            publicarEvento(evento);
+        } catch (JsonProcessingException e) {
+            throw new ErroAoConverterJsonException("Saga Aprovar Cliente Perfil", e.getMessage());
         }
     }
 
     public void iniciarSagaAlterarPerfil(PerfilInfo perfilInfo, String cpf) {
-        log.info("Saga de alterar perfil iniciada para o cliente: {}", perfilInfo.nome());
+        log.info("Saga de alterar perfil iniciada para o cliente: {}", perfilInfo.getNome());
 
 
         Map<String, Object> alterarPerfilInfo = new HashMap<>();
@@ -63,7 +75,7 @@ public class SagaService {
     }
 
     public void iniciarSagaInserirGerente(DadoGerenteInsercao dadoGerenteInsercao) {
-        log.info("Saga de inserir gerente iniciada para o gerente: {}", dadoGerenteInsercao.nome());
+        log.info("Saga de inserir gerente iniciada para o gerente: {}", dadoGerenteInsercao.getNome());
 
         Map<String, Object> inserirGerenteInfo = new HashMap<>();
         inserirGerenteInfo.put("dadoGerenteInsercao", dadoGerenteInsercao);

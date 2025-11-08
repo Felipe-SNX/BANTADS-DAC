@@ -1,6 +1,7 @@
 package com.bantads.msconta.conta.command.controller;
 
 import com.bantads.msconta.conta.command.service.ContaCommandService;
+import com.bantads.msconta.conta.command.service.DataService;
 import com.bantads.msconta.conta.dto.OperacaoRequest;
 import com.bantads.msconta.conta.dto.OperacaoResponse;
 import com.bantads.msconta.conta.dto.TransferenciaRequest;
@@ -16,6 +17,13 @@ import org.springframework.web.bind.annotation.*;
 public class ContaCommandController {
 
     private final ContaCommandService contaCommandService;
+    private final DataService dataService;
+
+    @GetMapping("/reboot")
+    public ResponseEntity<Void> reboot() {
+        dataService.popularBanco();
+        return ResponseEntity.ok().build();
+    }
 
     @PostMapping("/{numero}/depositar")
     public ResponseEntity<OperacaoResponse> depositar(@RequestBody OperacaoRequest operacao, @PathVariable String numero) {

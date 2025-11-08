@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ExtratoResponse {
 
-    private String numConta;
+    private String conta;
     private BigDecimal saldo;
     private List<ItemExtratoResponse> movimentacoes;
 }

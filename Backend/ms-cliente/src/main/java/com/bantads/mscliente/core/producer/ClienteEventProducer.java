@@ -1,8 +1,8 @@
 package com.bantads.mscliente.core.producer;
 
+import com.bantads.mscliente.common.dto.Evento;
+import com.bantads.mscliente.common.enums.ETopics;
 import com.bantads.mscliente.config.rabbitmq.RabbitMQConstantes;
-import com.bantads.mscliente.core.dto.Evento;
-import com.bantads.mscliente.core.enums.ETopics;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

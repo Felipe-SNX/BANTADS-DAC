@@ -43,7 +43,7 @@ public class RabbitMQConfig {
 
         return BindingBuilder.bind(contaSyncQueue)
                 .to(bantadsExchange)
-                .with(RabbitMQConstantes.ROUTING_KEY_SYNC);
+                .with(RabbitMQConstantes.ROUTING_KEY_MOV);
     }
 
     @Bean

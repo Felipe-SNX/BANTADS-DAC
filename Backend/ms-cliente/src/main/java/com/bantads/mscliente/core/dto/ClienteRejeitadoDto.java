@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ClienteRejeitadoDto {
 
+    private Usuario usuario;
     private String motivo;
 }

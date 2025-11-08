@@ -1,11 +1,11 @@
 package com.bantads.msorquestrador.core.controller;
 
+import com.bantads.msorquestrador.core.dto.*;
+import com.bantads.msorquestrador.core.dto.mapper.PerfilInfoMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.bantads.msorquestrador.core.dto.AutoCadastroInfo;
-import com.bantads.msorquestrador.core.dto.DadoGerenteInsercao;
-import com.bantads.msorquestrador.core.dto.PerfilInfo;
 import com.bantads.msorquestrador.core.service.SagaService;
 import lombok.AllArgsConstructor;
 
@@ -26,23 +26,34 @@ public class SagaController {
     private final SagaService sagaService;
 
     @PostMapping("/autocadastro")
-    public void iniciarSagaAutocadastro(@RequestBody AutoCadastroInfo autoCadastroInfo) {
+    public ResponseEntity<AutoCadastroInfo> iniciarSagaAutocadastro(@RequestBody AutoCadastroInfo autoCadastroInfo) {
         log.info("Iniciando saga autocadastro");
-        log.info("Saga autocadastro: {}", autoCadastroInfo);
         sagaService.iniciarSagaAutocadastro(autoCadastroInfo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(autoCadastroInfo);
+    }
+
+    @PostMapping("/{cpf}/aprovar")
+    public ResponseEntity<Void> iniciarSagaAprovarCliente(@RequestBody ClienteParaAprovarRequest clienteParaAprovarRequest,
+                                               @PathVariable String cpf) {
+        sagaService.iniciarSagaAprovarCliente(clienteParaAprovarRequest, cpf);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/alterarPerfil/{cpf}")
-    public void iniciarSagaAlterarPerfil(@RequestBody PerfilInfo perfilInfo, @PathVariable String cpf) {
+    public ResponseEntity<PerfilInfoResponse> iniciarSagaAlterarPerfil(@RequestBody PerfilInfo perfilInfo, @PathVariable String cpf) {
         log.info("Iniciando saga alterar perfil");
         sagaService.iniciarSagaAlterarPerfil(perfilInfo, cpf);
+        PerfilInfoResponse perfilInfoResponse = PerfilInfoMapper.toPerfilInfoResponse(perfilInfo);
+        perfilInfoResponse.setCpf(cpf);
+        return ResponseEntity.status(HttpStatus.OK).body(perfilInfoResponse);
     }
 
     @PostMapping("/inserirGerente")
-    public void inserirGerente(@RequestBody DadoGerenteInsercao dadoGerenteInsercao) {
+    public ResponseEntity<DadoGerenteInsercao> inserirGerente(@RequestBody DadoGerenteInsercao dadoGerenteInsercao) {
         log.info("Iniciando saga inserir gerente");
         log.info("Saga inserir gerente: {}", dadoGerenteInsercao);
         sagaService.iniciarSagaInserirGerente(dadoGerenteInsercao);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dadoGerenteInsercao);
     }
 
     @DeleteMapping("/removerGerente/{cpf}")

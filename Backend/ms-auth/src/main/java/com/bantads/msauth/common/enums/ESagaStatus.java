@@ -5,5 +5,6 @@ public enum ESagaStatus {
     SUCCESS,
     COMPENSATE,
     COMPENSATE_FAILED,
-    FAIL
+    FAIL,
+    FINISHED
 }

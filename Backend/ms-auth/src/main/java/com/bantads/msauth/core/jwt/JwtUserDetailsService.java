@@ -24,7 +24,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         Usuario usuario = authService.buscarPorLogin(login);
         
         return User
-                .withUsername(usuario.getLogin())
+                .withUsername(usuario.getEmail())
                 .password(usuario.getSenha())
                 .authorities(usuario.getTipoUsuario().name()) 
                 .build();
@@ -46,5 +46,3 @@ public class JwtUserDetailsService implements UserDetailsService {
                 .build();
     }
 }
-
-

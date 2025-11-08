@@ -1,0 +1,246 @@
+services:
+  api-gateway:
+    build:
+      context: ./Backend/api-gateway
+    container_name: api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      JWT_SECRET: Nf3oai8aakCw0TF7Wv0PAGQyiNEv6vuOgSFLmKefxUi
+      MS_CONTA_URL: http://ms-conta:8080
+      MS_GERENTE_URL: http://ms-gerente:8081
+      MS_CLIENTE_URL: http://ms-cliente:8082
+      MS_ORQUESTRADOR_URL: http://ms-orquestrador:8083
+      MS_AUTH_URL: http://ms-auth:8084
+    networks:
+      - bantads-network
+    depends_on:
+      ms-conta:
+        condition: service_healthy
+      ms-gerente:
+        condition: service_healthy
+      ms-cliente:
+        condition: service_healthy
+      ms-auth:
+        condition: service_healthy
+  
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: bantads-frontend
+    image: bantads-frontend
+    ports:
+      - "4200:80"
+    networks:
+      - bantads-network
+    depends_on:
+      - api-gateway
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - bantads-network
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=123456
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  bantads_db:
+    image: postgres:15-alpine
+    container_name: bantads_db
+    environment:
+      - POSTGRES_DB=bantads_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5437:5432"
+    networks:
+      - bantads-network
+    volumes:
+      - ./Backend/init-db:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bantads_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+
+  auth_db:
+    image: mongo:latest
+    container_name: auth_db
+    restart: always
+    networks:
+      - bantads-network
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=123456
+    ports:
+      - 27017:27017
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  ms-auth:
+    build: './Backend/ms-auth'
+    container_name: ms-auth
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      auth_db:
+        condition: service_healthy
+    networks:
+      - bantads-network
+    environment:
+      - SERVER_PORT=8084
+      - SPRING_DATA_MONGODB_URI=mongodb://admin:123456@auth_db:27017/bantads_auth?authSource=admin
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=123456
+      - SPRING_JWT_SECRET=Nf3oai8aakCw0TF7Wv0PAGQyiNEv6vuOgSFLmKefxUi
+      - SPRING_MAIL_HOST=smtp.gmail.com
+      - SPRING_MAIL_PORT=587
+      - SPRING_MAIL_USERNAME=bantadsfelipe@gmail.com
+      - SPRING_MAIL_PASSWORD=tmtfurnylizvsscq
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
+    ports:
+      - "8094:8084"
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://localhost:8084/actuator/health || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 50s
+
+  ms-orquestrador:
+    build: './Backend/ms-orquestrador'
+    container_name: ms-orquestrador
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      bantads_db:
+        condition: service_healthy
+    networks:
+      - bantads-network
+    environment:
+      - SERVER_PORT=8083
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://bantads_db:5432/bantads_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=123456
+    ports:
+      - "8093:8083"
+
+  ms-conta:
+    build: './Backend/ms-conta'
+    container_name: ms-conta
+    ports:
+      - "8090:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://bantads_db:5432/bantads_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=123456
+    networks:
+      - bantads-network
+    depends_on:
+      bantads_db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 50s
+
+  ms-gerente:
+    build: './Backend/ms-gerente'
+    container_name: ms-gerente
+    ports:
+      - "8091:8081"
+    environment:
+      - SERVER_PORT=8081
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://bantads_db:5432/bantads_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=123456
+    networks:
+      - bantads-network
+    depends_on:
+      bantads_db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8081/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 50s
+
+  ms-cliente:
+    build: './Backend/ms-cliente'
+    container_name: ms-cliente
+    ports:
+      - "8092:8082"
+    environment:
+      - SERVER_PORT=8082
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://bantads_db:5432/bantads_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=123456
+      - SPRING_JWT_SECRET=Nf3oai8aakCw0TF7Wv0PAGQyiNEv6vuOgSFLmKefxUi
+      - SPRING_MAIL_HOST=smtp.gmail.com
+      - SPRING_MAIL_PORT=587
+      - SPRING_MAIL_USERNAME=bantadsfelipe@gmail.com
+      - SPRING_MAIL_PASSWORD=tmtfurnylizvsscq
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
+    networks:
+      - bantads-network
+    depends_on:
+      bantads_db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://localhost:8082/actuator/health || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 50s
+
+volumes:
+  rabbitmq_data:
+  postgres_data:
+
+networks:
+  bantads-network:
+    driver: bridge

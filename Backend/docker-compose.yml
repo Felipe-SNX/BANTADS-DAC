@@ -22,6 +22,8 @@ services:
         condition: service_healthy
       ms-cliente:
         condition: service_healthy
+      ms-auth:
+        condition: service_healthy
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -97,8 +99,21 @@ services:
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_USERNAME=admin
       - SPRING_RABBITMQ_PASSWORD=123456
+      - SPRING_JWT_SECRET=Nf3oai8aakCw0TF7Wv0PAGQyiNEv6vuOgSFLmKefxUi
+      - SPRING_MAIL_HOST=smtp.gmail.com
+      - SPRING_MAIL_PORT=587
+      - SPRING_MAIL_USERNAME=bantadsfelipe@gmail.com
+      - SPRING_MAIL_PASSWORD=tmtfurnylizvsscq 
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
     ports:
       - "8094:8084"
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://localhost:8084/actuator/health || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 50s
 
   ms-orquestrador:
     build: './ms-orquestrador'
@@ -145,7 +160,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 50s
 
   ms-gerente:
     build: './ms-gerente'
@@ -172,7 +187,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 50s
 
   ms-cliente:
     build: './ms-cliente'
@@ -187,6 +202,7 @@ services:
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_USERNAME=admin
       - SPRING_RABBITMQ_PASSWORD=123456
+      - SPRING_JWT_SECRET=Nf3oai8aakCw0TF7Wv0PAGQyiNEv6vuOgSFLmKefxUi
     networks:
       - bantads-network
     depends_on:
@@ -199,7 +215,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 30s
+      start_period: 50s
 
 volumes:
   rabbitmq_data:

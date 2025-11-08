@@ -17,6 +17,7 @@ public class AutoCadastroInfo {
     private String email;
     private String nome;
     private BigDecimal salario;
+    private String telefone;
     private String endereco;
     private String cep;
     private String cidade;

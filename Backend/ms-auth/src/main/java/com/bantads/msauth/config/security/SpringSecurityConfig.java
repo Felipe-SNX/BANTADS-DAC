@@ -2,12 +2,9 @@ package com.bantads.msauth.config.security;
 
 import com.bantads.msauth.core.jwt.JwtAuthenticationEntryPoint;
 import com.bantads.msauth.core.jwt.JwtAuthorizationFilter;
-import com.bantads.msauth.core.jwt.JwtUserDetailsService;
-import com.bantads.msauth.core.jwt.JwtUtils;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -37,6 +34,9 @@ public class SpringSecurityConfig {
                 .httpBasic(basic -> basic.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/auth/reboot").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/auth/checkBlacklist").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
                         .anyRequest().authenticated()
                 ).sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

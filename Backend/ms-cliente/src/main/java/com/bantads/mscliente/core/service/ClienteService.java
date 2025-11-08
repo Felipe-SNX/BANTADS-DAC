@@ -1,5 +1,10 @@
 package com.bantads.mscliente.core.service;
 
+import com.bantads.mscliente.common.dto.Evento;
+import com.bantads.mscliente.common.enums.EEventSource;
+import com.bantads.mscliente.common.enums.ESaga;
+import com.bantads.mscliente.common.enums.ESagaStatus;
+import com.bantads.mscliente.common.enums.ETopics;
 import com.bantads.mscliente.core.dto.*;
 import com.bantads.mscliente.core.dto.mapper.ClienteMapper;
 import com.bantads.mscliente.core.exception.ClienteNaoEncontradoException;
@@ -7,15 +12,28 @@ import com.bantads.mscliente.core.exception.CpfJaCadastradoException;
 import com.bantads.mscliente.core.exception.EnderecoNaoEncontradoException;
 import com.bantads.mscliente.core.model.Cliente;
 import com.bantads.mscliente.core.model.Endereco;
+import com.bantads.mscliente.core.producer.ClienteEventProducer;
 import com.bantads.mscliente.core.repository.ClienteRepository;
 import com.bantads.mscliente.core.repository.EnderecoRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -24,9 +42,30 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
     private final EnderecoRepository enderecoRepository;
+    private final ClienteEventProducer clienteEventProducer;
+    private final ObjectMapper objectMapper;
+    private final EmailService emailService;
 
-    public List<ClienteParaAprovarResponse> listarClientes(){
-        List<Cliente> clientes = clienteRepository.findAll();
+    public Optional<Cliente> checkCpf(String cpf){
+        return clienteRepository.findByCpf(cpf);
+    }
+
+    public List<ClienteParaAprovarResponse> listarClientes(String filtro){
+        List<Cliente> clientes = new ArrayList<>();
+        
+        if(filtro == null){
+            clientes = clienteRepository.findAllByAprovadoOrderByNomeAsc(true);
+        }
+        else if(filtro.equals("para_aprovar")){
+            clientes = listarClientesParaAprovar();
+        }
+        else if(filtro.equals("adm_relatorio_clientes")){
+            clientes = clienteRepository.findAllByAprovadoOrderByNomeAsc(true);
+        }
+        else{
+            clientes = top3Clientes();
+        }
+
         List<ClienteParaAprovarResponse> clienteParaAprovarResponse = new ArrayList<>();
 
         for (Cliente cliente : clientes) {
@@ -42,6 +81,17 @@ public class ClienteService {
         return clienteParaAprovarResponse;
     }
 
+    private List<Cliente> top3Clientes(){
+        Pageable topTres = PageRequest.of(0, 3);
+        Page<Cliente> paginaClientes = clienteRepository.findMelhoresClientes(true, topTres);
+        return paginaClientes.getContent();
+    }
+
+    private List<Cliente> listarClientesParaAprovar(){
+        return clienteRepository.findAllByAprovado(false);
+    }
+
+    @Transactional
     public ClienteParaAprovarResponse cadastrarCliente(AutoCadastroInfo autoCadastroInfo) {
         Optional<Cliente> clienteExistente = clienteRepository.findByCpf(autoCadastroInfo.getCpf());
 
@@ -52,14 +102,19 @@ public class ClienteService {
         Cliente cliente = ClienteMapper.autoCadastroInfoToCliente(autoCadastroInfo);
 
         String[] enderecoCompleto = autoCadastroInfo.getEndereco().split(",");
+        String logradouro = enderecoCompleto[0].trim();
+        String numero = "";
+        if (enderecoCompleto.length > 1) {
+            numero = enderecoCompleto[1].trim();
+        }
 
         var endereco = Endereco
                 .builder()
                 .cep(autoCadastroInfo.getCep())
                 .cidade(autoCadastroInfo.getCidade())
                 .estado(autoCadastroInfo.getEstado())
-                .logradouro(enderecoCompleto[0])
-                .numero(enderecoCompleto[1])
+                .logradouro(logradouro)
+                .numero(numero)
                 .build();
 
         Endereco enderecoSalvo = enderecoRepository.save(endereco);
@@ -73,11 +128,23 @@ public class ClienteService {
         clienteParaAprovarResponse.setCidade(enderecoSalvo.getCidade());
         clienteParaAprovarResponse.setEstado(enderecoSalvo.getEstado());
 
+        Map<String, Object> autoCadastroInfoMap = new HashMap<>();
+        autoCadastroInfoMap.put("autoCadastroInfo", autoCadastroInfo);
+
+        Evento evento = null;
+        try {
+            evento = criarEvento(autoCadastroInfoMap, ESaga.AUTOCADASTRO_SAGA, EEventSource.CLIENTE_SERVICE);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        log.info("Enviando evento de autocadastro");
+        clienteEventProducer.sendEvent(ETopics.EVT_CLIENTE_SUCCESS, evento);
+
         return clienteParaAprovarResponse;
     }
 
     public RelatorioClientesResponse getClientePorCpf(String cpf){
-        Cliente cliente = getCliente(cpf);
+        Cliente cliente = getCliente(cpf, true);
 
         Endereco endereco = getEndereco(cliente.getIdEndereco(), cpf);
 
@@ -89,8 +156,9 @@ public class ClienteService {
         return relatorioClientesResponse;
     }
 
+
     public void atualizaCliente(PerfilInfo perfilInfo, String cpf){
-        Cliente cliente = getCliente(cpf);
+        Cliente cliente = getCliente(cpf, true);
 
         Endereco endereco = getEndereco(cliente.getIdEndereco(), cpf);
 
@@ -106,31 +174,80 @@ public class ClienteService {
         cliente.setNome(perfilInfo.getNome());
         cliente.setEmail(perfilInfo.getEmail());
         cliente.setSalario(perfilInfo.getSalario());
-        clienteRepository.save(cliente);        
+        clienteRepository.save(cliente);
+
+        Map<String, Object> perfilInfoMap = new HashMap<>();
+        perfilInfoMap.put("perfilInfo", perfilInfo);
+
+        Evento evento = null;
+        try {
+            evento = criarEvento(perfilInfoMap, ESaga.ALTERACAO_PERFIL_SAGA, EEventSource.CLIENTE_SERVICE);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        log.info("Enviando evento de alterar perfil");
+        clienteEventProducer.sendEvent(ETopics.EVT_CLIENTE_SUCCESS, evento);
     }
 
-    public void aprovarCliente(String cpf){
-        Cliente cliente = getCliente(cpf);
-
+    public DadosClienteConta aprovarCliente(String cpf){
+        Cliente cliente = getCliente(cpf, false);
         cliente.setAprovado(true);
+        cliente.setDataAprovacaoRejeicao(LocalDateTime.now());
         clienteRepository.save(cliente);
+        DadosClienteConta dadosClienteConta = new DadosClienteConta();
+        dadosClienteConta.setEmail(cliente.getEmail());
+        dadosClienteConta.setCliente(cliente.getCpf());
+        dadosClienteConta.setSalario(cliente.getSalario());
+        dadosClienteConta.setGerente(cliente.getGerente());
+        return dadosClienteConta;
     }
 
     public void rejeitarCliente(ClienteRejeitadoDto clienteRejeitadoDto, String cpf){
-        Cliente cliente = getCliente(cpf);
+        Cliente cliente = getCliente(cpf, false);
 
         cliente.setAprovado(false);
-        cliente.setMotivoRejeição(clienteRejeitadoDto.getMotivo());
+        cliente.setDataAprovacaoRejeicao(LocalDateTime.now());
+        cliente.setMotivoRejeicao(clienteRejeitadoDto.getMotivo());
+        cliente.setGerente(clienteRejeitadoDto.getUsuario().getCpf());
         clienteRepository.save(cliente);
+
+        String destinatario = cliente.getEmail();
+        String assunto = "Rejeição Cadastro Internet Banking Bantads";
+        String corpo = "Olá! \n\n" + "Seu cadastro no banco Bantads foi rejeitado.\n" + "Com a motivação " + clienteRejeitadoDto.getMotivo() +
+                "\nEsperamos que possamos conversar novamente no futuro" ;
+
+        emailService.enviarEmailRejeitado(destinatario, assunto, corpo);
     }
 
-    private Cliente getCliente(String cpf){
-        return clienteRepository.findByCpf(cpf)
+    public void atribuirGerente(String cpfCliente, String cpfGerente){
+        Cliente cliente = getCliente(cpfCliente, false);
+        cliente.setGerente(cpfGerente);
+    }
+
+    private Cliente getCliente(String cpf, boolean aprovado){
+        return clienteRepository.findByCpfAndAprovado(cpf, aprovado)
                 .orElseThrow(() -> new ClienteNaoEncontradoException("Cliente", cpf));
     }
 
     private Endereco getEndereco(long idEndereco, String cpfCliente){
         return enderecoRepository.findById(idEndereco)
                 .orElseThrow(() -> new EnderecoNaoEncontradoException("Endereco", cpfCliente));
+    }
+
+    private String gerarId() {
+        return UUID.randomUUID().toString();
+    }
+
+    private Evento criarEvento(Map<String, Object> payload, ESaga saga, EEventSource source) throws JsonProcessingException {
+        String sagaId = gerarId();
+
+        return Evento.builder()
+                .id(sagaId)
+                .payload(objectMapper.writeValueAsString(payload))
+                .status(ESagaStatus.SAGA_STARTED)
+                .saga(saga)
+                .source(source)
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 }

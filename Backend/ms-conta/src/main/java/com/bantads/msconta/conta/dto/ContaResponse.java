@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class ContaResponse {
 
     private Long idCliente;
-    private String numConta;
+    private String conta;
     private BigDecimal saldo;
     private BigDecimal limite;
     private Long idGerente;

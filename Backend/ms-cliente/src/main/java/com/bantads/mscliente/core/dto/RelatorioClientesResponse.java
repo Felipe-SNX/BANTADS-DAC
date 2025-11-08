@@ -19,5 +19,9 @@ public class RelatorioClientesResponse {
     private String endereco;
     private String cidade;
     private String estado;
+    private String telefone;
     private BigDecimal salario;
+    private BigDecimal limite;
+    private String conta;
+    private String gerente;
 }

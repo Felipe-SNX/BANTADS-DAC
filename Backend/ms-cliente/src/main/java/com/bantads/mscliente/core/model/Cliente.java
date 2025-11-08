@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -33,8 +35,14 @@ public class Cliente {
     @Column(nullable = false)
     private BigDecimal salario;
 
-    @Column(nullable = false)
-    private boolean aprovado = true;
+    private String gerente;
 
-    private String motivoRejeição = null;
+    private BigDecimal saldo;
+
+    @Column(nullable = false)
+    private boolean aprovado = false;
+
+    private String motivoRejeicao = null;
+
+    private LocalDateTime dataAprovacaoRejeicao;
 }

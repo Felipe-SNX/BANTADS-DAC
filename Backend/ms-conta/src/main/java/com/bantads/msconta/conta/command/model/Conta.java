@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 import com.bantads.msconta.conta.exception.ValorInvalidoException;
 
 @Data
+@Builder
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "conta", schema = "conta_cud")
 public class Conta {
@@ -19,7 +21,7 @@ public class Conta {
     private Long id;
 
     @Column(nullable = false)
-    private String numConta;
+    private String conta;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
@@ -31,21 +33,20 @@ public class Conta {
     private BigDecimal limite;
 
     @Column(nullable = false)
-    private String cpfCliente;
+    private String cliente;
 
-    @Column(nullable = false)
-    private String cpfGerente;
+    private String gerente;
 
-    public Conta(String numConta, BigDecimal limite, String cpfCliente, String cpfGerente) {
+    public Conta(String conta, BigDecimal limite, String cliente, String gerente, LocalDateTime dataCriacao) {
         if (limite.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("O limite não pode ser negativo.");
         }
-        this.numConta = numConta;
-        this.dataCriacao = LocalDateTime.now();
+        this.conta = conta;
+        this.dataCriacao = dataCriacao;
         this.saldo = BigDecimal.ZERO;
         this.limite = limite;
-        this.cpfCliente = cpfCliente;
-        this.cpfGerente = cpfGerente;
+        this.cliente = cliente;
+        this.gerente = gerente;
     }
 
     public void depositar(BigDecimal valor) {

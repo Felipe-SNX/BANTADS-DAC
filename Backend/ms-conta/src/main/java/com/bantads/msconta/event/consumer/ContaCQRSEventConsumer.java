@@ -1,6 +1,8 @@
 package com.bantads.msconta.event.consumer;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.support.AmqpHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +14,7 @@ import com.bantads.msconta.conta.query.model.ContaView;
 import com.bantads.msconta.conta.query.model.MovimentacaoView;
 import com.bantads.msconta.conta.query.repository.ContaViewRepository;
 import com.bantads.msconta.conta.query.repository.MovimentacaoViewRepository;
-import com.bantads.msconta.event.dto.MovimentacaoRealizadaEvent;
+import com.bantads.msconta.event.dto.ContaSyncEvento;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,47 +29,64 @@ public class ContaCQRSEventConsumer {
 
     @Transactional
     @RabbitListener(queues = RabbitMQConstantes.FILA_CONTA_SYNC)
-    public void handleMovimentacao(@Payload MovimentacaoRealizadaEvent event){
-        log.info("Evento recebido: {}", event);
+    public void handleMovimentacao(@Payload ContaSyncEvento evento, @Header(AmqpHeaders.RECEIVED_ROUTING_KEY) String routingKey){
+        log.info("Evento recebido: {}", evento);
+        log.info(routingKey);
 
-        Movimentacao movOriginal = event.getMovimentacao();
+        if(routingKey.equals("sync.conta.criacao")){
+            var contaView = ContaView
+                    .builder()
+                    .id(evento.getId())
+                    .conta(evento.getConta())
+                    .dataCriacao(evento.getDataCriacao())
+                    .cliente(evento.getCliente())
+                    .gerente(evento.getGerente())
+                    .saldo(evento.getSaldo())
+                    .limite(evento.getLimite())
+                    .build();
 
-        if (movimentacaoViewRepository.existsById(movOriginal.getId())) {
-            log.warn("Evento duplicado ignorado. ID: {}", movOriginal.getId());
-            return; 
+            contaViewRepository.save(contaView);
         }
+        else {
+            Movimentacao movOriginal = evento.getMovimentacao();
 
-        ContaView contaViewOrigem = contaViewRepository.findById(event.getContaIdOrigem())
-                .orElse(new ContaView()); 
+            if (movimentacaoViewRepository.existsById(movOriginal.getId())) {
+                log.warn("Evento duplicado ignorado. ID: {}", movOriginal.getId());
+                return;
+            }
 
-        contaViewOrigem.setId(event.getContaIdOrigem());
-        contaViewOrigem.setSaldo(event.getNovoSaldoOrigem());
-        contaViewRepository.save(contaViewOrigem);
+            ContaView contaViewOrigem = contaViewRepository.findById(evento.getContaIdOrigem())
+                    .orElse(new ContaView());
 
-        ContaView contaViewDestino = null; 
+            contaViewOrigem.setId(evento.getContaIdOrigem());
+            contaViewOrigem.setSaldo(evento.getNovoSaldoOrigem());
+            contaViewRepository.save(contaViewOrigem);
 
-        if(movOriginal.getTipo().equals(TipoMovimentacao.TRANSFERENCIA)){
-            contaViewDestino = contaViewRepository.findById(event.getContaIdDestino())
-                    .orElse(new ContaView()); 
-            contaViewDestino.setId(event.getContaIdDestino());
-            contaViewDestino.setSaldo(event.getNovoSaldoDestino());
-            
-            contaViewRepository.save(contaViewDestino);
+            ContaView contaViewDestino = null;
+
+            if (movOriginal.getTipo().equals(TipoMovimentacao.transferência)) {
+                contaViewDestino = contaViewRepository.findById(evento.getContaIdDestino())
+                        .orElse(new ContaView());
+                contaViewDestino.setId(evento.getContaIdDestino());
+                contaViewDestino.setSaldo(evento.getNovoSaldoDestino());
+
+                contaViewRepository.save(contaViewDestino);
+            }
+
+            MovimentacaoView movView = MovimentacaoView.builder()
+                    .id(movOriginal.getId())
+                    .data(movOriginal.getData())
+                    .tipo(movOriginal.getTipo())
+                    .cpfClienteOrigem(movOriginal.getCpfClienteOrigem())
+                    .cpfClienteDestino(movOriginal.getCpfClienteDestino())
+                    .origem(contaViewOrigem.getConta())
+                    .destino(contaViewDestino != null ? contaViewDestino.getConta() : null)
+                    .valor(movOriginal.getValor())
+                    .build();
+
+            movimentacaoViewRepository.save(movView);
+
+            log.info("Banco de dados sincronizado com sucesso");
         }
-
-        MovimentacaoView movView = MovimentacaoView.builder()
-                .id(movOriginal.getId())
-                .data(movOriginal.getData())
-                .tipo(movOriginal.getTipo())
-                .cpfClienteOrigem(movOriginal.getCpfClienteOrigem())
-                .cpfClienteDestino(movOriginal.getCpfClienteDestino())
-                .numContaOrigem(contaViewOrigem.getNumConta())
-                .numContaDestino(contaViewDestino != null ? contaViewDestino.getNumConta() : null) 
-                .valor(movOriginal.getValor())
-                .build();
-
-        movimentacaoViewRepository.save(movView);
-
-        log.info("Banco de dados sincronizado com sucesso");
     }
 }

@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class SaldoResponse {
 
-    private String cpfCliente;
-    private String numConta;
+    private String cliente;
+    private String conta;
     private BigDecimal saldo;
 }

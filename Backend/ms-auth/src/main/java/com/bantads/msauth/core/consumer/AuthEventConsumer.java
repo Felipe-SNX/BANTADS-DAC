@@ -6,6 +6,11 @@ import com.bantads.msauth.common.enums.ESaga;
 import com.bantads.msauth.common.enums.ESagaStatus;
 import com.bantads.msauth.common.enums.ETopics;
 import com.bantads.msauth.config.rabbitmq.RabbitMQConstantes;
+import com.bantads.msauth.core.dto.AutoCadastroInfo;
+import com.bantads.msauth.core.dto.DadoGerenteInsercao;
+import com.bantads.msauth.core.dto.DadosClienteConta;
+import com.bantads.msauth.core.producer.AuthEventProducer;
+import com.bantads.msauth.core.service.AuthService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -21,6 +26,8 @@ import org.springframework.stereotype.Component;
 public class AuthEventConsumer {
 
     private final ObjectMapper objectMapper;
+    private final AuthService authService;
+    private final AuthEventProducer authEventProducer;
 
     @RabbitListener(queues = RabbitMQConstantes.FILA_AUTH)
     public void handleConsumer(Evento evento, @Header(AmqpHeaders.RECEIVED_ROUTING_KEY) String routingKey){
@@ -30,6 +37,7 @@ public class AuthEventConsumer {
         ESaga sagaType = evento.getSaga();
 
         if(routingKey.equals(ETopics.CMD_AUTH_CREATE.getTopic())){
+            log.info("entrei no if de ms-auth get topic");
             prosseguirTransacao(sagaType, evento);
         }
         else{
@@ -44,13 +52,22 @@ public class AuthEventConsumer {
             JsonNode rootNode = objectMapper.readTree(evento.getPayload());
 
             switch(sagaType){
-                case AUTOCADASTRO_SAGA:
+                case APROVAR_CLIENTE_SAGA:
+                    JsonNode dadosClienteContaNode = rootNode.path("dadosClienteConta");
+                    DadosClienteConta dadosClienteConta = objectMapper.treeToValue(dadosClienteContaNode, DadosClienteConta.class);
+                    authService.cadastrarUsuarioCliente(dadosClienteConta);
+                    authService.enviarEmailAprovado(dadosClienteConta);
+                    evento.setSource(EEventSource.AUTH_SERVICE);
+                    evento.setStatus(ESagaStatus.FINISHED);
+                    authEventProducer.sendEvent(ETopics.EVT_AUTH_SUCCESS, evento);
                     break;
                 case INSERCAO_GERENTE_SAGA:
-
-                    break;
-                case REMOCAO_GERENTE_SAGA:
-
+                    JsonNode dadoGerenteInsercaoNode = rootNode.path("dadoGerenteInsercao");
+                    DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(dadoGerenteInsercaoNode, DadoGerenteInsercao.class);
+                    authService.cadastrarUsuarioGerente(dadoGerenteInsercao);
+                    evento.setSource(EEventSource.AUTH_SERVICE);
+                    evento.setStatus(ESagaStatus.FINISHED);
+                    authEventProducer.sendEvent(ETopics.EVT_AUTH_SUCCESS, evento);
                     break;
                 default:
                     break;
@@ -59,7 +76,7 @@ public class AuthEventConsumer {
             log.info("Erro ocorreu em {} do tipo {}", sagaType, e);
             evento.setSource(EEventSource.AUTH_SERVICE);
             evento.setStatus(ESagaStatus.FAIL);
-            //gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_FAIL, evento);
+            authEventProducer.sendEvent(ETopics.EVT_AUTH_FAIL, evento);
         }
     }
 
@@ -81,7 +98,7 @@ public class AuthEventConsumer {
             log.info("Erro ocorreu em {} do tipo {}", sagaType, e);
             evento.setSource(EEventSource.AUTH_SERVICE);
             evento.setStatus(ESagaStatus.COMPENSATE_FAILED);
-            //gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_FAIL, evento);
+            authEventProducer.sendEvent(ETopics.EVT_AUTH_FAIL, evento);
         }
     }
 }

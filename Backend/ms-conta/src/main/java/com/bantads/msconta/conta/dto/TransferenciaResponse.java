@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TransferenciaResponse {
 
-    private String numConta;
+    private String conta;
     private LocalDateTime data;
-    private String numContaDestino;
+    private String destino;
     private BigDecimal saldo;
     private BigDecimal valor;
 }

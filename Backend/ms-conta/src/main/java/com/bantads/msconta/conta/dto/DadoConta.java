@@ -14,10 +14,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class DadoConta {
 
-    private String cpfCliente;
-    private String numConta;
+    private String cliente;
+    private String conta;
     private BigDecimal saldo;
     private BigDecimal limite;
-    private String cpfGerente;
+    private String gerente;
     private LocalDateTime dataCriacao;
 }

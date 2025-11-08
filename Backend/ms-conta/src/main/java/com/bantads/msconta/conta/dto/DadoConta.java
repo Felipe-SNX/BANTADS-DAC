@@ -18,6 +18,6 @@ public class DadoConta {
     private String conta;
     private BigDecimal saldo;
     private BigDecimal limite;
-    private String cpfGerente;
+    private String gerente;
     private LocalDateTime dataCriacao;
 }

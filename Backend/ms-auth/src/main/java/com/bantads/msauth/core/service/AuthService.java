@@ -2,6 +2,7 @@ package com.bantads.msauth.core.service;
 
 import com.bantads.msauth.core.document.Usuario;
 import com.bantads.msauth.core.dto.AutoCadastroInfo;
+import com.bantads.msauth.core.dto.DadoGerenteInsercao;
 import com.bantads.msauth.core.dto.DadosClienteConta;
 import com.bantads.msauth.core.dto.LogoutResponse;
 import com.bantads.msauth.core.enums.TipoUsuario;
@@ -10,6 +11,7 @@ import com.bantads.msauth.core.repository.AuthRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,25 +29,23 @@ public class AuthService {
     private final AuthRepository authRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final BlackListTokensService blackListTokensService;
 
     public LogoutResponse logout() {
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null) {
-            throw new RuntimeException("Usuário não autenticado.");
+        String email = ((UserDetails) authentication.getPrincipal()).getUsername();
+
+        String token = (String) authentication.getCredentials();
+
+        if (token != null) {
+            blackListTokensService.blacklistToken(token);
         }
 
-        Object principal = authentication.getPrincipal();
-        String email;
+        Optional<Usuario> usuarioPesquisa = authRepository.findByEmail(email);
+        Usuario usuarioLogado = usuarioPesquisa.orElse(new Usuario());
 
-        if (principal instanceof UserDetails) {
-            email = ((UserDetails) principal).getUsername();
-        } else {
-            email = authentication.getName();
-        }
-
-        return new LogoutResponse(email);
+        return new LogoutResponse(usuarioLogado.getCpf(), usuarioLogado.getEmail(), usuarioLogado.getTipoUsuario());
     }
 
     public Usuario buscarPorLogin(String login) {
@@ -53,25 +53,36 @@ public class AuthService {
             .orElseThrow(() -> new UsuarioNotFoundException(String.format("Usuario com '%s' não encontrado", login)));
     }
 
-    public void cadastrarUsuarioCliente(AutoCadastroInfo autoCadastroInfo){
+    public void cadastrarUsuarioCliente(DadosClienteConta dadosClienteConta){
         var usuario = Usuario
             .builder()
-            .email(autoCadastroInfo.getEmail())
+            .email(dadosClienteConta.getEmail())
             .senha(null)
-            .cpf(autoCadastroInfo.getCpf())
+            .cpf(dadosClienteConta.getCliente())
             .tipoUsuario(TipoUsuario.CLIENTE)
-            .ativo(false)
             .build();
         
         authRepository.save(usuario);
     }
 
+    public void cadastrarUsuarioGerente(DadoGerenteInsercao dadoGerenteInsercao){
+
+        var usuario = Usuario
+                .builder()
+                .email(dadoGerenteInsercao.getEmail())
+                .senha(passwordEncoder.encode(dadoGerenteInsercao.getSenha()))
+                .cpf(dadoGerenteInsercao.getCpf())
+                .tipoUsuario(TipoUsuario.GERENTE)
+                .build();
+
+        authRepository.save(usuario);
+    }
+
 
     public void enviarEmailAprovado(DadosClienteConta dadosClienteConta){
-        Usuario usuario = authRepository.findByCpf(dadosClienteConta.getCpfCliente())
-                .orElseThrow(() -> new UsuarioNotFoundException(String.format("Usuario com '%s' não encontrado", dadosClienteConta.getCpfCliente())));
+        Usuario usuario = authRepository.findByCpf(dadosClienteConta.getCliente())
+                .orElseThrow(() -> new UsuarioNotFoundException(String.format("Usuario com '%s' não encontrado", dadosClienteConta.getCliente())));
 
-        usuario.setAtivo(true);
         String senhaPura = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 8);
         usuario.setSenha(passwordEncoder.encode(senhaPura));
         authRepository.save(usuario);

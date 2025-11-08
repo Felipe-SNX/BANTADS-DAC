@@ -39,5 +39,5 @@ public class ContaView {
     private String cliente;
 
     @Column(nullable = false)
-    private String cpfGerente;
+    private String gerente;
 }

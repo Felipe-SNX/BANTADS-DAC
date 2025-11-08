@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -41,4 +43,6 @@ public class Cliente {
     private boolean aprovado = false;
 
     private String motivoRejeicao = null;
+
+    private LocalDateTime dataAprovacaoRejeicao;
 }

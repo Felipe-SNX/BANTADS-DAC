@@ -1,5 +1,6 @@
 package com.bantads.msconta.conta.query.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -52,5 +53,17 @@ public class ContaQueryService {
                 .saldo(conta.getSaldo())
                 .movimentacoes(movimentacoes)
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<DadoConta> getAllDadosConta(){
+        List<ContaView> contas = contaRepository.findAll();
+
+        List<DadoConta> dadoContas  = new ArrayList<>();
+        for (ContaView conta : contas) {
+            dadoContas.add(ContaViewMapper.toDadoConta(conta));
+        }
+
+        return dadoContas;
     }
 }

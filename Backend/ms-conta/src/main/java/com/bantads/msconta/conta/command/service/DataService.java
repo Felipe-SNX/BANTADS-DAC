@@ -41,19 +41,19 @@ public class DataService {
         contaWriteRepository.deleteAll();
         movimentacaoWriteRepository.deleteAll();
 
-        Conta conta1 = new Conta("1291", new BigDecimal("5000.00"), "12912861012", "98574307084");
+        Conta conta1 = new Conta("1291", new BigDecimal("5000.00"), "12912861012", "98574307084", LocalDateTime.now());
         conta1.depositar(new BigDecimal("800.00"));
 
-        Conta conta2 = new Conta("0950", new BigDecimal("10000.00"), "09506382000", "64065268052");
+        Conta conta2 = new Conta("0950", new BigDecimal("10000.00"), "09506382000", "64065268052", LocalDateTime.now());
         conta2.sacar(new BigDecimal("10000.00"));
 
-        Conta conta3 = new Conta("8573", new BigDecimal("1500.00"), "85733854057", "23862179060");
+        Conta conta3 = new Conta("8573", new BigDecimal("1500.00"), "85733854057", "23862179060", LocalDateTime.now());
         conta3.sacar(new BigDecimal("1000.00"));
 
-        Conta conta4 = new Conta("5887", new BigDecimal("0.00"), "58872160006", "98574307084");
+        Conta conta4 = new Conta("5887", new BigDecimal("0.00"), "58872160006", "98574307084", LocalDateTime.now());
         conta4.depositar(new BigDecimal("150000.00"));
 
-        Conta conta5 = new Conta("7617", new BigDecimal("0.00"), "76179646090", "64065268052");
+        Conta conta5 = new Conta("7617", new BigDecimal("0.00"), "76179646090", "64065268052", LocalDateTime.now());
         conta5.depositar(new BigDecimal("1500.00"));
 
         List<Conta> contas = List.of(conta1, conta2, conta3, conta4, conta5);
@@ -69,7 +69,7 @@ public class DataService {
                 .saldo(conta.getSaldo())
                 .limite(conta.getLimite())
                 .cliente(conta.getCliente())
-                .cpfGerente(conta.getCpfGerente())
+                .gerente(conta.getGerente())
                 .build();
                     
             contaViewRepository.save(contaView);

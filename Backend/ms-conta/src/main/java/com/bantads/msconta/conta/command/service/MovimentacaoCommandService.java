@@ -14,8 +14,8 @@ public class MovimentacaoCommandService {
 
     private final MovimentacaoWriteRepository movimentacaoRepository;
 
-    public void salvarMovimentacao(Movimentacao movimentacao){
-        movimentacaoRepository.save(movimentacao);
+    public Movimentacao salvarMovimentacao(Movimentacao movimentacao){
+        return movimentacaoRepository.save(movimentacao);
     }
 
 }

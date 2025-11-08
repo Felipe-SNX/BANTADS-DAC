@@ -70,7 +70,7 @@ public class GerenteController {
     }
 
     @PutMapping("/{cpf}")
-    public ResponseEntity<GerentesResponse> deletarGerenteCpf(@RequestBody DadoGerenteAtualizacao dadoGerente,
+    public ResponseEntity<GerentesResponse> atualizarGerenteCpf(@RequestBody DadoGerenteAtualizacao dadoGerente,
                                                               @PathVariable String cpf) {
         GerentesResponse gerenteResponse = gerenteService.atualizarGerentePorCpf(dadoGerente, cpf);
         return ResponseEntity.ok(gerenteResponse);

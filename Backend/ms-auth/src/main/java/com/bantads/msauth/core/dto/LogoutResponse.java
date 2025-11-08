@@ -11,11 +11,7 @@ import lombok.NoArgsConstructor;
 public class LogoutResponse {
 
     private String cpf;
-    private String nome;
     private String email;
     private TipoUsuario tipoUsuario;
 
-    public LogoutResponse(String email){
-        this.email = email;
-    }
 }

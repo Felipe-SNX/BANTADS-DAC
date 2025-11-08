@@ -35,20 +35,18 @@ public class Conta {
     @Column(nullable = false)
     private String cliente;
 
-    private String cpfGerente;
+    private String gerente;
 
-    private boolean ativo = false;
-
-    public Conta(String conta, BigDecimal limite, String cliente, String cpfGerente) {
+    public Conta(String conta, BigDecimal limite, String cliente, String gerente, LocalDateTime dataCriacao) {
         if (limite.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("O limite não pode ser negativo.");
         }
         this.conta = conta;
-        this.dataCriacao = LocalDateTime.now();
+        this.dataCriacao = dataCriacao;
         this.saldo = BigDecimal.ZERO;
         this.limite = limite;
         this.cliente = cliente;
-        this.cpfGerente = cpfGerente;
+        this.gerente = gerente;
     }
 
     public void depositar(BigDecimal valor) {

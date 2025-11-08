@@ -48,7 +48,11 @@ const gerentesServiceProxy = createProxyMiddleware({
     changeOrigin: true,
     logLevel: 'debug',
     pathRewrite: (path, req) => {
-        const finalPath = '/gerentes' + (path === '/' ? '' : path);
+        let finalPath = path;
+        if (!path.startsWith('/gerentes')) {
+            const newBasePath = (path === '/' ? '' : path);
+            finalPath = '/gerentes' + newBasePath;
+        }
         console.log(`[Proxy MS-Gerente] Original: "${req.originalUrl}", Reescrito para: "${finalPath}"`);
         return finalPath;
     },
@@ -259,6 +263,69 @@ router.get('/clientes/:cpf', verifyToken, async (req, res, next) => {
         };
 
         res.status(200).json(compositeResponse);
+
+    } catch (error) {
+        console.error(`[Gateway] Erro CRÍTICO ao buscar dados primários do cliente ${cpf}:`, error.message);
+
+        const status = error.response?.status || 500;
+        res.status(status).json({
+            message: 'Erro ao buscar dados primários do cliente.',
+            serviceError: error.message
+        });
+    }
+});
+
+router.get('/gerentes', verifyToken, async (req, res, next) => {
+    const { filtro } = req.query;
+
+    try {
+        const gerenteUrl = `${process.env.MS_GERENTE_URL}/gerentes`;
+        const gerenteResponse = await axios.get(gerenteUrl);
+        const gerenteData = gerenteResponse.data;
+
+        if(filtro === 'dashboard'){
+            const contaUrl = `${process.env.MS_CONTA_URL}/contas/dadosConta`;
+            const contaResponse = await axios.get(contaUrl);
+            const contaData = contaResponse.data;
+
+            const dashboardMap = new Map();
+
+            for (const gerente of gerenteData) {
+                dashboardMap.set(gerente.cpf, {
+                    gerente: gerente,
+                    clientes: [],
+                    saldo_positivo: 0,
+                    saldo_negativo: 0
+                });
+            }
+
+            for (const conta of contaData) {
+                const cpfGerente = conta.gerente;
+
+                const dashboardEntry = dashboardMap.get(cpfGerente);
+
+                if (dashboardEntry) {
+                    dashboardEntry.clientes.push({
+                        cliente: conta.cliente,
+                        numero: conta.numero,
+                        saldo: conta.saldo,
+                        limite: conta.limite,
+                        gerente: conta.gerente,
+                        criacao: conta.criacao
+                    });
+
+                    if (conta.saldo > 0) {
+                        dashboardEntry.saldo_positivo += conta.saldo;
+                    } else {
+                        dashboardEntry.saldo_negativo += conta.saldo;
+                    }
+                }
+            }
+            const compositeResponse = Array.from(dashboardMap.values());
+            res.status(200).json(compositeResponse);
+        }
+
+        res.status(200).json(gerenteData);
 
     } catch (error) {
         console.error(`[Gateway] Erro CRÍTICO ao buscar dados primários do cliente ${cpf}:`, error.message);

@@ -21,7 +21,7 @@ public class ContaSyncEvento implements Serializable{
     private BigDecimal saldo;
     private BigDecimal limite;
     private String cliente;
-    private String cpfGerente;
+    private String gerente;
     private boolean ativo;
     private Long contaIdOrigem;
     private BigDecimal novoSaldoOrigem;

@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/contas")
@@ -20,6 +22,12 @@ public class ContaQueryController {
     public ResponseEntity<DadoConta> obterDadosConta(@PathVariable String cpf) {
         DadoConta dadoConta = contaQueryService.getContaByClienteCpf(cpf);
         return ResponseEntity.ok(dadoConta);
+    }
+
+    @GetMapping("/dadosConta")
+    public ResponseEntity<List<DadoConta>> obterTodosDadosConta() {
+        List<DadoConta> dadoContas = contaQueryService.getAllDadosConta();
+        return ResponseEntity.ok(dadoContas);
     }
 
     @GetMapping("/{numero}/saldo")

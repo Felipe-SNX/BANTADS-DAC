@@ -11,7 +11,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class DadosClienteConta {
 
-    private String cpfCliente;
-    private String cpfGerente;
+    private String email;
+    private String cliente;
+    private String gerente;
     private BigDecimal salario;
 }

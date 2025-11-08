@@ -1,5 +1,7 @@
 package com.bantads.msconta.conta.command.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.bantads.msconta.conta.command.model.Conta;
@@ -14,24 +16,27 @@ public interface ContaWriteRepository extends JpaRepository<Conta, Long> {
 
     Optional<Conta> findByConta(String conta);
 
-    @Query("SELECT c.cpfGerente FROM Conta c GROUP BY c.cpfGerente ORDER BY COUNT(c.cpfGerente) DESC LIMIT 1")
-    String findCpfGerenteComMaisContas();
+    @Query("SELECT c.gerente FROM Conta c " +
+            "WHERE c.gerente IS NOT NULL " +
+            "GROUP BY c.gerente " +
+            "ORDER BY COUNT(c.gerente) DESC, MAX(c.dataCriacao) DESC")
+    Page<String> findGerentesOrdenadosPorContasEData(Pageable pageable);
 
-    @Query("SELECT c.cpfGerente FROM Conta c GROUP BY c.cpfGerente ORDER BY COUNT(c.cpfGerente) ASC LIMIT 1")
-    String findCpfGerenteComMenosContas();
+    @Query("SELECT c.gerente FROM Conta c GROUP BY c.gerente ORDER BY COUNT(c.gerente) ASC LIMIT 1")
+    String findGerenteComMenosContas();
 
-    Optional<Conta> findFirstByCpfGerenteOrderByDataCriacaoAsc(String cpfGerente);
+    Optional<Conta> findFirstByGerenteOrderByDataCriacaoAsc(String cpfGerente);
 
     Optional<Conta> findByCliente(String cpf);
 
-    List<Conta> findAllByCpfGerente(String cpf);
+    List<Conta> findAllByGerente(String cpf);
 
-    @Query("SELECT c.cpfGerente FROM Conta c WHERE c.cpfGerente != :cpf GROUP BY c.cpfGerente ORDER BY COUNT(c.cpfGerente) ASC LIMIT 1")
-    String findCpfGerenteComMenosContasRemanejar(String cpf);
+    @Query("SELECT c.gerente FROM Conta c WHERE c.gerente != :cpf GROUP BY c.gerente ORDER BY COUNT(c.gerente) ASC LIMIT 1")
+    String findGerenteComMenosContasRemanejar(String cpf);
 
-    @Query("SELECT new com.bantads.msconta.conta.dto.GerentesNumeroContasDto(c.cpfGerente, COUNT(c.cpfGerente)) " +
+    @Query("SELECT new com.bantads.msconta.conta.dto.GerentesNumeroContasDto(c.gerente, COUNT(c.gerente)) " +
             "FROM Conta c " +
-            "WHERE c.cpfGerente IS NOT NULL " +
-            "GROUP BY c.cpfGerente")
+            "WHERE c.gerente IS NOT NULL " +
+            "GROUP BY c.gerente")
     List<GerentesNumeroContasDto> countContasByGerente();
 }

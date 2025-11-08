@@ -7,6 +7,7 @@ import com.bantads.msauth.common.enums.ESagaStatus;
 import com.bantads.msauth.common.enums.ETopics;
 import com.bantads.msauth.config.rabbitmq.RabbitMQConstantes;
 import com.bantads.msauth.core.dto.AutoCadastroInfo;
+import com.bantads.msauth.core.dto.DadoGerenteInsercao;
 import com.bantads.msauth.core.dto.DadosClienteConta;
 import com.bantads.msauth.core.producer.AuthEventProducer;
 import com.bantads.msauth.core.service.AuthService;
@@ -51,26 +52,19 @@ public class AuthEventConsumer {
             JsonNode rootNode = objectMapper.readTree(evento.getPayload());
 
             switch(sagaType){
-                case AUTOCADASTRO_SAGA:
-                    JsonNode clienteNode = rootNode.path("autoCadastroInfo");
-                    AutoCadastroInfo autoCadastroInfo = objectMapper.treeToValue(clienteNode, AutoCadastroInfo.class);
-                    authService.cadastrarUsuarioCliente(autoCadastroInfo);
-                    evento.setSource(EEventSource.AUTH_SERVICE);
-                    evento.setStatus(ESagaStatus.SUCCESS);
-                    authEventProducer.sendEvent(ETopics.EVT_AUTH_SUCCESS, evento);
-                    break;
                 case APROVAR_CLIENTE_SAGA:
                     JsonNode dadosClienteContaNode = rootNode.path("dadosClienteConta");
                     DadosClienteConta dadosClienteConta = objectMapper.treeToValue(dadosClienteContaNode, DadosClienteConta.class);
+                    authService.cadastrarUsuarioCliente(dadosClienteConta);
                     authService.enviarEmailAprovado(dadosClienteConta);
                     evento.setSource(EEventSource.AUTH_SERVICE);
                     evento.setStatus(ESagaStatus.FINISHED);
                     authEventProducer.sendEvent(ETopics.EVT_AUTH_SUCCESS, evento);
                     break;
                 case INSERCAO_GERENTE_SAGA:
-                    JsonNode dadosClienteContaNode = rootNode.path("dadoGerenteInsercao");
-                    DadosClienteConta dadosClienteConta = objectMapper.treeToValue(dadosClienteContaNode, DadosClienteConta.class);
-                    authService.enviarEmailAprovado(dadosClienteConta);
+                    JsonNode dadoGerenteInsercaoNode = rootNode.path("dadoGerenteInsercao");
+                    DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(dadoGerenteInsercaoNode, DadoGerenteInsercao.class);
+                    authService.cadastrarUsuarioGerente(dadoGerenteInsercao);
                     evento.setSource(EEventSource.AUTH_SERVICE);
                     evento.setStatus(ESagaStatus.FINISHED);
                     authEventProducer.sendEvent(ETopics.EVT_AUTH_SUCCESS, evento);

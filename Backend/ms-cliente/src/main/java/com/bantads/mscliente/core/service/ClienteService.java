@@ -18,6 +18,7 @@ import com.bantads.mscliente.core.repository.EnderecoRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +44,7 @@ public class ClienteService {
     private final EnderecoRepository enderecoRepository;
     private final ClienteEventProducer clienteEventProducer;
     private final ObjectMapper objectMapper;
+    private final EmailService emailService;
 
     public Optional<Cliente> checkCpf(String cpf){
         return clienteRepository.findByCpf(cpf);
@@ -190,11 +192,13 @@ public class ClienteService {
     public DadosClienteConta aprovarCliente(String cpf){
         Cliente cliente = getCliente(cpf, false);
         cliente.setAprovado(true);
+        cliente.setDataAprovacaoRejeicao(LocalDateTime.now());
         clienteRepository.save(cliente);
         DadosClienteConta dadosClienteConta = new DadosClienteConta();
-        dadosClienteConta.setCpfCliente(cliente.getCpf());
+        dadosClienteConta.setEmail(cliente.getEmail());
+        dadosClienteConta.setCliente(cliente.getCpf());
         dadosClienteConta.setSalario(cliente.getSalario());
-        dadosClienteConta.setCpfGerente(cliente.getGerente());
+        dadosClienteConta.setGerente(cliente.getGerente());
         return dadosClienteConta;
     }
 
@@ -202,9 +206,17 @@ public class ClienteService {
         Cliente cliente = getCliente(cpf, false);
 
         cliente.setAprovado(false);
+        cliente.setDataAprovacaoRejeicao(LocalDateTime.now());
         cliente.setMotivoRejeicao(clienteRejeitadoDto.getMotivo());
         cliente.setGerente(clienteRejeitadoDto.getUsuario().getCpf());
         clienteRepository.save(cliente);
+
+        String destinatario = cliente.getEmail();
+        String assunto = "Rejeição Cadastro Internet Banking Bantads";
+        String corpo = "Olá! \n\n" + "Seu cadastro no banco Bantads foi rejeitado.\n" + "Com a motivação " + clienteRejeitadoDto.getMotivo() +
+                "\nEsperamos que possamos conversar novamente no futuro" ;
+
+        emailService.enviarEmailRejeitado(destinatario, assunto, corpo);
     }
 
     public void atribuirGerente(String cpfCliente, String cpfGerente){

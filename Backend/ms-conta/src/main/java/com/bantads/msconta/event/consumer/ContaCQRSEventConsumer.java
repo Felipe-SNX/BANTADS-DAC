@@ -40,7 +40,7 @@ public class ContaCQRSEventConsumer {
                     .conta(evento.getConta())
                     .dataCriacao(evento.getDataCriacao())
                     .cliente(evento.getCliente())
-                    .cpfGerente(evento.getCpfGerente())
+                    .gerente(evento.getGerente())
                     .saldo(evento.getSaldo())
                     .limite(evento.getLimite())
                     .build();

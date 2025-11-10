@@ -1,7 +1,6 @@
 package com.bantads.msauth.core.service;
 
 import com.bantads.msauth.core.document.Usuario;
-import com.bantads.msauth.core.dto.AutoCadastroInfo;
 import com.bantads.msauth.core.dto.DadoGerenteInsercao;
 import com.bantads.msauth.core.dto.DadosClienteConta;
 import com.bantads.msauth.core.dto.LogoutResponse;
@@ -20,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,15 +35,13 @@ public class AuthService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         String email = ((UserDetails) authentication.getPrincipal()).getUsername();
-
         String token = (String) authentication.getCredentials();
 
         if (token != null) {
             blackListTokensService.blacklistToken(token);
         }
 
-        Optional<Usuario> usuarioPesquisa = authRepository.findByEmail(email);
-        Usuario usuarioLogado = usuarioPesquisa.orElse(new Usuario());
+        Usuario usuarioLogado = this.buscarPorLogin(email);
 
         return new LogoutResponse(usuarioLogado.getCpf(), usuarioLogado.getEmail(), usuarioLogado.getTipoUsuario());
     }
@@ -53,39 +51,41 @@ public class AuthService {
             .orElseThrow(() -> new UsuarioNotFoundException(String.format("Usuario com '%s' não encontrado", login)));
     }
 
-    public void cadastrarUsuarioCliente(DadosClienteConta dadosClienteConta){
-        var usuario = Usuario
-            .builder()
-            .email(dadosClienteConta.getEmail())
-            .senha(null)
-            .cpf(dadosClienteConta.getCliente())
-            .tipoUsuario(TipoUsuario.CLIENTE)
-            .build();
-        
-        authRepository.save(usuario);
+    @Transactional
+    public void cadastrarUsuarioCliente(DadosClienteConta dadosClienteConta) {
+        authRepository.save(mapFrom(dadosClienteConta));
     }
 
-    public void cadastrarUsuarioGerente(DadoGerenteInsercao dadoGerenteInsercao){
-
-        var usuario = Usuario
-                .builder()
-                .email(dadoGerenteInsercao.getEmail())
-                .senha(passwordEncoder.encode(dadoGerenteInsercao.getSenha()))
-                .cpf(dadoGerenteInsercao.getCpf())
-                .tipoUsuario(TipoUsuario.GERENTE)
-                .build();
-
-        authRepository.save(usuario);
+    @Transactional
+    public void cadastrarUsuarioGerente(DadoGerenteInsercao dadoGerenteInsercao) {
+        authRepository.save(mapFrom(dadoGerenteInsercao));
     }
 
+    @Transactional
+    public void cadastrarUsuarioExcluido(Usuario user) {
+        authRepository.save(mapFrom(user));
+    }
 
-    public void enviarEmailAprovado(DadosClienteConta dadosClienteConta){
-        Usuario usuario = authRepository.findByCpf(dadosClienteConta.getCliente())
-                .orElseThrow(() -> new UsuarioNotFoundException(String.format("Usuario com '%s' não encontrado", dadosClienteConta.getCliente())));
+    @Transactional
+    public Usuario excluirUsuario(String cpf) {
+        Optional<Usuario> usuarioOpt = authRepository.findByCpf(cpf);
+
+        if (usuarioOpt.isEmpty()) {
+            return null;
+        }
+
+        Usuario usuario = usuarioOpt.get();
+        authRepository.delete(usuario);
+        return usuario;
+    }
+
+    @Transactional
+    public void enviarEmailAprovado(DadosClienteConta dadosClienteConta) {
+        Usuario usuario = this.buscarPorLogin(dadosClienteConta.getEmail());
 
         String senhaPura = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 8);
         usuario.setSenha(passwordEncoder.encode(senhaPura));
-        authRepository.save(usuario);
+        authRepository.save(usuario); 
 
         log.info("----------------------------------------------");
         log.info("Senha para email {} é {}", usuario.getEmail(), senhaPura);
@@ -98,6 +98,30 @@ public class AuthService {
         emailService.enviarEmailAprovado(destinatario, assunto, corpo);
     }
 
+    private Usuario mapFrom(DadosClienteConta dto) {
+        return Usuario.builder()
+            .email(dto.getEmail())
+            .senha(null) 
+            .cpf(dto.getCliente())
+            .tipoUsuario(TipoUsuario.CLIENTE)
+            .build();
+    }
 
+    private Usuario mapFrom(DadoGerenteInsercao dto) {
+        return Usuario.builder()
+            .email(dto.getEmail())
+            .senha(passwordEncoder.encode(dto.getSenha()))
+            .cpf(dto.getCpf())
+            .tipoUsuario(TipoUsuario.GERENTE)
+            .build();
+    }
 
+    private Usuario mapFrom(Usuario dto) {
+        return Usuario.builder()
+            .email(dto.getEmail())
+            .senha(dto.getSenha()) 
+            .cpf(dto.getCpf())
+            .tipoUsuario(TipoUsuario.GERENTE) 
+            .build();
+    }
 }

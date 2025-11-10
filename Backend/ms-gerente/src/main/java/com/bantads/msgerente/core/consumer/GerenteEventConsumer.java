@@ -104,7 +104,7 @@ public class GerenteEventConsumer {
                     String cpf = objectMapper.treeToValue(cpfNode, String.class);
                     gerenteService.deletarGerentePorCpf(cpf);
                     evento.setSource(EEventSource.GERENTE_SERVICE);
-                    evento.setStatus(ESagaStatus.SUCCESS);
+                    evento.setStatus(ESagaStatus.FINISHED);
                     gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_SUCCESS, evento);
                     break;
                 default:

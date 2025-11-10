@@ -1,4 +1,4 @@
-import { TipoUsuario } from "../enums/TipoUsuario";
+import {TipoUsuario} from "../enums/TipoUsuario";
 
 export class User {
 
@@ -6,6 +6,7 @@ export class User {
         public tipoUsuario: TipoUsuario = TipoUsuario.CLIENTE,
         public login: string = '',
         public senha: string = '',
-        public idPerfil: number = 0
+        public cpf: string = '',
+        public id: number = 0
     ){}
 }

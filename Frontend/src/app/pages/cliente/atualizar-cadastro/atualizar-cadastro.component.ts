@@ -29,7 +29,7 @@ export class AtualizarCadastroComponent implements OnInit{
 
   @ViewChild('meuForm') meuForm!: NgForm;
   private readonly toastr = inject(ToastrService);
-  
+
   public cliente = {
     dadosPessoais: {
       nome: '',
@@ -48,10 +48,10 @@ export class AtualizarCadastroComponent implements OnInit{
       estado: ''
     }
   };
-  
+
   public etapaAtual: number = 1;
   user: User | null | undefined;
-  
+
   constructor(
     private readonly customerService: ClienteService,
     private readonly userService: UserService,
@@ -65,7 +65,7 @@ export class AtualizarCadastroComponent implements OnInit{
 
     this.user = temp;
 
-    const customer = this.customerService.getClientById(this.user?.idPerfil as number);
+    const customer = this.customerService.getClientById(this.user?.id as number);
 
     if(!customer){
       this.router.navigate(['/']);
@@ -83,7 +83,7 @@ export class AtualizarCadastroComponent implements OnInit{
         telefone: customer.telefone,
         salario: customer.salario
       },
-  
+
       endereco: {
         tipo: customer.endereco.tipo,
         logradouro: customer.endereco.logradouro,
@@ -102,7 +102,7 @@ export class AtualizarCadastroComponent implements OnInit{
 
     avancarEtapa() { this.etapaAtual++; }
     voltarEtapa() { this.etapaAtual--; }
-  
+
     onSubmit() {
       //Marca todas as caixas como touched para aparecer os erros caso existam
       Object.values(this.meuForm.controls).forEach(control => {
@@ -114,17 +114,17 @@ export class AtualizarCadastroComponent implements OnInit{
           control.markAsTouched();
         }
       });
-  
+
       //Se tiver erros não prossegue
       if (this.meuForm.invalid) {
         console.log("Formulário inválido. Por favor, corrija os erros.");
         return;
       }
-  
+
       //Transforma os campos no objeto cliente
-      
+
       const updateCustomer = new Cliente(
-        this.user?.idPerfil,
+        this.user?.id,
         this.cliente.dadosPessoais.nome,
         this.cliente.dadosPessoais.email,
         this.cliente.dadosPessoais.cpf,
@@ -132,9 +132,9 @@ export class AtualizarCadastroComponent implements OnInit{
         this.cliente.dadosPessoais.telefone,
         this.cliente.dadosPessoais.salario
       );
-  
+
       const result: LocalStorageResult = this.customerService.updateClient(updateCustomer);
-  
+
       if(result.success){
         this.toastr.success('Cliente atualizado com sucesso!', 'Sucesso');
         this.router.navigate(['/cliente']);
@@ -142,7 +142,7 @@ export class AtualizarCadastroComponent implements OnInit{
         console.log(result.message);
         this.toastr.warning('Já existe um cliente com CPF informado!', 'Erro');
       }
-  
+
       console.log(updateCustomer);
     }
 }

@@ -46,7 +46,8 @@ export class InserirGerenteComponent implements OnInit{
     login: '',
     senha: '',
     tipoUsuario: TipoUsuario.GERENTE,
-    idPerfil: 0
+    cpf: '',
+    id: 0
   };
 
   confereSenha: string = '';
@@ -79,7 +80,7 @@ export class InserirGerenteComponent implements OnInit{
     Object.values(this.meuForm.controls).forEach(control => {
       control.markAsTouched();
     });
-    
+
     if (this.meuForm.invalid) {
       this.toastr.error('Corrija os erros do formulário', 'Erro');
       return;
@@ -96,7 +97,7 @@ export class InserirGerenteComponent implements OnInit{
   newManager(){
     const result = this.managerService.createManager(this.gerente);
     this.user.login = this.gerente.email;
-    this.user.idPerfil = this.gerente.id;
+    this.user.id = this.gerente.id;
 
     const userResult = this.userService.createUserAccount(this.user);
 

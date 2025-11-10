@@ -27,8 +27,8 @@ export class TransferenciaComponent implements OnInit{
   user: User | null | undefined;
   loading: boolean = false;
   private readonly toastr = inject(ToastrService);
-  
-  public saldo: number = 0; 
+
+  public saldo: number = 0;
   public saldoVisivel: boolean = false;
 
   contaOrigem: Conta | undefined;
@@ -38,12 +38,12 @@ export class TransferenciaComponent implements OnInit{
     contaDestino: "",
     valor: ""
   }
-  
-  onActionSelected(action: string) {    
+
+  onActionSelected(action: string) {
   }
 
   constructor(
-    private readonly accountService: ContaService, 
+    private readonly accountService: ContaService,
     private readonly transactionService: TransacaoService,
     private readonly router: Router,
     private readonly cd: ChangeDetectorRef,
@@ -56,9 +56,9 @@ export class TransferenciaComponent implements OnInit{
 
     if(!temp) this.router.navigate(['/']);
 
-    this.user = temp; 
+    this.user = temp;
 
-    const tempCliente = this.customerService.getClientById(this.user?.idPerfil as number);
+    const tempCliente = this.customerService.getClientById(this.user?.id as number);
     const tempAccount = this.accountService.getAccountByCustomer(tempCliente as Cliente);
 
     if(!tempAccount){
@@ -91,7 +91,7 @@ export class TransferenciaComponent implements OnInit{
     setTimeout(() => {
       try {
         const contaDestino = this.accountService.getAccountByNum(this.transferencia.contaDestino);
-        
+
         if (!contaDestino) {
           this.toastr.error('A conta informada não existe', 'Erro');
           return;
@@ -100,11 +100,11 @@ export class TransferenciaComponent implements OnInit{
         const valor = + this.transferencia.valor;
         const transacao = new Transacao(new Date(), TipoMovimentacao.TRANSFERENCIA, this.clienteOrigem, contaDestino.cliente, valor);
         const result = this.transactionService.registerNewTransaction(transacao);
-        
+
         if (result.success) {
           this.toastr.success(result.message, 'Sucesso');
           console.log("Transação foi cadastrada");
-          this.router.navigate(['cliente/', this.user?.idPerfil])
+          this.router.navigate(['cliente/', this.user?.id])
         } else {
           this.toastr.error(result.message, 'Erro');
         }
@@ -116,7 +116,7 @@ export class TransferenciaComponent implements OnInit{
         this.loading = false;
         this.cd.detectChanges();
       }
-    }, 0); 
+    }, 0);
 
   }
 }

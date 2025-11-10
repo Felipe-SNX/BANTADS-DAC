@@ -25,9 +25,9 @@ export class GerenteService {
     const managers = localStorage[LS_CHAVE];
     return managers ? JSON.parse(managers) : [];
   }
-  
+
   listManagerById(id: number): Gerente | undefined {
-    const idNumerico = Number(id); 
+    const idNumerico = Number(id);
     const managers: Gerente[] = this.listManagers();
     const manager: Gerente | undefined = managers.find((currentManager) => currentManager.id === idNumerico)
     return manager;
@@ -90,7 +90,7 @@ export class GerenteService {
     });
 
     if(chosenManager.clientes.length === 1) return;
-    
+
     this.moveCustomerToNewManager(newManager, chosenManager);
   }
 
@@ -164,7 +164,7 @@ export class GerenteService {
         message: `Erro: Não é possível excluir o último gerente cadastrado`
       }
     }
-    
+
     const customers = managers[findIndex].clientes;
     managers.splice(findIndex, 1);
     localStorage[LS_CHAVE] = JSON.stringify(managers);
@@ -175,10 +175,10 @@ export class GerenteService {
 
     return {
       success: true,
-      message: 'Gerente deletado com sucesso!' 
+      message: 'Gerente deletado com sucesso!'
     }
   }
-  
+
   addCustomerToManager(customer: Cliente): Gerente {
     const managers = this.listManagers();
 
@@ -192,10 +192,10 @@ export class GerenteService {
 
     //Necessário criar um novo array para que reflita a alteração no local storage se não o angular não vê necessidade em alterar
     const updatedManagers = managers.map(manager => {
-      if (manager.id === chosenManager.id) { 
+      if (manager.id === chosenManager.id) {
         return {
-          ...manager, 
-          clientes: [...manager.clientes, customer] 
+          ...manager,
+          clientes: [...manager.clientes, customer]
         };
       }
       return manager;
@@ -214,9 +214,9 @@ export class GerenteService {
     this.customerService.updateClient(customer);
 
     const result = this.accountService.createAccount(customer, manager);
-    
+
     if(result.success){
-      const user: User = new User(TipoUsuario.CLIENTE, customer.email, customer.cpf, customer.id);
+      const user: User = new User(TipoUsuario.CLIENTE, customer.email, customer.cpf, customer.id.toString());
       this.userService.createUserAccount(user);
       console.log(customer)
       this.accountService.updateAccountCustomer(customer);
@@ -242,7 +242,7 @@ export class GerenteService {
     customer.statusConta.gerenteAvaliador = manager;
     this.customerService.updateClient(customer);
     this.accountService.updateAccountCustomer(customer);
-    
+
     //Aqui seria mandado um e-mail para o cliente
     console.log(rejectionReason);
   }

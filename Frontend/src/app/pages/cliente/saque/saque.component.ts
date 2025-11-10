@@ -23,24 +23,24 @@ import { ClienteService } from '../../../services/cliente/cliente.service';
   styleUrl: './saque.component.css'
 })
 export class SaqueComponent implements OnInit{
-  @ViewChild('saqueForm') saqueForm!: NgForm; 
+  @ViewChild('saqueForm') saqueForm!: NgForm;
   user: User | null | undefined;
   loading: boolean = false;
   private readonly toastr = inject(ToastrService);
-    
-  public saldo: number = 0; 
+
+  public saldo: number = 0;
   public limite: number = 0;
   public saldoVisivel: boolean = false;
   conta: Conta | undefined;
   public valorSaque: string = '';
   customer: Cliente | undefined;
 
-  onActionSelected(action: string) {    
+  onActionSelected(action: string) {
   }
 
   constructor(
-    private readonly accountService: ContaService,  
-    private readonly transactionService: TransacaoService, 
+    private readonly accountService: ContaService,
+    private readonly transactionService: TransacaoService,
     private readonly router: Router,
     private readonly cd: ChangeDetectorRef,
     private readonly userService: UserService,
@@ -56,10 +56,10 @@ export class SaqueComponent implements OnInit{
 
     if(!temp) this.router.navigate(['/']);
 
-    this.user = temp; 
-    const tempCustomer = this.customerService.getClientById(this.user?.idPerfil as number);
+    this.user = temp;
+    const tempCustomer = this.customerService.getClientById(this.user?.id as number);
     const tempAccount = this.accountService.getAccountByCustomer(tempCustomer as Cliente);
-  
+
     if(!tempAccount){
       this.router.navigate(['/']);
     }
@@ -75,30 +75,30 @@ export class SaqueComponent implements OnInit{
     Object.values(this.saqueForm.controls).forEach(control => {
       control.markAsTouched();
     });
-    
+
     if (this.saqueForm.invalid) {
       this.toastr.error('Corrija os erros do formulário', 'Erro');
       return;
     }
-    
+
     this.loading = true;
     this.cd.detectChanges();
-    
+
     setTimeout(() => {
       try {
-      
+
         const valor = +this.valorSaque;
         const transacao = new Transacao(new Date(), TipoMovimentacao.SAQUE, this.customer as Cliente, null, valor);
         const result = this.transactionService.registerNewTransaction(transacao);
-            
+
         if (result.success) {
           this.toastr.success("Saque efetuado com sucesso", 'Sucesso');
           console.log("Saque bem sucedido");
-          this.router.navigate(['cliente/', this.user?.idPerfil])
+          this.router.navigate(['cliente/', this.user?.id])
         } else {
           this.toastr.error(result.message, 'Erro');
         }
-    
+
       } catch (error) {
         console.log(error);
         this.toastr.error('Por favor, tente novamente', 'Erro');
@@ -106,6 +106,6 @@ export class SaqueComponent implements OnInit{
         this.loading = false;
         this.cd.detectChanges();
       }
-    }, 0);   
+    }, 0);
   }
 }

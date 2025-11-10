@@ -21,11 +21,11 @@ export class ConsultaExtratoComponent implements OnInit{
   public transacoes: Transacao[] = [];
   public dataInicio: string | null = null;
   public dataFim: string | null = null;
-  
+
   user: User | null | undefined;
   conta: Conta | undefined;
   id: number = 0;
-  
+
   constructor(
     private readonly transactionService: TransacaoService,
     private readonly router: Router,
@@ -37,10 +37,10 @@ export class ConsultaExtratoComponent implements OnInit{
 
     if(!temp) this.router.navigate(['/']);
 
-    this.user = temp; 
+    this.user = temp;
 
-    if(this.user?.idPerfil){
-      this.id = this.user.idPerfil;
+    if(this.user?.id){
+      this.id = this.user.id;
       this.transacoes = this.transactionService.listCustomerTransactions(this.id);
       this.transacoes = this.processTransactions(this.transacoes);
     }
@@ -76,7 +76,7 @@ export class ConsultaExtratoComponent implements OnInit{
     while(currentDate <= endDate){
 
       const dayKey = currentDate.toISOString().split('T')[0];
-      const dayTransactions = groupByDate.get(dayKey) || []; 
+      const dayTransactions = groupByDate.get(dayKey) || [];
 
       if (dayTransactions.length > 0) {
         finalResult.push(...dayTransactions);
@@ -110,7 +110,7 @@ export class ConsultaExtratoComponent implements OnInit{
         tipo: TipoMovimentacao.SALDO,
         clienteOrigem: null,
         clienteDestino: null,
-        data: balanceDate, 
+        data: balanceDate,
         valor: accumulatorBalance
       });
 
@@ -160,7 +160,7 @@ export class ConsultaExtratoComponent implements OnInit{
       if (!transaction.data) {
         return false;
       }
-      
+
       const transactionTime = new Date(transaction.data).getTime();
 
       const atendeFiltroInicio = !dataInicioFiltro || transactionTime >= dataInicioFiltro.getTime();

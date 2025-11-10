@@ -32,12 +32,12 @@ export class DepositoComponent implements OnInit{
   conta: Conta | undefined;
   customer: Cliente | undefined;
   valor: string = ''
-  
-  onActionSelected(action: string) {    
+
+  onActionSelected(action: string) {
   }
 
   constructor(
-    private readonly accountService: ContaService, 
+    private readonly accountService: ContaService,
     private readonly transactionService: TransacaoService,
     private readonly router: Router,
     private readonly cd: ChangeDetectorRef,
@@ -51,9 +51,9 @@ export class DepositoComponent implements OnInit{
 
     if(!temp) this.router.navigate(['/']);
 
-    this.user = temp; 
+    this.user = temp;
 
-    const tempCustomer = this.customerService.getClientById(this.user?.idPerfil as number);
+    const tempCustomer = this.customerService.getClientById(this.user?.id as number);
     const tempAccount = this.accountService.getAccountByCustomer(tempCustomer as Cliente);
 
     if(!tempAccount){
@@ -80,15 +80,15 @@ export class DepositoComponent implements OnInit{
 
     setTimeout(() => {
       try {
-  
+
         const valor = +this.valor;
         const transacao = new Transacao(new Date(), TipoMovimentacao.DEPOSITO, this.customer as Cliente, null, valor);
         const result = this.transactionService.registerNewTransaction(transacao);
-        
+
         if (result.success) {
           this.toastr.success('Valor depositado com sucesso', 'Sucesso');
           console.log("Depósito efetuado com sucesso");
-          this.router.navigate(['cliente/', this.user?.idPerfil])
+          this.router.navigate(['cliente/', this.user?.id])
         } else {
           this.toastr.error(result.message, 'Erro');
         }
@@ -100,7 +100,7 @@ export class DepositoComponent implements OnInit{
         this.loading = false;
         this.cd.detectChanges();
       }
-    }, 0); 
+    }, 0);
 
   }
 }

@@ -34,15 +34,15 @@ export class MockDataService {
   private readonly gerente3 = new Gerente(3, "Gyândula", "ger3@bantads.com.br", "23862179060", "4170707070", [this.cliente3]);
   private readonly admin = new Admin(4, "Adamântio", "adm1@bantads.com.br", "40501740066");
 
-  private readonly auth1 = new User(TipoUsuario.CLIENTE, "cli1@bantads.com.br", "tads", 1);
-  private readonly auth2 = new User(TipoUsuario.CLIENTE, "cli2@bantads.com.br", "tads", 2);
-  private readonly auth3 = new User(TipoUsuario.CLIENTE, "cli3@bantads.com.br", "tads", 3);
-  private readonly auth4 = new User(TipoUsuario.CLIENTE, "cli4@bantads.com.br", "tads", 4);
-  private readonly auth5 = new User(TipoUsuario.CLIENTE, "cli5@bantads.com.br", "tads", 5);
-  private readonly auth6 = new User(TipoUsuario.GERENTE, "ger1@bantads.com.br", "tads", 1);
-  private readonly auth7 = new User(TipoUsuario.GERENTE, "ger2@bantads.com.br", "tads", 2);
-  private readonly auth8 = new User(TipoUsuario.GERENTE, "ger3@bantads.com.br", "tads", 3);
-  private readonly auth9 = new User(TipoUsuario.ADMIN, "adm1@bantads.com.br", "tads", 4);
+  private readonly auth1 = new User(TipoUsuario.CLIENTE, "cli1@bantads.com.br", "tads", "1");
+  private readonly auth2 = new User(TipoUsuario.CLIENTE, "cli2@bantads.com.br", "tads", "2");
+  private readonly auth3 = new User(TipoUsuario.CLIENTE, "cli3@bantads.com.br", "tads", "3");
+  private readonly auth4 = new User(TipoUsuario.CLIENTE, "cli4@bantads.com.br", "tads", "4");
+  private readonly auth5 = new User(TipoUsuario.CLIENTE, "cli5@bantads.com.br", "tads", "5");
+  private readonly auth6 = new User(TipoUsuario.GERENTE, "ger1@bantads.com.br", "tads", "1");
+  private readonly auth7 = new User(TipoUsuario.GERENTE, "ger2@bantads.com.br", "tads", "2");
+  private readonly auth8 = new User(TipoUsuario.GERENTE, "ger3@bantads.com.br", "tads", "3");
+  private readonly auth9 = new User(TipoUsuario.ADMIN, "adm1@bantads.com.br", "tads", "4");
 
   private readonly conta1 = new Conta("1291", this.cliente1, new Date("01/01/2000"), 800.00, 5000.00, this.gerente1);
   private readonly conta2 = new Conta("950", this.cliente2, new Date("10/10/1990"), -10000.00, 10000.00, this.gerente2);

@@ -19,7 +19,7 @@ import { Gerente } from '../../../shared/models/gerente.model';
 })
 export class TelaInicialClienteComponent implements OnInit {
   cliente: Cliente = new Cliente();
-  conta: Conta = new Conta();  
+  conta: Conta = new Conta();
   saldoNegativo: boolean = false;
   gerente: Gerente = new Gerente();
 
@@ -33,24 +33,24 @@ export class TelaInicialClienteComponent implements OnInit {
 
    }
 
-  ngOnInit(): void {        
-    const user = this.userService.findLoggedUser();    
+  ngOnInit(): void {
+    const user = this.userService.findLoggedUser();
     if(user){
-      this.loadClienteData(user.idPerfil);
-    }             
+      this.loadClienteData(user.id);
+    }
   }
 
-  loadClienteData(clienteId: number): void {    
+  loadClienteData(clienteId: number): void {
     const cliente = this.clienteService.getClientById(clienteId);
     if (cliente) {
       this.cliente = cliente;
-      this.saldoNegativo = this.conta.saldo < 0;    
+      this.saldoNegativo = this.conta.saldo < 0;
       const conta = this.accountService.getAccountByCustomer(this.cliente);
       if (conta) {
-        this.conta = conta;        
-        this.saldoNegativo = this.conta.saldo < 0;   
+        this.conta = conta;
+        this.saldoNegativo = this.conta.saldo < 0;
         this.gerente = this.conta.gerente;
-      }          
-    }                        
+      }
+    }
 }
 }

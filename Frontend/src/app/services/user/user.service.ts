@@ -1,6 +1,11 @@
-import { Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import { User } from '../../shared/models/user.model';
 import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
+import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs";
+import {LoginResponse} from "../../shared/models/loginResponse.model";
+import {LoginRequest} from "../../shared/models/loginRequest.model";
+import {AxiosService} from "../axios/axios.service";
 
 const LS_CHAVE = "users";
 
@@ -9,7 +14,13 @@ const LS_CHAVE = "users";
 })
 export class UserService {
 
+  private axiosService = inject(AxiosService);
+
   constructor() { }
+
+  public login(login: LoginRequest): Promise<LoginResponse> {
+    return this.axiosService.post<LoginResponse>("/login", login);
+  }
 
   //Método usado inicialmente apenas para o localStorage
   listUsers(): User[] {
@@ -45,7 +56,7 @@ export class UserService {
       message: 'Usuário cadastrado com sucesso!'
     }
   }
-  
+
   findUserByLogin(login: string): User | undefined {
     const users: User[] = this.listUsers();
     const user: User | undefined = users.find((currentUser) => currentUser.login === login)
@@ -60,7 +71,7 @@ export class UserService {
 
   findLoggedUser(): User | undefined{
     const usuarioString = sessionStorage.getItem('usuarioLogado');
-    
+
     if (usuarioString) {
       const usuarioLogado = JSON.parse(usuarioString);
       return usuarioLogado as User;
@@ -77,10 +88,10 @@ export class UserService {
     console.log('apagando user')
 
     const users: User[] = this.listUsers();
-    const user: User | undefined = users.find((currentUser) => currentUser.login === userLogged?.login 
-                                                            && currentUser.idPerfil === userLogged?.idPerfil
+    const user: User | undefined = users.find((currentUser) => currentUser.login === userLogged?.login
+                                                            && currentUser.id === userLogged?.id
                                                             && currentUser.tipoUsuario === userLogged?.tipoUsuario)
-    
+
     if(user){
       console.log('setando user')
       sessionStorage['usuarioLogado'] = JSON.stringify(user);
@@ -103,7 +114,7 @@ export class UserService {
     }
 
     users[index].senha = newPassword;
-    localStorage[LS_CHAVE] = JSON.stringify(users)  
+    localStorage[LS_CHAVE] = JSON.stringify(users)
 
     return {
       success: true,

@@ -5,6 +5,8 @@ import { User } from '../../shared/models/user.model';
 import { UserService } from '../../services/user/user.service';
 import { Router } from '@angular/router';
 import { TipoUsuario } from '../../shared/enums/TipoUsuario';
+import { LoginRequest } from "../../shared/models/loginRequest.model";
+import { LoginResponse } from "../../shared/models/loginResponse.model";
 
 @Component({
   selector: 'app-login',
@@ -15,53 +17,79 @@ import { TipoUsuario } from '../../shared/enums/TipoUsuario';
 })
 export class LoginComponent {
   @ViewChild('meuForm') meuForm!: NgForm;
-  login: User;
+  login: LoginRequest;
   loginError: string | null = null;
+  isLoading = false;
 
-  constructor(private readonly userService: UserService, private readonly router: Router) {
-    this.login = new User();
+  constructor(
+    private readonly userService: UserService,
+    private readonly router: Router
+  ) {
+    this.login = new LoginRequest();
   }
 
-  onSubmit(){
+  async onSubmit() {
     Object.values(this.meuForm.controls).forEach(control => {
       control.markAsTouched();
     });
 
-    //Se tiver erros não prossegue
     if (this.meuForm.invalid) {
-      console.log("Formulário inválido. Por favor, corrija os erros.");
+      console.log("Formulário inválido.");
       return;
     }
 
-    const temp = this.userService.getUserByLoginAndPassword(this.login.login, this.login.senha);
+    this.isLoading = true;
+    this.loginError = null;
 
-    if(temp){
-      this.login = temp;
-      this.loginError = null;
-      
+    try {
+      const respostaLogin = await this.userService.login(
+        new LoginRequest(this.login.login, this.login.senha)
+      );
 
-      if(this.login.tipoUsuario === TipoUsuario.CLIENTE){
-        const user = this.login;
-        sessionStorage.setItem('usuarioLogado', JSON.stringify(user));
-        this.router.navigate(['/cliente'])
+      if (!respostaLogin || !respostaLogin.access_token) {
+        throw new Error("Resposta inválida do servidor.");
       }
-      else if(this.login.tipoUsuario === TipoUsuario.GERENTE){
-        const user = this.login;
-        sessionStorage.setItem('usuarioLogado', JSON.stringify(user));
-        this.router.navigate(['/gerente']);
-      }
-      else if(this.login.tipoUsuario === TipoUsuario.ADMIN){
-        const user = this.login;
-        sessionStorage.setItem('usuarioLogado', JSON.stringify(user));
-        this.router.navigate(['/admin']);          
-      }
-    }
-    else{
-      const loginControl = this.meuForm.controls['password'];
-      if (loginControl) {
-        loginControl.setErrors({ 'incorrect': true });
-      }
+
+      this.handleLoginSuccess(respostaLogin);
+
+    } catch (error: any) {
+      console.error("Erro durante o login:", error);
+      this.handleLoginError(error);
+
+    } finally {
+      this.isLoading = false;
     }
   }
 
+  private handleLoginSuccess(resposta: LoginResponse) {
+    sessionStorage.setItem('usuarioLogado', JSON.stringify(resposta));
+
+    switch (resposta.tipo) {
+      case TipoUsuario.CLIENTE:
+        this.router.navigate(['/cliente']);
+        break;
+      case TipoUsuario.GERENTE:
+        this.router.navigate(['/gerente']);
+        break;
+      case TipoUsuario.ADMIN:
+        this.router.navigate(['/admin']);
+        break;
+      default:
+        this.loginError = "Tipo de usuário desconhecido.";
+        sessionStorage.clear();
+    }
+  }
+
+  private handleLoginError(error: any) {
+    if (error.response && error.response.status === 401) {
+      this.loginError = "Login ou senha incorretos.";
+    } else {
+      this.loginError = "Erro inesperado. Tente novamente mais tarde.";
+    }
+
+    const passwordControl = this.meuForm.controls['password'];
+    if (passwordControl) {
+      passwordControl.setErrors({ 'incorrect': true });
+    }
+  }
 }

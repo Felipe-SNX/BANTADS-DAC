@@ -1,8 +1,8 @@
 package com.bantads.msgerente.core.producer;
 
+import com.bantads.msgerente.common.dto.Evento;
+import com.bantads.msgerente.common.enums.ETopics;
 import com.bantads.msgerente.config.rabbitmq.RabbitMQConstantes;
-import com.bantads.msgerente.core.dto.Evento;
-import com.bantads.msgerente.core.enums.ETopics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

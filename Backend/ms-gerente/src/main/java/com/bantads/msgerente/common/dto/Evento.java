@@ -1,8 +1,9 @@
-package com.bantads.msgerente.core.dto;
+package com.bantads.msgerente.common.dto;
 
-import com.bantads.msgerente.core.enums.EEventSource;
-import com.bantads.msgerente.core.enums.ESaga;
-import com.bantads.msgerente.core.enums.ESagaStatus;
+import com.bantads.msgerente.common.enums.EEventSource;
+import com.bantads.msgerente.common.enums.ESaga;
+import com.bantads.msgerente.common.enums.ESagaStatus;
+
 import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;

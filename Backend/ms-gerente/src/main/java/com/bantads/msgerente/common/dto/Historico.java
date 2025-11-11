@@ -1,7 +1,8 @@
-package com.bantads.msgerente.core.dto;
+package com.bantads.msgerente.common.dto;
 
-import com.bantads.msgerente.core.enums.EEventSource;
-import com.bantads.msgerente.core.enums.ESagaStatus;
+import com.bantads.msgerente.common.enums.EEventSource;
+import com.bantads.msgerente.common.enums.ESagaStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

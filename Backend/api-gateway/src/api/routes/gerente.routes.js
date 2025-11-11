@@ -36,9 +36,10 @@ router.delete('/:cpf', verifyToken, checkRole(['ADMINISTRADOR']), (req, res, nex
     orquestradorServiceProxy(req, res, next);
 });
 
-
-router.put('/:cpf', verifyToken, checkRole(['ADMINISTRADOR']), gerentesServiceProxy);
-
+router.put('/:cpf', verifyToken, checkRole(['ADMINISTRADOR']), async (req, res, next) => { 
+    req.url = `/saga/atualizarGerente/${req.params.cpf}`;
+    orquestradorServiceProxy(req, res, next);
+});
 
 router.get('/', verifyToken, async (req, res, next) => {
     const { filtro } = req.query;

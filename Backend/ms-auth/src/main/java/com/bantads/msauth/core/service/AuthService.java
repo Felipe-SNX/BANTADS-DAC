@@ -1,6 +1,7 @@
 package com.bantads.msauth.core.service;
 
 import com.bantads.msauth.core.document.Usuario;
+import com.bantads.msauth.core.dto.DadoGerenteAtualizacao;
 import com.bantads.msauth.core.dto.DadoGerenteInsercao;
 import com.bantads.msauth.core.dto.DadosClienteConta;
 import com.bantads.msauth.core.dto.LogoutResponse;
@@ -96,6 +97,16 @@ public class AuthService {
         String corpo = "Olá! \n\n" + "Seu cadastro no banco Bantads foi aprovado com sucesso.\n" + " A senha de acesso é " + senhaPura;
 
         emailService.enviarEmailAprovado(destinatario, assunto, corpo);
+    }
+
+    public void atualizarSenha(DadoGerenteAtualizacao dadoGerenteAtualizacao, String cpf){
+        Usuario usuario = authRepository.findByCpf(cpf)
+            .orElseThrow(() -> new UsuarioNotFoundException(String.format("Usuario com cpf '%s' não encontrado", cpf)));
+        
+        usuario.setSenha(passwordEncoder.encode(dadoGerenteAtualizacao.getSenha()));
+        usuario.setEmail(dadoGerenteAtualizacao.getEmail());
+
+        authRepository.save(usuario);
     }
 
     private Usuario mapFrom(DadosClienteConta dto) {

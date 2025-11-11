@@ -7,10 +7,13 @@ import com.bantads.msauth.common.enums.ESagaStatus;
 import com.bantads.msauth.common.enums.ETopics;
 import com.bantads.msauth.config.rabbitmq.RabbitMQConstantes;
 import com.bantads.msauth.core.document.Usuario;
+import com.bantads.msauth.core.dto.DadoGerenteAtualizacao;
 import com.bantads.msauth.core.dto.DadoGerenteInsercao;
 import com.bantads.msauth.core.dto.DadosClienteConta;
+import com.bantads.msauth.core.exception.ErroExecucaoSaga;
 import com.bantads.msauth.core.producer.AuthEventProducer;
 import com.bantads.msauth.core.service.AuthService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -82,11 +85,21 @@ public class AuthEventConsumer {
                     Usuario usuarioExcluido = authService.excluirUsuario(cpfs);
                     
                     adicionarAoPayload(rootNode, "usuarioExcluido", usuarioExcluido);
+                    atualizarPayload(evento, rootNode, sagaType);
 
                     evento.setStatus(ESagaStatus.SUCCESS);
                     publicarSucesso(evento); 
                     break;
-
+                case ALTERAR_GERENTE_SAGA:
+                    DadoGerenteAtualizacao dadoGerenteAtualizacao = objectMapper.treeToValue(
+                            rootNode.path("dadoGerenteAtualizacao"), DadoGerenteAtualizacao.class
+                    );
+                    String cpfParaAtualizar = objectMapper.treeToValue(rootNode.path("cpf"), String.class);
+                    
+                    authService.atualizarSenha(dadoGerenteAtualizacao, cpfParaAtualizar);
+                    evento.setStatus(ESagaStatus.FINISHED);
+                    publicarSucesso(evento);
+                    break;
                 default:
                     log.warn("Saga não reconhecida em 'prosseguirTransacao': {}", sagaType);
                     break;
@@ -149,7 +162,16 @@ public class AuthEventConsumer {
             JsonNode node = objectMapper.valueToTree(value);
             ((ObjectNode) rootNode).set(key, node);
         } else {
-            throw new RuntimeException("Payload da saga (rootNode) não é um objeto JSON.");
+            throw new ErroExecucaoSaga("Payload da saga (rootNode) não é um objeto JSON.");
+        }
+    }
+
+    private void atualizarPayload(Evento evento, JsonNode rootNode, ESaga sagaType){
+        try {
+            evento.setPayload(objectMapper.writeValueAsString(rootNode));
+        } catch (JsonProcessingException e) {
+            log.error("Erro crítico ao atualizar o payload na saga {}: {}", sagaType, e.getMessage(), e);
+            throw new ErroExecucaoSaga("Erro ao atualizar payload");
         }
     }
 }

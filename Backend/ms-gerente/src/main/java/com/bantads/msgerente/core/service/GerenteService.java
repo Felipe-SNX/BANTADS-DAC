@@ -95,10 +95,12 @@ public class  GerenteService {
         Gerente gerente = repository.findByCpf(cpf)
                 .orElseThrow(() -> new GerenteNaoEncontradoException("Gerente", cpf));
 
+        GerentesResponse dadosAntigos = GerenteMapper.toGerentesResponse(gerente);
+
         gerente.setNome(dadoGerenteAtualizacao.getNome());
         gerente.setEmail(dadoGerenteAtualizacao.getEmail());
         repository.save(gerente);
-        //gerente.setSenha(dadoGerenteAtualizacao.getSenha());
-        return GerenteMapper.toGerentesResponse(gerente);
+
+        return dadosAntigos;
     }
 }

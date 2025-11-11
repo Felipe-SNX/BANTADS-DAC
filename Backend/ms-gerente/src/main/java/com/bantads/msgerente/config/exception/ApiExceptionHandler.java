@@ -1,5 +1,6 @@
 package com.bantads.msgerente.config.exception;
 
+import com.bantads.msgerente.core.exception.ErroExecucaoSaga;
 import com.bantads.msgerente.core.exception.GerenteNaoEncontradoException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +25,15 @@ public class ApiExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, message));
+    }
+
+    @ExceptionHandler(ErroExecucaoSaga.class)
+    public ResponseEntity<ErrorMessage> erroExecucaoSaga(ErroExecucaoSaga ex, HttpServletRequest request) {
+        log.error("ErroExecucaoSaga capturada: {}", ex.getMessage());
+        String message = ex.getMessage();
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.INTERNAL_SERVER_ERROR, message));
     }
 }

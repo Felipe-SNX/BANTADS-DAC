@@ -3,6 +3,7 @@ package com.bantads.mscliente.core.dto.mapper;
 import com.bantads.mscliente.core.dto.AutoCadastroInfo;
 import com.bantads.mscliente.core.dto.ClienteDto;
 import com.bantads.mscliente.core.dto.ClienteParaAprovarResponse;
+import com.bantads.mscliente.core.dto.PerfilInfo;
 import com.bantads.mscliente.core.dto.RelatorioClientesResponse;
 import com.bantads.mscliente.core.model.Cliente;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,10 @@ public class ClienteMapper {
 
     public static Cliente autoCadastroInfoToCliente(AutoCadastroInfo autoCadastroInfo){
         return new ModelMapper().map(autoCadastroInfo, Cliente.class);
+    }
+
+    public static PerfilInfo toPerfilInfo(Cliente cliente){
+        return new ModelMapper().map(cliente, PerfilInfo.class);
     }
 
     public static RelatorioClientesResponse clienteToRelatorioClientesResponse(Cliente cliente){

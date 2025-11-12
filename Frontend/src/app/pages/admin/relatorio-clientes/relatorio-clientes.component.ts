@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
-import { ContaService } from '../../../services/conta/conta.service';
-import { Conta } from '../../../shared/models/conta.model';
 import { NgxMaskPipe } from 'ngx-mask';
 import {ClienteResponse} from "../../../shared/models/cliente-response.model";
 import {ClienteService} from "../../../services/cliente/cliente.service";

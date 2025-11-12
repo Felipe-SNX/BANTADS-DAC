@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
-import { AdminData, AdminDashboard, AdminService } from '../../../services/admin/admin.service';
+import { AdminData, AdminService } from '../../../services/admin/admin.service';
 import {Dashboard} from "../../../shared/models/dashboard.model";
 
 

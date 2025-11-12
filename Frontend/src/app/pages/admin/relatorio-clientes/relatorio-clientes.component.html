@@ -23,15 +23,15 @@
             </thead>
             <tbody>
               <tr *ngFor="let cliente of clientes">
-                <td class="text-start">{{ cliente }}</td>
+                <td class="text-start">{{ cliente.nome }}</td>
                 <td class="text-start">{{ cliente.nome }}</td>
                 <td class="text-start">{{ cliente.cpf | mask: '000.000.000-00' }}</td>
                 <td class="text-start">{{ cliente.email }}</td>
                 <td class="text-start">{{ cliente.salario | currency:'BRL':'symbol' }}</td>
                 <td class="text-start">{{ cliente.saldo | currency:'BRL':'symbol' }}</td>
-                <td class="text-start">{{ cliente | currency:'BRL':'symbol' }}</td>
-                <td class="text-start">{{ cliente.nomeGerente }}</td>
-                <td class="text-start">{{ cliente.cpfGerente | mask: '000.000.000-00'}}</td>
+                <td class="text-start">{{ cliente.saldo | currency:'BRL':'symbol' }}</td>
+                <td class="text-start">{{ cliente.nome }}</td>
+                <td class="text-start">{{ cliente.cpf | mask: '000.000.000-00'}}</td>
               </tr>
             </tbody>
           </table>

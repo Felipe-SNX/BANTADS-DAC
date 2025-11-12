@@ -112,15 +112,15 @@ export class InserirGerenteComponent implements OnInit{
   }
 
   updateManager(){
-    const result = this.managerService.updateManager(this.gerente);
+    //this.managerService.updateManager(this.gerente, this.gerente.cpf);
     const userResult = this.userService.updateUserPassword(this.user, this.user.senha);
 
-    if(result.success && userResult.success){
+    /*if(result.success && userResult.success){
       this.toastr.success('Gerente atualizado com sucesso!', 'Sucesso');
       this.router.navigate(['admin/listarGerentes']);
     }
     else{
       this.toastr.warning(result.message, 'Erro');
-    }
+    }*/
   }
 }

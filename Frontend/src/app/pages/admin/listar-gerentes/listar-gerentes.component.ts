@@ -31,14 +31,14 @@ export class ListarGerentesComponent implements OnInit{
     this.gerentes = await this.managerService.listarGerentes();
   }
 
-  deletarGerente(){
-    //this.managerService.deleteManager(gerente.id);
+  deletarGerente(gerente: DadoGerente){
+    this.managerService.deleteManager(gerente.cpf);
     this.toastr.success('Gerente deletado com sucesso!', 'Sucesso');
     this.document.defaultView?.location.reload();
   }
 
-  editarGerente(){
-    //this.router.navigate(['admin/editarGerente', gerente.id]);
+  editarGerente(gerente: DadoGerente){
+    this.router.navigate(['admin/editarGerente', gerente.cpf]);
   }
 
 }

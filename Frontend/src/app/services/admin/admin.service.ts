@@ -14,7 +14,7 @@ export interface AdminData {
 })
 export class AdminService {
 
-  private axiosService = inject(AxiosService);
+  private readonly axiosService = inject(AxiosService);
 
   constructor() { }
 

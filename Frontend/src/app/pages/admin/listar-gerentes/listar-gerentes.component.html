@@ -27,10 +27,10 @@
                                     <td>{{gerente.email}}</td>
                                     <td>{{gerente.telefone | mask: '(00) 00000-0000||(00) 0000-0000'}}</td>
                                     <td class="d-flex gap-2">
-                                        <button class="btn btn-primary" (click)="editarGerente(gerente)">
+                                        <button class="btn btn-primary" (click)="editarGerente()">
                                             <span><i class="fa-solid fa-pen-to-square"></i> Editar</span>
                                         </button>
-                                        <button class="btn btn-danger" (click)="deletarGerente(gerente)">
+                                        <button class="btn btn-danger" (click)="deletarGerente()">
                                             <span><i class="fa-solid fa-trash"></i> Deletar</span>
                                         </button>
                                     </td>

@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { NgxMaskPipe } from 'ngx-mask';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { DadoGerente } from '../../../shared/models/dado-gerente.model';
 
 @Component({
   selector: 'app-listar-gerentes',
@@ -17,7 +18,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class ListarGerentesComponent implements OnInit{
   private readonly toastr = inject(ToastrService);
-  gerentes: Gerente[] = [];
+  gerentes: DadoGerente[] = [];
 
   constructor(
     private readonly managerService: GerenteService,
@@ -26,33 +27,18 @@ export class ListarGerentesComponent implements OnInit{
   ) { }
 
 
-  ngOnInit(): void {
-    const managers = this.managerService.listManagers();
-
-    managers.sort((a, b) => {
-      const nameA = a.nome.toUpperCase(); 
-      const nameB = b.nome.toUpperCase(); 
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
-
-      return 0;
-    });
-
-    this.gerentes = managers;
+  async ngOnInit(): Promise<void> {
+    this.gerentes = await this.managerService.listarGerentes();
   }
 
-  deletarGerente(gerente: Gerente){
-    this.managerService.deleteManager(gerente.id);
+  deletarGerente(){
+    //this.managerService.deleteManager(gerente.id);
     this.toastr.success('Gerente deletado com sucesso!', 'Sucesso');
     this.document.defaultView?.location.reload();
   }
 
-  editarGerente(gerente: Gerente){
-    this.router.navigate(['admin/editarGerente', gerente.id]);
+  editarGerente(){
+    //this.router.navigate(['admin/editarGerente', gerente.id]);
   }
 
 }

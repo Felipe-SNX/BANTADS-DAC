@@ -1,4 +1,3 @@
-// Arquivo: /src/routes/auth.routes.js
 const { Router } = require('express');
 const { verifyToken } = require('../../middlewares/auth.middleware');
 const { authServiceProxy } = require('../../proxies');

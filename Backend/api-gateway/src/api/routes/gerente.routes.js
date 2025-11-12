@@ -1,4 +1,3 @@
-// Arquivo: /src/routes/gerente.routes.js
 const { Router } = require('express');
 const axios = require('axios');
 const { checkRole, verifyToken } = require('../../middlewares/auth.middleware');

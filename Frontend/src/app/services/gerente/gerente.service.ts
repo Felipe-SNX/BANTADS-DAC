@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Gerente } from '../../shared/models/gerente.model';
 import { Cliente } from '../../shared/models/cliente.model';
 import { ContaService } from '../conta/conta.service';
@@ -7,6 +7,8 @@ import { UserService } from '../user/user.service';
 import { User } from '../../shared/models/user.model';
 import { TipoUsuario } from '../../shared/enums/TipoUsuario';
 import { ClienteService } from '../cliente/cliente.service';
+import AxiosService from '../axios/axios.service';
+import { DadoGerente } from '../../shared/models/dado-gerente.model';
 
 const LS_CHAVE = "gerentes";
 
@@ -15,11 +17,17 @@ const LS_CHAVE = "gerentes";
 })
 export class GerenteService {
 
+  private readonly axiosService = inject(AxiosService);
+
   constructor(
     private readonly accountService: ContaService,
     private readonly userService: UserService,
     private readonly customerService: ClienteService
   ) { }
+
+  public listarGerentes(): Promise<DadoGerente[]> {
+    return this.axiosService.get<DadoGerente[]>("/gerentes");
+  }
 
   listManagers(): Gerente[] {
     const managers = localStorage[LS_CHAVE];

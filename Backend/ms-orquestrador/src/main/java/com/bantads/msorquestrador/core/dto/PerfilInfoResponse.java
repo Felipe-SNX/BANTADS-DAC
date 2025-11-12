@@ -18,6 +18,7 @@ public class PerfilInfoResponse{
     private String email;
     private BigDecimal salario;
     private String endereco;
+    private String telefone;
     private String cep;
     private String cidade;
     private String estado;

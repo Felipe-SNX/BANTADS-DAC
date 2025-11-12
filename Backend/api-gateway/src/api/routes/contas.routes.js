@@ -1,4 +1,3 @@
-// Arquivo: /src/routes/conta.routes.js
 const { Router } = require('express');
 const { contasServiceProxy } = require('../../proxies');
 const { verifyToken } = require('../../middlewares/auth.middleware');

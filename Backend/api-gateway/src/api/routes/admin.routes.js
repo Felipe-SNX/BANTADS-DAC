@@ -1,4 +1,3 @@
-// Arquivo: /src/routes/admin.routes.js
 const { Router } = require('express');
 const axios = require('axios');
 const router = Router();

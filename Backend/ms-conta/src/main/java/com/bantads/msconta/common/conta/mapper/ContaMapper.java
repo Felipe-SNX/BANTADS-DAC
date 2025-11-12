@@ -1,6 +1,7 @@
 package com.bantads.msconta.common.conta.mapper;
 
 import com.bantads.msconta.command.model.Conta;
+import com.bantads.msconta.common.conta.dto.ContaSyncEvento;
 import com.bantads.msconta.common.conta.dto.OperacaoResponse;
 import com.bantads.msconta.common.conta.dto.SaldoResponse;
 
@@ -17,6 +18,10 @@ public class ContaMapper {
 
     public static OperacaoResponse toOperacaoResponse(Conta conta){
         return new ModelMapper().map(conta, OperacaoResponse.class);
+    }
+
+    public static ContaSyncEvento toContaSyncEvento(Conta conta){
+        return new ModelMapper().map(conta, ContaSyncEvento.class);
     }
 
 }

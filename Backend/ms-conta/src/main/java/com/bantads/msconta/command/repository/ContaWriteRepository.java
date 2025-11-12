@@ -39,4 +39,8 @@ public interface ContaWriteRepository extends JpaRepository<Conta, Long> {
             "WHERE c.gerente IS NOT NULL " +
             "GROUP BY c.gerente")
     List<GerentesNumeroContasDto> countContasByGerente();
+
+    void deleteByCliente(String cpf);
+
+    List<Conta> findAllByClienteIn(List<String> cpfsClientesAfetados);
 }

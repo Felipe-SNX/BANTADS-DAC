@@ -33,6 +33,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -43,7 +44,6 @@ public class ContaCommandService {
     private final MovimentacaoCommandService movimentacaoService;
     private final ContaEventCQRSProducer eventProducer;
     private final SecureRandom random;
-
 
     @Transactional
     public OperacaoResponse depositar(OperacaoRequest operacao, String numConta) {
@@ -65,7 +65,7 @@ public class ContaCommandService {
 
         Movimentacao movimentacao = movimentacaoService.salvarMovimentacao(novaMovimentacao);
 
-        eventProducer.sendSyncReadDatabaseEvent(posDeposito, movimentacao);
+        eventProducer.publicarMovimentacao(posDeposito, movimentacao);
 
         OperacaoResponse operacaoResponse = ContaMapper.toOperacaoResponse(posDeposito);
         operacaoResponse.setData(movimentacao.getData());
@@ -93,7 +93,7 @@ public class ContaCommandService {
 
         Movimentacao movimentacao = movimentacaoService.salvarMovimentacao(novaMovimentacao);
 
-        eventProducer.sendSyncReadDatabaseEvent(posSaque, movimentacao);
+        eventProducer.publicarMovimentacao(posSaque, movimentacao);
 
         OperacaoResponse operacaoResponse = ContaMapper.toOperacaoResponse(posSaque);
         operacaoResponse.setData(movimentacao.getData());
@@ -130,7 +130,7 @@ public class ContaCommandService {
 
         Movimentacao movimentacao = movimentacaoService.salvarMovimentacao(novaMovimentacao);
 
-        eventProducer.sendSyncReadDatabaseEvent(posSaque, movimentacao, posDeposito);
+        eventProducer.publicarMovimentacao(posSaque, movimentacao, posDeposito);
 
         return TransferenciaResponse
                 .builder()
@@ -143,31 +143,30 @@ public class ContaCommandService {
     }
 
     @Transactional
-    public void atribuirContas(DadoGerenteInsercao dadoGerenteInsercao){
+    public Conta atribuirContas(DadoGerenteInsercao dadoGerenteInsercao) {
         String cpfComMaisContas = getGerenteComMaisContas();
-        Optional<Conta> contaEscolhida = contaRepository.findFirstByGerenteOrderByDataCriacaoAsc(cpfComMaisContas);
-        log.info(contaEscolhida.toString());
+        Optional<Conta> contaOpt = contaRepository.findFirstByGerenteOrderByDataCriacaoAsc(cpfComMaisContas);
 
-        if(contaEscolhida.isPresent()){
-            log.info("mudando gerente da conta");
-            contaEscolhida.get().setGerente(dadoGerenteInsercao.getCpf());
-            Conta conta = contaRepository.save(contaEscolhida.get());
-            eventProducer.sendSyncReadDatabaseEvent(conta);
+        if (contaOpt.isEmpty()) {
+            log.warn("Nenhuma conta encontrada para remanejar para o novo gerente {}", dadoGerenteInsercao.getCpf());
+            return null; 
         }
+        
+        Conta contaReal = contaOpt.get();
+
+        Conta contaAntiga = new Conta();
+        contaAntiga.setCliente(contaReal.getCliente());
+        contaAntiga.setGerente(contaReal.getGerente());
+
+        contaReal.setGerente(dadoGerenteInsercao.getCpf());
+        Conta contaAtualizada = contaRepository.save(contaReal);
+        
+        eventProducer.publicarContaAtualizada(contaAtualizada);
+
+        return contaAntiga;
     }
 
-    private String getGerenteComMaisContas() {
-        Pageable topUm = PageRequest.of(0, 1);
-
-        Page<String> resultado = contaRepository.findGerentesOrdenadosPorContasEData(topUm);
-
-        if (!resultado.hasContent()) {
-            throw new RuntimeException("Nenhum gerente encontrado.");
-        }
-
-        return resultado.getContent().get(0);
-    }
-
+    @Transactional
     public Conta criarConta(DadosClienteConta dadosClienteConta){
 
         var conta = Conta
@@ -180,13 +179,18 @@ public class ContaCommandService {
                 .gerente(dadosClienteConta.getGerente())
                 .build();
         
-        contaRepository.save(conta);
+        Conta contaCriada = contaRepository.save(conta);
 
-        return conta;
+        eventProducer.publicarContaCriada(contaCriada);
+
+        return contaCriada;
     }
 
-    public Conta atualizarLimite(PerfilInfo perfilInfo, String cpf){
+    @Transactional
+    public BigDecimal atualizarLimite(PerfilInfo perfilInfo, String cpf){
         Conta conta = buscarContaPorCpfCliente(cpf);
+
+        BigDecimal limiteAntigo = conta.getLimite();
 
         BigDecimal novoLimite = calcularLimite(perfilInfo.getSalario());
         BigDecimal saldoAtual = conta.getSaldo();
@@ -202,27 +206,88 @@ public class ContaCommandService {
             conta.setLimite(novoLimite);
         }
 
-        return contaRepository.save(conta);
+        Conta contaAtualizada = contaRepository.save(conta);
+
+        eventProducer.publicarContaAtualizada(contaAtualizada);
+
+        return limiteAntigo;
     }
 
-    public void remanejarGerentes(String cpf){
+    @Transactional 
+    public void reverterAlteracaoLimite(String cpf, BigDecimal limiteAntigo) {
+        Conta conta = buscarContaPorCpfCliente(cpf);
+        conta.setLimite(limiteAntigo);
+        Conta contaRevertida = contaRepository.save(conta); 
+        
+        eventProducer.publicarContaAtualizada(contaRevertida);
+    }
+
+    @Transactional
+    public void reverterRemanejamento(String cpfGerenteRestaurado, List<String> cpfsClientesAfetados) {
+        List<Conta> contasParaReverter = contaRepository.findAllByClienteIn(cpfsClientesAfetados);
+
+        for (Conta conta : contasParaReverter) {
+            conta.setGerente(cpfGerenteRestaurado);
+            Conta contaRevertida = contaRepository.save(conta);
+            
+            eventProducer.publicarContaAtualizada(contaRevertida);
+        }
+    }
+
+    @Transactional 
+    public void reverterAlteracaoGerente(Conta contaAntiga) {
+        Conta contaAtual = buscarContaPorCpfCliente(contaAntiga.getCliente());
+        contaAtual.setGerente(contaAntiga.getGerente());
+        Conta contaRevertida = contaRepository.save(contaAtual);
+        eventProducer.publicarContaAtualizada(contaRevertida);
+    }
+
+    @Transactional 
+    public void excluirConta(String cpf) {
+        Optional<Conta> contaOpt = contaRepository.findByCliente(cpf);
+        
+        if (contaOpt.isPresent()) {
+            Conta contaParaExcluir = contaOpt.get();
+            eventProducer.publicarContaDeletada(contaParaExcluir); 
+            contaRepository.delete(contaParaExcluir);
+        } else {
+            log.warn("Compensação de 'excluirConta' não encontrou conta para o CPF {}", cpf);
+        }
+    }
+
+    @Transactional 
+    public List<String> remanejarGerentes(String cpf) {
         List<Conta> contas = contaRepository.findAllByGerente(cpf);
 
-        if(contas.isEmpty()){
-            return;
-        }
+        List<String> cpfsClientesAfetados = contas.stream()
+                .map(Conta::getCliente)
+                .collect(Collectors.toList());
 
         for (Conta conta : contas) {
             String cpfNovoGerente = buscarCpfGerenteComMenosContasRemanejar(cpf);
             conta.setGerente(cpfNovoGerente);
             Conta contaAtualizada = contaRepository.save(conta);
-            eventProducer.sendSyncReadDatabaseEvent(contaAtualizada);
+            
+            eventProducer.publicarContaAtualizada(contaAtualizada);
         }
 
+        return cpfsClientesAfetados;
     }
 
     public List<GerentesNumeroContasDto> buscarNumeroDeContasPorGerente(){
         return contaRepository.countContasByGerente();
+    }
+
+    private String getGerenteComMaisContas() {
+        Pageable topUm = PageRequest.of(0, 1);
+
+        Page<String> resultado = contaRepository.findGerentesOrdenadosPorContasEData(topUm);
+
+        if (!resultado.hasContent()) {
+            throw new RuntimeException("Nenhum gerente encontrado.");
+        }
+
+        return resultado.getContent().get(0);
     }
 
     private Conta buscarContaPorCpfCliente(String cpf){

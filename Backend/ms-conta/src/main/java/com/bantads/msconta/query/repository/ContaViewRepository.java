@@ -11,5 +11,7 @@ public interface ContaViewRepository extends JpaRepository<ContaView, Long> {
     Optional<ContaView> findByConta(String conta);
 
     Optional<ContaView> findByCliente(String cpf);
+
+    void deleteByCliente(String cpfCliente);
 }
 

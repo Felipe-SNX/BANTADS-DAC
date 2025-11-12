@@ -1,5 +1,6 @@
 package com.bantads.msconta.common.conta.consumer;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,6 @@ public class ContaEventSagaConsumer {
     private final ContaCommandService contaCommandService;    
     private final ObjectMapper objectMapper;
     private final ContaEventSagaProducer contaEventProducer;
-    private final ContaEventCQRSProducer contaEventCQRSProducer;
     
     @Transactional
     @RabbitListener(queues = RabbitMQConstantes.FILA_CONTA_CMD)
@@ -79,31 +79,37 @@ public class ContaEventSagaConsumer {
                             rootNode.path("perfilInfo"), PerfilInfo.class
                     );
                     String cpf = objectMapper.treeToValue(rootNode.path("cpf"), String.class);
-                    Conta contaAtualizada = contaCommandService.atualizarLimite(perfilInfo, cpf);
+                    BigDecimal limiteAntigo = contaCommandService.atualizarLimite(perfilInfo, cpf);
+                    adicionarAoNode(rootNode, "limiteAntigo", limiteAntigo); 
+                    atualizarPayload(evento, rootNode, sagaType);
                     evento.setStatus(ESagaStatus.SUCCESS);
-                    contaEventCQRSProducer.sendSyncReadDatabaseEvent(contaAtualizada);
                     publicarSucesso(evento);
                     break;
                 case APROVAR_CLIENTE_SAGA:
                     DadosClienteConta dadosClienteConta = objectMapper.treeToValue(
                             rootNode.path("dadosClienteConta"), DadosClienteConta.class
                     );
-                    Conta conta = contaCommandService.criarConta(dadosClienteConta);
+                    Conta contaCriada = contaCommandService.criarConta(dadosClienteConta);
+                    adicionarAoNode(rootNode, "contaCriada", contaCriada); 
+                    atualizarPayload(evento, rootNode, sagaType);
                     evento.setStatus(ESagaStatus.SUCCESS);
-                    contaEventCQRSProducer.sendSyncReadDatabaseEvent(conta);
                     publicarSucesso(evento);
                     break;
                 case INSERCAO_GERENTE_SAGA:
                     DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(
                             rootNode.path("dadoGerenteInsercao"), DadoGerenteInsercao.class
                     );
-                    contaCommandService.atribuirContas(dadoGerenteInsercao);
+                    Conta contaEscolhida = contaCommandService.atribuirContas(dadoGerenteInsercao);
+                    adicionarAoNode(rootNode, "contaEscolhida", contaEscolhida); 
+                    atualizarPayload(evento, rootNode, sagaType);
                     evento.setStatus(ESagaStatus.SUCCESS);
                     publicarSucesso(evento);
                     break;
                 case REMOCAO_GERENTE_SAGA:
                     String cpfs = objectMapper.treeToValue(rootNode.path("cpf"), String.class);
-                    contaCommandService.remanejarGerentes(cpfs);
+                    List<String> cpfClientesAfetados = contaCommandService.remanejarGerentes(cpfs);
+                    adicionarAoNode(rootNode, "cpfClientesAfetados", cpfClientesAfetados); 
+                    atualizarPayload(evento, rootNode, sagaType);
                     evento.setStatus(ESagaStatus.SUCCESS);
                     publicarSucesso(evento);
                     break;
@@ -123,7 +129,37 @@ public class ContaEventSagaConsumer {
             JsonNode rootNode = objectMapper.readTree(evento.getPayload());
 
             switch(sagaType){
+                case AUTOCADASTRO_SAGA:
+                    log.info("Não é necessário fazer nada, pois não foi alterado dados nesse serviço");
+                    publicarCompensacaoSucesso(evento);
+                    break;
+                case ALTERACAO_PERFIL_SAGA:
+                    String cpf = objectMapper.treeToValue(rootNode.path("cpf"), String.class);
+                    BigDecimal limiteAntigo = objectMapper.treeToValue(rootNode.path("limiteAntigo"), BigDecimal.class);
+                    contaCommandService.reverterAlteracaoLimite(cpf, limiteAntigo);
+                    publicarCompensacaoSucesso(evento);
+                    break;
+                case APROVAR_CLIENTE_SAGA:
+                    DadosClienteConta dadosClienteConta = objectMapper.treeToValue(
+                            rootNode.path("dadosClienteConta"), DadosClienteConta.class
+                    );
+                    contaCommandService.excluirConta(dadosClienteConta.getCliente());
+                    publicarCompensacaoSucesso(evento);
+                    break;
+                case INSERCAO_GERENTE_SAGA:
+                    Conta conta = objectMapper.treeToValue(
+                            rootNode.path("contaEscolhida"), Conta.class
+                    );
+                    contaCommandService.reverterAlteracaoGerente(conta);
+                    publicarCompensacaoSucesso(evento);
+                    break;
                 case REMOCAO_GERENTE_SAGA:
+                    String cpfs = objectMapper.treeToValue(rootNode.path("cpf"), String.class);
+                    List<String> cpfClientesAfetados = objectMapper.treeToValue(
+                            rootNode.path("cpfClientesAfetados"), List.class
+                    );
+                    contaCommandService.reverterRemanejamento(cpfs, cpfClientesAfetados);
+                    publicarCompensacaoSucesso(evento);
                     break;
                 default:
                     break;

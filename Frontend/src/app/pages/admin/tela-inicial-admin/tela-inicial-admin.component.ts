@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { AdminData, AdminDashboard, AdminService } from '../../../services/admin/admin.service';
+import {Dashboard} from "../../../shared/models/dashboard.model";
 
 
 
@@ -17,18 +18,18 @@ import { AdminData, AdminDashboard, AdminService } from '../../../services/admin
 })
 
 export class TelaInicialAdminComponent implements OnInit {
-  AdminDashboard: AdminDashboard[] = [];
+  AdminDashboard: Dashboard[] = [];
   admin: AdminData | null = null;
 
   constructor (
     private readonly adminService: AdminService
-  ) {} 
+  ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
 
     this.admin = this.adminService.getAdminData();
-    
-    this.AdminDashboard = this.adminService.getAdminDashboardData();
+
+    this.AdminDashboard = await this.adminService.dashboardAdmin();
 
   }
-} 
+}

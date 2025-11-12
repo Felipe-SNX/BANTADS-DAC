@@ -18,11 +18,11 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let gerente of AdminDashboard">
-                  <td class="text-start">{{ gerente.nome }}</td>
-                  <td class="text-start">{{ gerente.totalClientes }}</td>
-                  <td class="text-start">{{ gerente.saldoPositivo | currency:'BRL':'symbol' }}</td>
-                  <td class="text-start">{{ gerente.saldoNegativo | currency:'BRL':'symbol' }}</td>
+                <tr *ngFor="let dashboard of AdminDashboard">
+                  <td class="text-start">{{ dashboard.gerente.nome }}</td>
+                  <td class="text-start">{{ dashboard.clientes.length }}</td>
+                  <td class="text-start">{{ dashboard.saldo_positivo | currency:'BRL':'symbol' }}</td>
+                  <td class="text-start">{{ dashboard.saldo_negativo | currency:'BRL':'symbol' }}</td>
                 </tr>
               </tbody>
             </table>

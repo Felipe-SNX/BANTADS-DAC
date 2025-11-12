@@ -62,7 +62,8 @@ export class LoginComponent {
   }
 
   private handleLoginSuccess(resposta: LoginResponse) {
-    sessionStorage.setItem('usuarioLogado', JSON.stringify(resposta));
+    const token = resposta.access_token.replace(/"/g, '');
+    sessionStorage.setItem('token', token);
 
     switch (resposta.tipo) {
       case TipoUsuario.CLIENTE:
@@ -71,7 +72,7 @@ export class LoginComponent {
       case TipoUsuario.GERENTE:
         this.router.navigate(['/gerente']);
         break;
-      case TipoUsuario.ADMIN:
+      case TipoUsuario.ADMINISTRADOR:
         this.router.navigate(['/admin']);
         break;
       default:

@@ -42,7 +42,7 @@ export class MockDataService {
   private readonly auth6 = new User(TipoUsuario.GERENTE, "ger1@bantads.com.br", "tads", "1");
   private readonly auth7 = new User(TipoUsuario.GERENTE, "ger2@bantads.com.br", "tads", "2");
   private readonly auth8 = new User(TipoUsuario.GERENTE, "ger3@bantads.com.br", "tads", "3");
-  private readonly auth9 = new User(TipoUsuario.ADMIN, "adm1@bantads.com.br", "tads", "4");
+  private readonly auth9 = new User(TipoUsuario.ADMINISTRADOR, "adm1@bantads.com.br", "tads", "4");
 
   private readonly conta1 = new Conta("1291", this.cliente1, new Date("01/01/2000"), 800.00, 5000.00, this.gerente1);
   private readonly conta2 = new Conta("950", this.cliente2, new Date("10/10/1990"), -10000.00, 10000.00, this.gerente2);

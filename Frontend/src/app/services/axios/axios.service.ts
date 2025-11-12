@@ -6,7 +6,7 @@ const API_URL_BASE = 'http://localhost:3000';
 @Injectable({
   providedIn: 'root'
 })
-export class AxiosService {
+class AxiosService {
 
   private axiosInstance;
 
@@ -18,13 +18,14 @@ export class AxiosService {
         'Content-Type': 'application/json'
       }
     });
-    /*this.axiosInstance.interceptors.request.use(config => {
-      const token = localStorage.getItem('token');
+
+    this.axiosInstance.interceptors.request.use(config => {
+      const token = sessionStorage.getItem('token');
       if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
+        config.headers?.["set"]('Authorization', `Bearer ${token}`);
       }
       return config;
-    });*/
+    });
   }
 
   async get<T>(url: string): Promise<T> {
@@ -47,3 +48,5 @@ export class AxiosService {
     return response.data;
   }
 }
+
+export default AxiosService

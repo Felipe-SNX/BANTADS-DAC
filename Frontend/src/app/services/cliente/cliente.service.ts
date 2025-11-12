@@ -1,8 +1,11 @@
-import { Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import { Cliente } from '../../shared/models/cliente.model';
 import { ContaService } from '../conta/conta.service';
 import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
 import { Gerente } from '../../shared/models/gerente.model';
+import {Dashboard} from "../../shared/models/dashboard.model";
+import AxiosService from "../axios/axios.service";
+import {ClienteResponse} from "../../shared/models/cliente-response.model";
 
 const LS_CHAVE = "clientes";
 
@@ -22,6 +25,8 @@ export interface ClientData {
   providedIn: 'root'
 })
 export class ClienteService {
+
+  private axiosService = inject(AxiosService);
 
   constructor(private readonly accountService: ContaService) { }
 
@@ -62,13 +67,13 @@ export class ClienteService {
       message: 'Cliente cadastrado com sucesso!'
     };
   }
-  
+
 
   //Método para atualizar dados do perfil Cliente
   updateClient(updatedClient: Cliente): LocalStorageResult{
     let customers = this.listClient();
     const index = customers.findIndex((c:Cliente) => c.id == updatedClient.id);
-    
+
     if(index === -1){
       return{
         success: false,
@@ -93,6 +98,10 @@ export class ClienteService {
       message: 'Cliente atualizado com sucesso!'
     };
 
+  }
+
+  public relatorioClientes(): Promise<ClienteResponse[]> {
+    return this.axiosService.get<ClienteResponse[]>("/clientes?filtro=adm_relatorio_clientes");
   }
 
   listClientData(): ClientData[] {
@@ -131,5 +140,5 @@ export class ClienteService {
     const customer: Cliente | undefined = customers.find((currentCustomer) => currentCustomer.cpf === cpf)
     return customer;
   }
-  
+
 }

@@ -1,4 +1,6 @@
-import { Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
+import AxiosService from "../axios/axios.service";
+import {Dashboard} from "../../shared/models/dashboard.model";
 
 export interface AdminData {
   id: number;
@@ -7,21 +9,18 @@ export interface AdminData {
   cpf: string;
 }
 
-export interface AdminDashboard {
-  id: number;
-  nome: string;
-  email: string;
-  totalClientes: number;
-  saldoPositivo: number;
-  saldoNegativo: number;
-}
-
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
 
+  private axiosService = inject(AxiosService);
+
   constructor() { }
+
+  public dashboardAdmin(): Promise<Dashboard[]> {
+    return this.axiosService.get<Dashboard[]>("/gerentes?filtro=dashboard");
+  }
 
   getAdminData(): AdminData | null {
     const adminData = localStorage.getItem('admin');
@@ -37,40 +36,4 @@ export class AdminService {
     };
   }
 
-  getAdminDashboardData(): AdminDashboard[] {
-
-    const gerentes = JSON.parse(localStorage.getItem('gerentes') || '[]');
-    const contas = JSON.parse(localStorage.getItem('contas') || '[]');
-
-    
-    const AdminDashboard = gerentes.map((gerente: any) => {
-
-      const clientesDoGerente = gerente.clientes || [];
-      const totalClientes = clientesDoGerente.length;
-
-      const contasDoGerente = contas
-        .filter((conta: any) => clientesDoGerente.some((cliente: any) => cliente.id === conta.cliente.id));
-
-      const saldoPositivo = contasDoGerente
-        .filter((conta: any) => conta.saldo >= 0)
-        .reduce((acc: number, conta: any) => acc + conta.saldo, 0);
-
-      const saldoNegativo = contasDoGerente
-        .filter((conta: any) => conta.saldo < 0)
-        .reduce((acc: number, conta: any) => acc + conta.saldo, 0);
-
-      return {
-      id: gerente.id,
-      nome: gerente.nome,
-      email: gerente.email,
-      totalClientes: totalClientes,
-      saldoPositivo: saldoPositivo,
-      saldoNegativo: saldoNegativo
-      };
-    });
-
-    AdminDashboard.sort((a: any, b: any) => b.saldoPositivo - a.saldoPositivo);
-
-    return AdminDashboard;
-  }
 }

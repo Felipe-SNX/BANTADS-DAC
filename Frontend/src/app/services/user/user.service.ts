@@ -5,7 +5,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {LoginResponse} from "../../shared/models/loginResponse.model";
 import {LoginRequest} from "../../shared/models/loginRequest.model";
-import {AxiosService} from "../axios/axios.service";
+import AxiosService from "../axios/axios.service";
 
 const LS_CHAVE = "users";
 
@@ -29,7 +29,7 @@ export class UserService {
   }
 
   isLogged(): boolean {
-    if(sessionStorage.getItem('usuarioLogado')){
+    if(sessionStorage.getItem('token')){
       return true;
     }
     else{

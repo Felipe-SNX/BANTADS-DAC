@@ -4,6 +4,8 @@ import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.com
 import { ContaService } from '../../../services/conta/conta.service';
 import { Conta } from '../../../shared/models/conta.model';
 import { NgxMaskPipe } from 'ngx-mask';
+import {ClienteResponse} from "../../../shared/models/cliente-response.model";
+import {ClienteService} from "../../../services/cliente/cliente.service";
 
 
 @Component({
@@ -19,28 +21,14 @@ import { NgxMaskPipe } from 'ngx-mask';
 })
 export class RelatorioClientesComponent implements OnInit {
 
-  clientes: any[] = [];
+  clientes: ClienteResponse[] = [];
 
   constructor(
-    private readonly contaService: ContaService, 
+    private readonly clienteService: ClienteService,
   ) { }
 
-  ngOnInit(): void {
-    
-    const contas: Conta[] = this.contaService.listAccounts();
-    this.clientes = contas.map((conta: Conta) => ({
-      nomeCliente: conta.cliente.nome,
-      cpfCliente: conta.cliente.cpf,
-      emailCliente: conta.cliente.email,
-      salario: conta.cliente.salario,
-      numeroConta: conta.numConta,
-      saldo: conta.saldo,
-      limiteCliente: conta.limite,
-      cpfGerente: conta.gerente.cpf,
-      nomeGerente: conta.gerente.nome,
-    }));
-
-    this.clientes.sort((a, b) => a.nomeCliente.localeCompare(b.nomeCliente));
+  async ngOnInit(): Promise<void> {
+    this.clientes = await this.clienteService.relatorioClientes();
   }
-  
+
 }

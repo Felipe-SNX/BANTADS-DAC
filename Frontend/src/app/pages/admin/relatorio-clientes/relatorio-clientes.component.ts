@@ -5,7 +5,6 @@ import { NgxMaskPipe } from 'ngx-mask';
 import {ClienteResponse} from "../../../shared/models/cliente-response.model";
 import {ClienteService} from "../../../services/cliente/cliente.service";
 
-
 @Component({
   selector: 'app-relatorio-clientes',
   standalone: true,

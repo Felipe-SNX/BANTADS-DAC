@@ -6,8 +6,6 @@ import { GerenteService } from '../../../services/gerente/gerente.service';
 import { GerentesResponse } from '../../../shared/models/gerentes-response.model';
 import {LoadingComponent} from "../../../shared/components/loading/loading.component";
 
-
-
 @Component({
   selector: 'app-tela-inicial-admin',
   standalone: true,

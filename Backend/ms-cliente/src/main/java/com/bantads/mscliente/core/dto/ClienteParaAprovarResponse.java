@@ -20,5 +20,4 @@ public class ClienteParaAprovarResponse {
     private String endereco;
     private String cidade;
     private String estado;
-    private String saldo;
 }

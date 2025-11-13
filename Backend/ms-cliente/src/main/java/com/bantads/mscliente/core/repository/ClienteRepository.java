@@ -20,13 +20,5 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     List<Cliente> findAllByAprovadoOrderByNomeAsc(boolean b);
 
-    @Query("SELECT c FROM Cliente c " +
-            "WHERE c.aprovado = :aprovado " +
-            "ORDER BY c.saldo DESC NULLS LAST")
-    Page<Cliente> findMelhoresClientes(
-            @Param("aprovado") Boolean aprovado,
-            Pageable pageable
-    );
-
     void deleteByCpf(String cpf);
 }

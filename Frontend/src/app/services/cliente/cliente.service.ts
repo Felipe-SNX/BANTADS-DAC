@@ -26,7 +26,7 @@ export interface ClientData {
 })
 export class ClienteService {
 
-  private axiosService = inject(AxiosService);
+  private readonly axiosService = inject(AxiosService);
 
   constructor(private readonly accountService: ContaService) { }
 

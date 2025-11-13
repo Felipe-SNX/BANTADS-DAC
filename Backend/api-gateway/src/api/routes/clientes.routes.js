@@ -106,6 +106,94 @@ router.post('/:cpf/aprovar', verifyToken, checkRole(['GERENTE']), (req, res, nex
     orquestradorServiceProxy(req, res, next);
 });
 
+router.get('/', verifyToken, async (req, res, next) => {
+    const filtro = req.query.filtro;
+
+    const config = {
+        headers: { 'Authorization': req.headers.authorization },
+        params: { filtro: filtro }
+    };
+
+    try {
+        if (filtro === 'para_aprovar') {
+            const response = await axios.get(`${process.env.MS_CLIENTE_URL}/clientes`, config);
+            return res.json(response.data);
+        }
+
+        else if (filtro === 'adm_relatorio_clientes') {
+            
+            const [clientesRes, contasRes, gerentesRes] = await Promise.all([
+                axios.get(`${process.env.MS_CLIENTE_URL}/clientes`, config),
+                axios.get(`${process.env.MS_CONTA_URL}/contas/dadosConta`, config),
+                axios.get(`${process.env.MS_GERENTE_URL}/gerentes`, config)
+            ]);
+
+            const listaClientes = clientesRes.data;
+            const listaContas = contasRes.data;
+            const listaGerentes = gerentesRes.data;
+
+            console.log("============================================");
+            console.log(listaClientes);
+            console.log("============================================");
+            console.log("============================================");
+            console.log(listaContas);
+            console.log("============================================");
+            console.log("============================================");
+            console.log(listaGerentes);
+            console.log("============================================");
+
+            const relatorioCompleto = listaClientes.map(cliente => {
+                const conta = listaContas.find(c => c.cliente === cliente.cpf);
+                
+                const gerente = listaGerentes.find(g => g.cpf === conta.gerente);
+
+                return {
+                    ...cliente,
+                    saldo: conta ? conta.saldo : 0,
+                    conta: conta ? conta.conta : null,
+                    gerente: gerente ? gerente.cpf : null,
+                    nomeGerente: gerente ? gerente.nome : 'Não atribuído'
+                };
+            });
+
+            return res.json(relatorioCompleto);
+        }
+
+        else {
+            const [clientesRes, contasRes] = await Promise.all([
+                axios.get(`${process.env.MS_CLIENTE_URL}/clientes`, config),
+                axios.get(`${process.env.MS_CONTA_URL}/contas/dadosConta`, config)
+            ]);
+
+            const listaClientes = clientesRes.data;
+            const listaContas = contasRes.data;
+
+            let clientesFundidos = listaClientes.map(cliente => {
+                const conta = listaContas.find(c => c.cliente === cliente.cpf);
+                return {
+                    ...cliente,
+                    saldo: conta ? conta.saldo : 0,
+                };
+            });
+
+            if (filtro === 'melhores_clientes') {
+                clientesFundidos.sort((a, b) => b.saldo - a.saldo);
+                
+                clientesFundidos = clientesFundidos.slice(0, 3);
+            }
+
+            return res.json(clientesFundidos);
+        }
+
+    } catch (error) {
+        console.error(`Erro ao processar filtro '${filtro}':`, error.message);
+        if (error.response) {
+            return res.status(error.response.status).json(error.response.data);
+        }
+        next(error);
+    }
+});
+
 router.use('/', verifyToken, clientesServiceProxy);
 
 module.exports = router;

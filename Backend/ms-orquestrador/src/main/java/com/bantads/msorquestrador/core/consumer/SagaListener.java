@@ -1,17 +1,12 @@
 package com.bantads.msorquestrador.core.consumer;
 
 import com.bantads.msorquestrador.config.rabbitmq.RabbitMQConstantes;
-import com.bantads.msorquestrador.core.dto.AutoCadastroInfo;
 import com.bantads.msorquestrador.core.dto.Evento;
 import com.bantads.msorquestrador.core.enums.ESaga;
-import com.bantads.msorquestrador.core.enums.ESagaStatus;
 import com.bantads.msorquestrador.core.enums.ETopics;
 import com.bantads.msorquestrador.core.producer.SagaEventProducer;
 import com.bantads.msorquestrador.core.saga.SagaHandler;
 import com.bantads.msorquestrador.core.saga.SagaProcessor;
-import com.bantads.msorquestrador.core.service.SagaService;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

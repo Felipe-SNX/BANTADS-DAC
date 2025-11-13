@@ -15,9 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors; 
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,18 +43,12 @@ public class ClienteService {
         } else if (filtro.equals("adm_relatorio_clientes")) {
             clientes = clienteRepository.findAllByAprovadoOrderByNomeAsc(true);
         } else {
-            clientes = top3Clientes();
+            clientes = clienteRepository.findAllByAprovadoOrderByNomeAsc(true);
         }
 
         return clientes.stream()
                 .map(this::enriquecerClienteResponseComEndereco)
                 .collect(Collectors.toList());
-    }
-
-    private List<Cliente> top3Clientes() {
-        Pageable topTres = PageRequest.of(0, 3);
-        Page<Cliente> paginaClientes = clienteRepository.findMelhoresClientes(true, topTres);
-        return paginaClientes.getContent();
     }
 
     private List<Cliente> listarClientesParaAprovar() {

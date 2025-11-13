@@ -37,8 +37,6 @@ public class Cliente {
 
     private String gerente;
 
-    private BigDecimal saldo;
-
     @Column(nullable = false)
     private boolean aprovado = false;
 

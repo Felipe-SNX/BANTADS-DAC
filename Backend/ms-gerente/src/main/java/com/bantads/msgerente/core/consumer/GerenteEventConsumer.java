@@ -1,13 +1,17 @@
 package com.bantads.msgerente.core.consumer;
 
+import com.bantads.msgerente.common.dto.Evento;
+import com.bantads.msgerente.common.enums.EEventSource;
+import com.bantads.msgerente.common.enums.ESaga;
+import com.bantads.msgerente.common.enums.ESagaStatus;
+import com.bantads.msgerente.common.enums.ETopics;
 import com.bantads.msgerente.config.rabbitmq.RabbitMQConstantes;
+import com.bantads.msgerente.core.dto.DadoGerenteAtualizacao;
 import com.bantads.msgerente.core.dto.DadoGerenteInsercao;
-import com.bantads.msgerente.core.dto.Evento;
 import com.bantads.msgerente.core.dto.GerenteNumeroContasDto;
-import com.bantads.msgerente.core.enums.EEventSource;
-import com.bantads.msgerente.core.enums.ESaga;
-import com.bantads.msgerente.core.enums.ESagaStatus;
-import com.bantads.msgerente.core.enums.ETopics;
+import com.bantads.msgerente.core.dto.GerentesResponse;
+import com.bantads.msgerente.core.dto.mapper.GerenteMapper;
+import com.bantads.msgerente.core.exception.ErroExecucaoSaga;
 import com.bantads.msgerente.core.producer.GerenteEventProducer;
 import com.bantads.msgerente.core.service.GerenteService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,7 +26,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 @Slf4j
@@ -33,6 +36,7 @@ public class GerenteEventConsumer {
     private final GerenteService gerenteService;
     private final ObjectMapper objectMapper;
     private final GerenteEventProducer gerenteEventProducer;
+
 
     @Transactional
     @RabbitListener(queues = RabbitMQConstantes.FILA_GERENTES)
@@ -58,63 +62,50 @@ public class GerenteEventConsumer {
 
             switch(sagaType){
                 case AUTOCADASTRO_SAGA:
-                    JsonNode numeroContasGerenteNode = rootNode.path("numeroContasGerente");
-                    List<GerenteNumeroContasDto> gerenteNumeroContasDtoList =
-                            objectMapper.convertValue(
-                                    numeroContasGerenteNode,
-                                    new TypeReference<List<GerenteNumeroContasDto>>() {}
-                            );
-                    GerenteNumeroContasDto gerenteNumeroContasDto = gerenteService.selecionarGerente(gerenteNumeroContasDtoList);
-                    //Verifica se o retorno não é nulo
-                    if (gerenteNumeroContasDto == null) {
-                        evento.setSource(EEventSource.GERENTE_SERVICE);
-                        evento.setStatus(ESagaStatus.FAIL);
-                        break;
-                    }
+                    List<GerenteNumeroContasDto> dtoList = objectMapper.convertValue(
+                            rootNode.path("numeroContasGerente"),
+                            new TypeReference<List<GerenteNumeroContasDto>>() {}
+                    );
+                    GerenteNumeroContasDto gerenteEscolhido = gerenteService.selecionarGerente(dtoList);
 
-                    JsonNode gerenteEscolhidoNode = objectMapper.valueToTree(gerenteNumeroContasDto);
+                    adicionarAoNode(rootNode, "gerenteEscolhido", gerenteEscolhido); 
+                    atualizarPayload(evento, rootNode, sagaType);
 
-                    if (rootNode instanceof ObjectNode) {
-                        ((ObjectNode) rootNode).set("gerenteEscolhido", gerenteEscolhidoNode);
-                    } else {
-                        throw new RuntimeException("Payload da saga (rootNode) não é um objeto JSON.");
-                    }
-
-                    try {
-                        evento.setPayload(objectMapper.writeValueAsString(rootNode));
-                    } catch (JsonProcessingException e) {
-                        evento.setSource(EEventSource.GERENTE_SERVICE);
-                        evento.setStatus(ESagaStatus.FAIL);
-                        break;
-                    }
-                    evento.setSource(EEventSource.GERENTE_SERVICE);
                     evento.setStatus(ESagaStatus.SUCCESS);
-                    gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_SUCCESS, evento);
+                    publicarSucesso(evento);
                     break;
                 case INSERCAO_GERENTE_SAGA:
-                    JsonNode gerenteNode = rootNode.path("dadoGerenteInsercao");
-                    DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(gerenteNode, DadoGerenteInsercao.class);
+                    DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(
+                            rootNode.path("dadoGerenteInsercao"), DadoGerenteInsercao.class
+                    );
                     gerenteService.inserirGerente(dadoGerenteInsercao);
-                    evento.setSource(EEventSource.GERENTE_SERVICE);
                     evento.setStatus(ESagaStatus.SUCCESS);
-                    gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_SUCCESS, evento);
+                    publicarSucesso(evento);
                     break;
                 case REMOCAO_GERENTE_SAGA:
-                    JsonNode cpfNode = rootNode.path("cpf");
-                    String cpf = objectMapper.treeToValue(cpfNode, String.class);
+                    String cpf = objectMapper.treeToValue(rootNode.path("cpf"), String.class);
                     gerenteService.deletarGerentePorCpf(cpf);
-                    evento.setSource(EEventSource.GERENTE_SERVICE);
+                    evento.setStatus(ESagaStatus.FINISHED);
+                    publicarSucesso(evento);
+                    break;
+                case ALTERAR_GERENTE_SAGA:
+                    String cpfs = objectMapper.treeToValue(rootNode.path("cpf"), String.class);
+                    DadoGerenteAtualizacao dadoGerenteAtualizacao = objectMapper.treeToValue(
+                            rootNode.path("dadoGerenteAtualizacao"), DadoGerenteAtualizacao.class
+                    );
+                    GerentesResponse gerentesResponse = gerenteService.atualizarGerentePorCpf(dadoGerenteAtualizacao, cpfs);
+
+                    adicionarAoNode(rootNode, "gerenteAtualizado", gerentesResponse);
+                    atualizarPayload(evento, rootNode, sagaType);
                     evento.setStatus(ESagaStatus.SUCCESS);
-                    gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_SUCCESS, evento);
+                    publicarSucesso(evento);
                     break;
                 default:
                     break;
             }
         } catch(Exception e){
             log.info("Erro ocorreu em {} do tipo {}", sagaType, e);
-            evento.setSource(EEventSource.GERENTE_SERVICE);
-            evento.setStatus(ESagaStatus.FAIL);
-            gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_FAIL, evento);
+            publicarFalha(evento);
         }
     }
 
@@ -124,30 +115,71 @@ public class GerenteEventConsumer {
 
             switch(sagaType){
                 case INSERCAO_GERENTE_SAGA:
-                    JsonNode gerenteNode = rootNode.path("dadoGerenteInsercao");
-                    DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(gerenteNode, DadoGerenteInsercao.class);
+                    DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(
+                            rootNode.path("dadoGerenteInsercao"), DadoGerenteInsercao.class
+                    );
                     gerenteService.deletarGerentePorCpf(dadoGerenteInsercao.getCpf());
-                    evento.setSource(EEventSource.GERENTE_SERVICE);
-                    evento.setStatus(ESagaStatus.COMPENSATE);
-                    gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_SUCCESS, evento);
+                    publicarCompensacaoSucesso(evento);
                     break;
-                case REMOCAO_GERENTE_SAGA:
-                    JsonNode cpfNode = rootNode.path("cpf");
-                    String cpf = objectMapper.treeToValue(cpfNode, String.class);
-                    gerenteService.deletarGerentePorCpf(cpf);
-                    evento.setSource(EEventSource.GERENTE_SERVICE);
-                    evento.setStatus(ESagaStatus.COMPENSATE);
-                    gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_SUCCESS, evento);
+                case AUTOCADASTRO_SAGA:
+                    log.info("Não faz nada aqui, pois não foi alterado dados");
+                    publicarCompensacaoSucesso(evento);
+                    break;
+                case ALTERAR_GERENTE_SAGA:
+                    GerentesResponse gerentesResponse = objectMapper.treeToValue(
+                            rootNode.path("gerenteAtualizado"), GerentesResponse.class
+                    );
+                    DadoGerenteAtualizacao dadosAntigos = GerenteMapper.gerentesResponseToDadoGerenteAtualizacao(gerentesResponse);
+                    gerenteService.atualizarGerentePorCpf(dadosAntigos, gerentesResponse.getCpf());
+                    publicarCompensacaoSucesso(evento);
                     break;
                 default:
                     break;
             }
         } catch(Exception e){
             log.info("Erro ocorreu em {} do tipo {}", sagaType, e);
-            evento.setSource(EEventSource.GERENTE_SERVICE);
-            evento.setStatus(ESagaStatus.COMPENSATE_FAILED);
-            gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_FAIL, evento);
+            publicarCompensacaoFalha(evento);
         }
     }
-}
 
+    private void publicarSucesso(Evento evento) {
+        evento.setSource(EEventSource.GERENTE_SERVICE);
+        gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_SUCCESS, evento);
+    }
+
+    private void publicarFalha(Evento evento) {
+        evento.setSource(EEventSource.GERENTE_SERVICE);
+        evento.setStatus(ESagaStatus.FAIL);
+        gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_FAIL, evento);
+    }
+
+    private void publicarCompensacaoSucesso(Evento evento) {
+        evento.setSource(EEventSource.GERENTE_SERVICE);
+        evento.setStatus(ESagaStatus.COMPENSATE);
+        gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_SUCCESS, evento);
+    }
+
+    private void publicarCompensacaoFalha(Evento evento) {
+        evento.setSource(EEventSource.GERENTE_SERVICE);
+        evento.setStatus(ESagaStatus.COMPENSATE_FAILED);
+        gerenteEventProducer.sendEvent(ETopics.EVT_GERENTE_FAIL, evento);
+    }
+
+    private <T> void adicionarAoNode(JsonNode rootNode, String key, T value) {
+        if (rootNode instanceof ObjectNode) {
+            JsonNode node = objectMapper.valueToTree(value);
+            ((ObjectNode) rootNode).set(key, node);
+        } else {
+            throw new ErroExecucaoSaga("Payload da saga (rootNode) não é um objeto JSON.");
+        }
+    }
+
+    private void atualizarPayload(Evento evento, JsonNode rootNode, ESaga sagaType){
+        try {
+            evento.setPayload(objectMapper.writeValueAsString(rootNode));
+        } catch (JsonProcessingException e) {
+            log.error("Erro crítico ao atualizar o payload na saga {}: {}", sagaType, e.getMessage(), e);
+            throw new ErroExecucaoSaga("Erro ao atualizar payload");
+        }
+    }
+} 

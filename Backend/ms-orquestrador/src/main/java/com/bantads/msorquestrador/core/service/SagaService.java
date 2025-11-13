@@ -88,6 +88,22 @@ public class SagaService {
         }
     }
 
+    public void iniciarSagaAlterarGerente(DadoGerenteAtualizacao dadoGerenteAtualizacao, String cpf) {
+        log.info("Saga de alterar perfil iniciada para o gerente: {}", dadoGerenteAtualizacao.getNome());
+
+
+        Map<String, Object> alterarPerfilInfo = new HashMap<>();
+        alterarPerfilInfo.put("cpf", cpf);
+        alterarPerfilInfo.put("dadoGerenteAtualizacao", dadoGerenteAtualizacao);
+
+        try {
+            Evento evento = criarEvento(alterarPerfilInfo, ESaga.ALTERAR_GERENTE_SAGA, EEventSource.ORQUESTRADOR);
+            publicarEvento(evento);
+        } catch (JsonProcessingException e) {
+            throw new ErroAoConverterJsonException("Saga Alterar Gerente", e.getMessage());
+        }
+    }
+
     public void iniciarSagaRemoverGerente(String cpf) {
         log.info("Saga de alterar perfil iniciada para o gerente de cpf: {}", cpf);
 

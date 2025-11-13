@@ -3,6 +3,8 @@ package com.bantads.mscliente.config.exception;
 import com.bantads.mscliente.core.exception.ClienteNaoEncontradoException;
 import com.bantads.mscliente.core.exception.CpfJaCadastradoException;
 import com.bantads.mscliente.core.exception.EnderecoNaoEncontradoException;
+import com.bantads.mscliente.core.exception.ErroExecucaoSaga;
+
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +47,16 @@ public class ApiExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, message));
+    }
+
+    @ExceptionHandler(ErroExecucaoSaga.class)
+    public ResponseEntity<ErrorMessage> erroExecucaoSaga(ErroExecucaoSaga ex, HttpServletRequest request) {
+        log.error("ErroExecucaoSaga capturada: {}", ex.getMessage());
+        String message = ex.getMessage();
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.INTERNAL_SERVER_ERROR, message));
     }
 }
 

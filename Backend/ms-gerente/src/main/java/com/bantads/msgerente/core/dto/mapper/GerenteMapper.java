@@ -31,4 +31,8 @@ public class GerenteMapper {
         return new ModelMapper().map(gerente, DadoGerente.class);
     }
 
+    public static DadoGerenteAtualizacao gerentesResponseToDadoGerenteAtualizacao(GerentesResponse gerentesResponse){
+        return new ModelMapper().map(gerentesResponse, DadoGerenteAtualizacao.class);
+    }
+
 }

@@ -1,0 +1,18 @@
+package com.bantads.msauth.core.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class DadoGerenteAtualizacao {
+    
+    private String nome;
+    private String email;
+    private String telefone;
+    private String senha;
+}

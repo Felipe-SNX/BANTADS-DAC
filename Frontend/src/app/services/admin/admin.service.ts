@@ -14,13 +14,9 @@ export interface AdminData {
 })
 export class AdminService {
 
-  private axiosService = inject(AxiosService);
+  private readonly axiosService = inject(AxiosService);
 
   constructor() { }
-
-  public dashboardAdmin(): Promise<Dashboard[]> {
-    return this.axiosService.get<Dashboard[]>("/gerentes?filtro=dashboard");
-  }
 
   getAdminData(): AdminData | null {
     const adminData = localStorage.getItem('admin');

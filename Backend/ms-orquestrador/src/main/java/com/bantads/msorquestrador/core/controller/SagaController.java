@@ -1,7 +1,10 @@
 package com.bantads.msorquestrador.core.controller;
 
 import com.bantads.msorquestrador.core.dto.*;
+import com.bantads.msorquestrador.core.dto.mapper.GerenteResponseMapper;
 import com.bantads.msorquestrador.core.dto.mapper.PerfilInfoMapper;
+import com.bantads.msorquestrador.core.enums.TipoGerente;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +49,16 @@ public class SagaController {
         PerfilInfoResponse perfilInfoResponse = PerfilInfoMapper.toPerfilInfoResponse(perfilInfo);
         perfilInfoResponse.setCpf(cpf);
         return ResponseEntity.status(HttpStatus.OK).body(perfilInfoResponse);
+    }
+
+    @PutMapping("/atualizarGerente/{cpf}")
+    public ResponseEntity<GerentesResponse> iniciarSagaAlterarGerente(@RequestBody DadoGerenteAtualizacao dadoGerenteAtualizacao, @PathVariable String cpf) {
+        log.info("Iniciando saga alterar gerente");
+        sagaService.iniciarSagaAlterarGerente(dadoGerenteAtualizacao, cpf);
+        GerentesResponse gerentesResponse = GerenteResponseMapper.toGerentesResponse(dadoGerenteAtualizacao);
+        gerentesResponse.setTipo(TipoGerente.GERENTE);
+        gerentesResponse.setCpf(cpf);
+        return ResponseEntity.status(HttpStatus.OK).body(gerentesResponse);
     }
 
     @PostMapping("/inserirGerente")

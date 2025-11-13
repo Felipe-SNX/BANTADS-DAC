@@ -1,11 +1,12 @@
 <main class="d-flex flex-row w-100" style="max-height: 100vh;">
     <app-sidebar [tipoTela]="'admin'"></app-sidebar>
+    <app-loading [isLoading]="loading"></app-loading>
 
-    <div class="w-100 p-4 d-flex flex-column align-items-center justify-content-center bg-light" style="overflow-y: auto;">
+  <div class="w-100 p-4 d-flex flex-column align-items-center justify-content-center bg-light" style="overflow-y: auto;" *ngIf="!loading">
 
         <div class="card shadow-sm" style="width: 100%; max-width: 800px;">
             <form #meuForm="ngForm" (ngSubmit)="onSubmit()">
-                
+
                 <div class="card-header text-center p-3">
                     <h2 class="h4 mb-0" *ngIf="!editMode">Inserir Novo Gerente</h2>
                     <h2 class="h4 mb-0" *ngIf="editMode">Editar Gerente</h2>
@@ -24,16 +25,16 @@
 
                         <div class="col-md-6">
                             <label for="CPF" class="form-label">CPF</label>
-                            <input 
-                                type="text" 
-                                class="form-control" 
-                                id="CPF" 
-                                name="CPF" 
-                                mask="000.000.000-00" 
-                                #CPFInput="ngModel" 
-                                [(ngModel)]="gerente.cpf" 
-                                cpfValidator 
-                                required 
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="CPF"
+                                name="CPF"
+                                mask="000.000.000-00"
+                                #CPFInput="ngModel"
+                                [(ngModel)]="gerente.cpf"
+                                cpfValidator
+                                required
                                 disabled="{{editMode}}"
                                 [class.is-invalid]="CPFInput.invalid && (CPFInput.dirty || CPFInput.touched)"
                             >
@@ -60,16 +61,16 @@
                                 <small *ngIf="emailInput.errors?.['email']">O email digitado é inválido.</small>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <label for="senha" class="form-label">Senha</label>
-                            <input type="password" class="form-control" id="senha" name="senha" #senhaInput="ngModel" [(ngModel)]="user.senha" required>
+                            <input type="password" class="form-control" id="senha" name="senha" #senhaInput="ngModel" [(ngModel)]="gerente.senha" required>
                         </div>
 
                         <div class="col-md-6">
                             <label for="confirmaSenha" class="form-label">Confirme a Senha</label>
-                            <input type="password" class="form-control" id="confirmaSenha" name="confirmaSenha" #confirmaSenhaInput="ngModel" [(ngModel)]="confereSenha" required [class.is-invalid]="confereSenha != user.senha && confirmaSenhaInput.touched">
-                             <div *ngIf="confereSenha != user.senha && confirmaSenhaInput.touched" class="invalid-feedback">
+                            <input type="password" class="form-control" id="confirmaSenha" name="confirmaSenha" #confirmaSenhaInput="ngModel" [(ngModel)]="confereSenha" required [class.is-invalid]="confereSenha != gerente.senha && confirmaSenhaInput.touched">
+                             <div *ngIf="confereSenha != gerente.senha && confirmaSenhaInput.touched" class="invalid-feedback">
                                 As senhas não conferem.
                             </div>
                         </div>

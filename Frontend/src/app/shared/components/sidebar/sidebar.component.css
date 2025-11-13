@@ -1,8 +1,6 @@
 .sidebar {
-    background-color: #4682B4; 
-    color: #262627;
     width: 280px;
-    height: 100vh; 
+    height: 100vh;
     display: flex;
     flex-direction: column;
 }
@@ -15,14 +13,14 @@
 }
 
 .sidebar .d-flex.flex-column {
-    flex-grow: 1; 
-    padding: 1rem 0; 
+    flex-grow: 1;
+    padding: 1rem 0;
 }
 
 .menu-item {
     background-color: transparent;
     border: none;
-    color: #262627;
+    color: #ffffff;
     display: flex;
     align-items: center;
     width: 100%;
@@ -32,15 +30,15 @@
 }
 
 .menu-item:hover {
-    background-color: #E0FFFF; 
-    color: black; 
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
     cursor: pointer;
 }
 
 .logout-button {
     background-color: transparent;
     border: none;
-    color: #262627;
+    color: #ffffff;
     width: 100%;
     padding: 1.25rem 1.5rem;
     text-align: center;
@@ -48,7 +46,27 @@
 }
 
 .logout-button:hover {
-    background-color: #c92a2a;
-    color: black;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #ffffff;
     cursor: pointer;
+}
+
+.sidebar {
+  background-color: #4682B4;
+  color: #ffffff;
+}
+
+.sidebar.sidebar-cliente {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+.sidebar.sidebar-gerente {
+  background-color: #28a745;
+  color: #ffffff;
+}
+
+.sidebar.sidebar-admin {
+  background-color: #8F00FF;
+  color: #ffffff;
 }

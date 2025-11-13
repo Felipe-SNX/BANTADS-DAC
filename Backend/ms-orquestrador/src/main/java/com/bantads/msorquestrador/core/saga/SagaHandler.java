@@ -69,7 +69,7 @@ public final class SagaHandler {
         { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
         { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE, ETopics.FINISH_FAIL },
         { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
-        { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_GERENTE_CREATE },
+        { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_AUTH_CREATE },
 
         { EEventSource.AUTH_SERVICE, ESagaStatus.FAIL, ETopics.CMD_CONTA_COMPENSATE },
         { EEventSource.AUTH_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
@@ -97,12 +97,25 @@ public final class SagaHandler {
         { EEventSource.AUTH_SERVICE, ESagaStatus.FINISHED, ETopics.FINISH_SUCCESS }
     };
 
+    public static final Object[][] SAGA_ATUALIZAR_GERENTE_HANDLER = {
+        { EEventSource.ORQUESTRADOR, ESagaStatus.SAGA_STARTED, ETopics.CMD_GERENTE_CREATE },
+
+        { EEventSource.GERENTE_SERVICE, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
+        { EEventSource.GERENTE_SERVICE, ESagaStatus.COMPENSATE, ETopics.FINISH_FAIL },
+        { EEventSource.GERENTE_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
+        { EEventSource.GERENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_AUTH_CREATE },
+
+        { EEventSource.AUTH_SERVICE, ESagaStatus.FAIL, ETopics.CMD_GERENTE_COMPENSATE },
+        { EEventSource.AUTH_SERVICE, ESagaStatus.FINISHED, ETopics.FINISH_SUCCESS }
+    };
+
     private static final Map<ESaga, Object[][]> SAGA_HANDLERS = Map.of(
         ESaga.AUTOCADASTRO_SAGA, SAGA_AUTOCADASTRO_HANDLER,
         ESaga.APROVAR_CLIENTE_SAGA, SAGA_APROVAR_CLIENTE_HANDLER,
         ESaga.ALTERACAO_PERFIL_SAGA, SAGA_ALTERACAO_PERFIL_HANDLER,
         ESaga.REMOCAO_GERENTE_SAGA, SAGA_REMOCAO_GERENTE_HANDLER,
-        ESaga.INSERCAO_GERENTE_SAGA, SAGA_INSERCAO_GERENTE_HANDLER
+        ESaga.INSERCAO_GERENTE_SAGA, SAGA_INSERCAO_GERENTE_HANDLER,
+        ESaga.ALTERAR_GERENTE_SAGA, SAGA_ATUALIZAR_GERENTE_HANDLER
     );
 
     public static Object[][] getHandler(ESaga saga) {

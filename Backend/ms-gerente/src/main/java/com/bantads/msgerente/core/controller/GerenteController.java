@@ -46,9 +46,9 @@ public class GerenteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GerentesResponse>> listar() {
-        List<GerentesResponse> gerenteResponse = gerenteService.listarGerentes();
-        return ResponseEntity.ok(gerenteResponse);
+    public ResponseEntity<List<DadoGerente>> listar() {
+        List<DadoGerente> dadoGerente = gerenteService.listarGerentes();
+        return ResponseEntity.ok(dadoGerente);
     }
 
     @PostMapping
@@ -58,9 +58,9 @@ public class GerenteController {
     }
 
     @GetMapping("/{cpf}")
-    public ResponseEntity<GerentesResponse> listarPorCpf(@PathVariable String cpf) {
-        GerentesResponse gerenteResponse = gerenteService.listarGerentePorCpf(cpf);
-        return ResponseEntity.ok(gerenteResponse);
+    public ResponseEntity<DadoGerente> listarPorCpf(@PathVariable String cpf) {
+        DadoGerente dadoGerente = gerenteService.listarGerentePorCpf(cpf);
+        return ResponseEntity.ok(dadoGerente);
     }
 
     @DeleteMapping("/{cpf}")

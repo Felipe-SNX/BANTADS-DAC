@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
-import { AdminData, AdminDashboard, AdminService } from '../../../services/admin/admin.service';
-import {Dashboard} from "../../../shared/models/dashboard.model";
+import { Dashboard } from "../../../shared/models/dashboard.model";
+import { GerenteService } from '../../../services/gerente/gerente.service';
+import { GerentesResponse } from '../../../shared/models/gerentes-response.model';
+import {LoadingComponent} from "../../../shared/components/loading/loading.component";
 
 
 
@@ -11,25 +13,34 @@ import {Dashboard} from "../../../shared/models/dashboard.model";
   standalone: true,
   imports: [
     SidebarComponent,
-    CommonModule
+    CommonModule,
+    LoadingComponent
   ],
   templateUrl: './tela-inicial-admin.component.html',
   styleUrl: './tela-inicial-admin.component.css'
 })
 
 export class TelaInicialAdminComponent implements OnInit {
+  loading: boolean = true;
   AdminDashboard: Dashboard[] = [];
-  admin: AdminData | null = null;
+  admin: GerentesResponse | null = null;
 
   constructor (
-    private readonly adminService: AdminService
+    private readonly gerenteService: GerenteService
   ) {}
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
+    this.loadDashboardData();
+  }
 
-    this.admin = this.adminService.getAdminData();
-
-    this.AdminDashboard = await this.adminService.dashboardAdmin();
-
+  private async loadDashboardData(): Promise<void> {
+    try {
+      this.loading = true;
+      this.AdminDashboard = await this.gerenteService.dashboardAdmin();
+      this.loading = false;
+    } catch (error) {
+      this.loading = false;
+      console.error(error);
+    }
   }
 }

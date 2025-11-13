@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Gerente } from '../../shared/models/gerente.model';
 import { Cliente } from '../../shared/models/cliente.model';
 import { ContaService } from '../conta/conta.service';
@@ -7,6 +7,12 @@ import { UserService } from '../user/user.service';
 import { User } from '../../shared/models/user.model';
 import { TipoUsuario } from '../../shared/enums/TipoUsuario';
 import { ClienteService } from '../cliente/cliente.service';
+import AxiosService from '../axios/axios.service';
+import { DadoGerente } from '../../shared/models/dado-gerente.model';
+import { DadoGerenteAtualizacao } from '../../shared/models/dado-gerente-atualizacao.model';
+import { GerentesResponse } from '../../shared/models/gerentes-response.model';
+import { Dashboard } from '../../shared/models/dashboard.model';
+import {DadoGerenteInsercao} from "../../shared/models/dado-gerente-insercao.model";
 
 const LS_CHAVE = "gerentes";
 
@@ -15,15 +21,47 @@ const LS_CHAVE = "gerentes";
 })
 export class GerenteService {
 
+  private readonly axiosService = inject(AxiosService);
+
   constructor(
     private readonly accountService: ContaService,
     private readonly userService: UserService,
     private readonly customerService: ClienteService
   ) { }
 
+  public listarGerentes(): Promise<DadoGerente[]> {
+    return this.axiosService.get<DadoGerente[]>("/gerentes");
+  }
+
+  public dashboardAdmin(): Promise<Dashboard[]> {
+    return this.axiosService.get<Dashboard[]>("/gerentes?filtro=dashboard");
+  }
+
+  public getGerente(cpf: string): Promise<DadoGerente>{
+    const urlMontada = `/gerentes/${cpf}`;
+    console.warn('1. GerenteService montou a URL:', urlMontada);
+    return this.axiosService.get<DadoGerente>(`/gerentes/${cpf}`);
+  }
+
+  public saveGerente(dadoGerenteInsercao: DadoGerenteInsercao): Promise<DadoGerenteInsercao>{
+    return this.axiosService.post<DadoGerenteInsercao>("/gerentes", dadoGerenteInsercao);
+  }
+
+  public updateGerente(dadoGerenteAtualizacao: DadoGerenteAtualizacao): Promise<DadoGerenteAtualizacao>{
+    return this.axiosService.put<DadoGerenteAtualizacao>("/gerentes", dadoGerenteAtualizacao);
+  }
+
   listManagers(): Gerente[] {
     const managers = localStorage[LS_CHAVE];
     return managers ? JSON.parse(managers) : [];
+  }
+
+  updateManager(dadoGerenteAtualizacao: DadoGerenteAtualizacao, cpf: string): Promise<GerentesResponse[]> {
+    return this.axiosService.put<GerentesResponse[]>(`/gerentes/${cpf}`, dadoGerenteAtualizacao);
+  }
+
+  deleteManager(cpf: string): Promise<void>{
+    return this.axiosService.delete<void>(`/gerentes/${cpf}`);
   }
 
   listManagerById(id: number): Gerente | undefined {
@@ -122,62 +160,6 @@ export class GerenteService {
     return total;
   }
 
-  updateManager(manager: Gerente): LocalStorageResult {
-    const managers = this.listManagers();
-
-    const checkManager = managers.findIndex((currentManager) => currentManager.cpf === manager.cpf);
-
-    if(checkManager === -1){
-      return {
-        success: false,
-        message: `Erro: Não foi encontrado nenhum gerente com o CPF ${manager.cpf}`
-      };
-    }
-
-    manager.id = managers[checkManager].id;
-    manager.cpf = managers[checkManager].cpf;
-    manager.clientes = managers[checkManager].clientes;
-
-    managers[checkManager] = manager;
-    localStorage[LS_CHAVE] = JSON.stringify(managers);
-
-    return {
-      success: true,
-      message: 'Gerente Atualizado com sucesso!'
-    };
-  }
-
-  deleteManager(id: number): LocalStorageResult{
-    const managers = this.listManagers();
-    const findIndex = managers.findIndex((manager) => manager.id === id);
-
-    if(findIndex === -1){
-      return {
-        success: false,
-        message: `Erro: Não foi encontrado nenhum gerente com o id ${id}`
-      };
-    }
-
-    if(managers.length === 1){
-      return {
-        success: false,
-        message: `Erro: Não é possível excluir o último gerente cadastrado`
-      }
-    }
-
-    const customers = managers[findIndex].clientes;
-    managers.splice(findIndex, 1);
-    localStorage[LS_CHAVE] = JSON.stringify(managers);
-
-    customers.forEach((customer) => {
-      this.addCustomerToManager(customer);
-    });
-
-    return {
-      success: true,
-      message: 'Gerente deletado com sucesso!'
-    }
-  }
 
   addCustomerToManager(customer: Cliente): Gerente {
     const managers = this.listManagers();

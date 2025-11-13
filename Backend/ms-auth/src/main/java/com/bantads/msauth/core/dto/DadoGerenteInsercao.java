@@ -15,6 +15,7 @@ public class DadoGerenteInsercao {
     private String cpf;
     private String nome;
     private String email;
+    private String telefone;
     private TipoGerente tipo;
     private String senha;
 }

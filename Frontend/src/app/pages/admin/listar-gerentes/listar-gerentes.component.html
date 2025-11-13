@@ -1,7 +1,8 @@
 <main class="d-flex flex-row w-100" style="max-height: 100vh;">
     <app-sidebar [tipoTela]="'admin'"></app-sidebar>
+    <app-loading [isLoading]="loading"></app-loading>
 
-    <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;">
+  <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;" *ngIf="!loading">
         <h2 class="mb-0">Gerentes Cadastrados</h2>
 
         <div class="card shadow-sm">
@@ -19,7 +20,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr 
+                                <tr
                                     *ngFor="let gerente of gerentes"
                                 >
                                     <td>{{gerente.nome}}</td>
@@ -39,7 +40,7 @@
                         </table>
                     </div>
                 </ng-container>
-                
+
                 <ng-template #noData>
                     <div class="text-center p-5">
                         <p class="text-muted">Nenhum gerente cadastrado</p>

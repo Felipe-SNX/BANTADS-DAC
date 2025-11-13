@@ -27,4 +27,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
             @Param("aprovado") Boolean aprovado,
             Pageable pageable
     );
+
+    void deleteByCpf(String cpf);
 }

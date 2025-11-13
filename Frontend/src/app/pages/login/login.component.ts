@@ -63,7 +63,7 @@ export class LoginComponent {
 
   private handleLoginSuccess(resposta: LoginResponse) {
     const token = resposta.access_token.replace(/"/g, '');
-    const cpf = resposta.user.cpf.replace(/"/g, '');
+    const cpf = resposta.usuario.cpf.replace(/"/g, '');
     sessionStorage.setItem('cpf', cpf);
     sessionStorage.setItem('token', token);
 

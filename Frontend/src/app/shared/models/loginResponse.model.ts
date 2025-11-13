@@ -7,6 +7,6 @@ export class LoginResponse {
     public access_token: string = '',
     public token_type: string = '',
     public tipo: TipoUsuario = TipoUsuario.CLIENTE,
-    public user: User = new User()
+    public usuario: User = new User()
   ){}
 }

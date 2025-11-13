@@ -1,7 +1,8 @@
 <div class="home-container">
   <app-sidebar [tipoTela]="'admin'"></app-sidebar>
+  <app-loading [isLoading]="loading"></app-loading>
 
-  <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;">
+  <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;" *ngIf="!loading">
     <h2 class="mb-0">Relatório de Clientes</h2>
 
     <div class="card shadow-sm">
@@ -17,7 +18,7 @@
                 <th class="text-start">Salário</th>
                 <th class="text-start">Saldo Atual</th>
                 <th class="text-start">Limite</th>
-                <th class="text-start">Nome Gerente</th>
+                <th class="text-start">Gerente</th>
                 <th class="text-start">CPF Gerente</th>
               </tr>
             </thead>

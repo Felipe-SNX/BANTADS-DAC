@@ -27,13 +27,13 @@ export class UserService {
     return this.axiosService.get<LoginInfo>(`/${email}`);
   }
 
-  public logout(): Promise<void>{
-    const result = this.axiosService.post<void>('/logout', {});
+  public async logout(): Promise<void>{
+    const result = await this.axiosService.post<void>('/logout', {});
+    sessionStorage.removeItem('cpf');
     sessionStorage.removeItem('token');
     return result;
   }
 
-  //Método usado inicialmente apenas para o localStorage
   listUsers(): User[] {
     const users = localStorage[LS_CHAVE];
     return users ? JSON.parse(users) : [];

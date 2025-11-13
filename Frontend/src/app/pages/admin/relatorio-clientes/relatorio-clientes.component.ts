@@ -4,6 +4,7 @@ import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.com
 import { NgxMaskPipe } from 'ngx-mask';
 import { ClienteService } from "../../../services/cliente/cliente.service";
 import { ClienteRelatorioResponse } from '../../../shared/models/cliente-relatorio-response.model';
+import {LoadingComponent} from "../../../shared/components/loading/loading.component";
 
 @Component({
   selector: 'app-relatorio-clientes',
@@ -11,13 +12,15 @@ import { ClienteRelatorioResponse } from '../../../shared/models/cliente-relator
   imports: [
     CommonModule,
     SidebarComponent,
-    NgxMaskPipe
+    NgxMaskPipe,
+    LoadingComponent
   ],
   templateUrl: './relatorio-clientes.component.html',
   styleUrl: './relatorio-clientes.component.css'
 })
 export class RelatorioClientesComponent implements OnInit {
 
+  loading: boolean = false;
   clientes: ClienteRelatorioResponse[] = [];
 
   constructor(
@@ -25,7 +28,9 @@ export class RelatorioClientesComponent implements OnInit {
   ) { }
 
   async ngOnInit(): Promise<void> {
+    this.loading = true;
     this.clientes = await this.clienteService.relatorioClientes();
+    this.loading = false;
   }
 
 }

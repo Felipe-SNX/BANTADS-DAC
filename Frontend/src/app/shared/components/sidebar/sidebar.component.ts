@@ -113,7 +113,12 @@ export class SidebarComponent implements OnInit{
   }
 
   async logout(){
-    await this.userService.logout();
-    this.router.navigate(['/']);
+    try {
+      await this.userService.logout();
+      this.router.navigate(['/']);
+    }
+    catch(error){
+      console.error(error);
+    }
   }
 }

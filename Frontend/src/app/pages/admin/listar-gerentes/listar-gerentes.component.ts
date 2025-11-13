@@ -8,17 +8,19 @@ import { NgxMaskPipe } from 'ngx-mask';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { DadoGerente } from '../../../shared/models/dado-gerente.model';
+import {LoadingComponent} from "../../../shared/components/loading/loading.component";
 
 @Component({
   selector: 'app-listar-gerentes',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarComponent, NgxMaskPipe],
+  imports: [CommonModule, FormsModule, SidebarComponent, NgxMaskPipe, LoadingComponent],
   templateUrl: './listar-gerentes.component.html',
   styleUrl: './listar-gerentes.component.css'
 })
 export class ListarGerentesComponent implements OnInit{
   private readonly toastr = inject(ToastrService);
   gerentes: DadoGerente[] = [];
+  loading: boolean = true;
 
   constructor(
     private readonly managerService: GerenteService,
@@ -27,14 +29,25 @@ export class ListarGerentesComponent implements OnInit{
   ) { }
 
 
-  async ngOnInit(): Promise<void> {
-    this.gerentes = await this.managerService.listarGerentes();
+  ngOnInit(): void {
+    this.listarGerentes();
   }
 
-  deletarGerente(gerente: DadoGerente){
-    this.managerService.deleteManager(gerente.cpf);
+  private async listarGerentes(): Promise<void> {
+    try {
+      this.loading = true;
+      this.gerentes = await this.managerService.listarGerentes();
+      this.loading = false;
+    } catch (error) {
+      this.loading = false;
+      console.error(error);
+    }
+  }
+
+   async deletarGerente(gerente: DadoGerente){
+    await this.managerService.deleteManager(gerente.cpf);
     this.toastr.success('Gerente deletado com sucesso!', 'Sucesso');
-    this.document.defaultView?.location.reload();
+    this.gerentes = this.gerentes.filter(g => g.cpf !== gerente.cpf);
   }
 
   editarGerente(gerente: DadoGerente){

@@ -10,11 +10,14 @@ import { SidebarComponent } from "../../../shared/components/sidebar/sidebar.com
 import { TipoUsuario } from "../../../shared/enums/TipoUsuario";
 import { Gerente } from "../../../shared/models/gerente.model";
 import { User } from "../../../shared/models/user.model";
+import {DadoGerente} from "../../../shared/models/dado-gerente.model";
+import {DadoGerenteInsercao} from "../../../shared/models/dado-gerente-insercao.model";
+import {LoadingComponent} from "../../../shared/components/loading/loading.component";
 
 @Component({
   selector: 'app-inserir-gerente',
   standalone: true,
-  imports: [FormsModule, CommonModule, NgxMaskDirective, SidebarComponent, RouterLink],
+  imports: [FormsModule, CommonModule, NgxMaskDirective, SidebarComponent, LoadingComponent],
   templateUrl: './inserir-editar-gerente.component.html',
   styleUrl: './inserir-editar-gerente.component.css'
 })
@@ -22,58 +25,41 @@ export class InserirGerenteComponent implements OnInit{
   @ViewChild('meuForm') meuForm!: NgForm;
   private readonly toastr = inject(ToastrService);
 
-  id: number = 0;
+  loading: boolean = true;
+  cpf: string = '';
   editMode: boolean = false;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly managerService: GerenteService,
-    private readonly userService: UserService,
     private readonly router: Router
   ){
   }
 
-  gerente: Gerente = {
-    id: 0,
-    nome: '',
-    cpf: '',
-    email: '',
-    telefone: '',
-    clientes: []
-  }
-
-  user: User = {
-    login: '',
-    senha: '',
-    tipoUsuario: TipoUsuario.GERENTE,
-    cpf: '',
-    id: 0
-  };
+  gerente: DadoGerenteInsercao = new DadoGerenteInsercao();
 
   confereSenha: string = '';
 
-  ngOnInit(): void {
-    this.id = this.route.snapshot.params['id'];
+  async ngOnInit(): Promise<void> {
+    this.loading = true;
+    this.cpf = this.route.snapshot.params['cpf'];
 
-    if(this.id !== 0 && this.id !== undefined){
+    if(this.cpf !== '' && this.cpf !== undefined){
       this.editMode = true;
-      const manager = this.managerService.listManagerById(this.id);
+      const manager = await this.managerService.getGerente(this.cpf);
 
       if(!manager){
         console.error('Gerente não encontrado');
         return;
       }
 
-      const usuario = this.userService.findUserByLogin(manager.email);
-
-      if(!usuario){
-        console.error('Usuário não encontrado');
-        return;
-      }
-
-      this.user = usuario;
-      this.gerente = manager;
+      this.gerente.cpf = manager.cpf;
+      this.gerente.tipo = manager.tipo;
+      this.gerente.nome = manager.nome;
+      this.gerente.email = manager.email;
+      this.gerente.telefone = manager.telefone;
     }
+    this.loading = false;
   }
 
   onSubmit(){
@@ -95,32 +81,22 @@ export class InserirGerenteComponent implements OnInit{
   }
 
   newManager(){
-    const result = this.managerService.createManager(this.gerente);
-    this.user.login = this.gerente.email;
-    this.user.id = this.gerente.id;
-
-    const userResult = this.userService.createUserAccount(this.user);
-
-    if(userResult.success && result.success){
+    try {
+      this.managerService.saveGerente(this.gerente);
       this.toastr.success('Gerente cadastrado com sucesso!', 'Sucesso');
       this.router.navigate(['admin/listarGerentes']);
+    } catch(error){
+      this.toastr.error('Erro ao cadastrar gerente', 'Erro');
     }
-    else{
-      this.toastr.error(result.message, 'Erro');
-    }
-
   }
 
   updateManager(){
-    //this.managerService.updateManager(this.gerente, this.gerente.cpf);
-    const userResult = this.userService.updateUserPassword(this.user, this.user.senha);
-
-    /*if(result.success && userResult.success){
+    try {
+      this.managerService.updateManager(this.gerente, this.gerente.cpf);
       this.toastr.success('Gerente atualizado com sucesso!', 'Sucesso');
       this.router.navigate(['admin/listarGerentes']);
+    }catch(error){
+      this.toastr.warning("Erro ao atualizar gerente", 'Erro');
     }
-    else{
-      this.toastr.warning(result.message, 'Erro');
-    }*/
   }
 }

@@ -10,7 +10,7 @@ const contaRoutes = require('./contas.routes');
 router.use('/clientes', clienteRoutes); 
 router.use('/gerentes', gerenteRoutes);
 router.use('/contas', contaRoutes);
+router.use('/reboot', adminRoutes);
 router.use('/', authRoutes);
-router.use('/', adminRoutes); 
 
 module.exports = router;

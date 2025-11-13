@@ -6,6 +6,7 @@ import {Observable} from "rxjs";
 import {LoginResponse} from "../../shared/models/loginResponse.model";
 import {LoginRequest} from "../../shared/models/loginRequest.model";
 import AxiosService from "../axios/axios.service";
+import {LoginInfo} from "../../shared/models/login-info.model";
 
 const LS_CHAVE = "users";
 
@@ -20,6 +21,16 @@ export class UserService {
 
   public login(login: LoginRequest): Promise<LoginResponse> {
     return this.axiosService.post<LoginResponse>("/login", login);
+  }
+
+  public buscarDadosUsuario(email: String): Promise<LoginInfo> {
+    return this.axiosService.get<LoginInfo>(`/${email}`);
+  }
+
+  public logout(): Promise<void>{
+    const result = this.axiosService.post<void>('/logout', {});
+    sessionStorage.removeItem('token');
+    return result;
   }
 
   //Método usado inicialmente apenas para o localStorage
@@ -120,9 +131,5 @@ export class UserService {
       success: true,
       message: 'Senha atualizada com sucesso!'
     }
-  }
-
-  deleteLoggedUser(){
-    sessionStorage.removeItem('usuarioLogado');
   }
 }

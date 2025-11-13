@@ -13,7 +13,7 @@ class AxiosService {
   constructor() {
     this.axiosInstance = axios.create({
       baseURL: API_URL_BASE,
-      timeout: 5000,
+      timeout: 15000,
       headers: {
         'Content-Type': 'application/json'
       }
@@ -29,6 +29,8 @@ class AxiosService {
   }
 
   async get<T>(url: string): Promise<T> {
+    console.warn('2. AxiosService recebeu a URL:', url);
+    console.warn('3. BaseURL configurada:', this.axiosInstance.defaults.baseURL);
     const response = await this.axiosInstance.get<T>(url);
     return response.data;
   }

@@ -26,17 +26,17 @@ public class  GerenteService {
         return repository.findByCpf(cpf);
     }
 
-    public List<GerentesResponse> listarGerentes() {
+    public List<DadoGerente> listarGerentes() {
         List<Gerente> gerentes = repository.findAllByTipo(TipoGerente.GERENTE);
-        List<GerentesResponse> gerenteResponse = new ArrayList<>();
+        List<DadoGerente> dadoGerente = new ArrayList<>();
 
         for (Gerente gerente : gerentes) {
-            gerenteResponse.add(
-                GerenteMapper.toGerentesResponse(gerente)
+            dadoGerente.add(
+                GerenteMapper.toDadoGerente(gerente)
             );
         }
 
-        return gerenteResponse;
+        return dadoGerente;
     }
 
     public DadoGerente inserirGerente(DadoGerenteInsercao dadoGerenteInsercao){
@@ -45,11 +45,11 @@ public class  GerenteService {
         return GerenteMapper.toDadoGerente(gerente);
     }
 
-    public GerentesResponse listarGerentePorCpf(String cpf) {
+    public DadoGerente listarGerentePorCpf(String cpf) {
         Gerente gerente = repository.findByCpf(cpf)
                 .orElseThrow(() -> new GerenteNaoEncontradoException("Gerente", cpf));
 
-        return GerenteMapper.toGerentesResponse(gerente);
+        return GerenteMapper.toDadoGerente(gerente);
     }
 
     public GerenteNumeroContasDto selecionarGerente(List<GerenteNumeroContasDto> listaContasClientes) {
@@ -99,6 +99,7 @@ public class  GerenteService {
 
         gerente.setNome(dadoGerenteAtualizacao.getNome());
         gerente.setEmail(dadoGerenteAtualizacao.getEmail());
+        gerente.setTelefone(dadoGerenteAtualizacao.getTelefone());
         repository.save(gerente);
 
         return dadosAntigos;

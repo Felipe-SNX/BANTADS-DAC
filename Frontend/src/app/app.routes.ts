@@ -20,76 +20,76 @@ export const routes: Routes = [
     { path: '', component: LoginComponent},
     { path: 'autocadastro', component: AutocadastroComponent},
 
-    { 
-        path: 'cliente/deposito', 
+    {
+        path: 'cliente/deposito',
         component: DepositoComponent,
         canActivate: [AuthGuard]
     },
-    { 
-        path: 'cliente/saque', 
+    {
+        path: 'cliente/saque',
         component: SaqueComponent,
         canActivate: [AuthGuard]
     },
-    { 
-        path: 'cliente/transferencia', 
+    {
+        path: 'cliente/transferencia',
         component: TransferenciaComponent,
         canActivate: [AuthGuard]
     },
-    { 
-        path: 'cliente/atualizarCadastro', 
+    {
+        path: 'cliente/atualizarCadastro',
         component: AtualizarCadastroComponent,
         canActivate: [AuthGuard]
-    },    
-    { 
-        path: 'cliente/consultaExtrato', 
-        component: ConsultaExtratoComponent, 
+    },
+    {
+        path: 'cliente/consultaExtrato',
+        component: ConsultaExtratoComponent,
         canActivate: [AuthGuard]
     },
-    { 
-        path: 'cliente', 
+    {
+        path: 'cliente',
         component: TelaInicialClienteComponent,
         canActivate: [AuthGuard]
     },
-    { 
-        path: 'gerente', 
+    {
+        path: 'gerente',
         component: TelaInicialGerenteComponent,
         canActivate: [AuthGuard]
     },
-    { 
-        path: 'admin/listarGerentes', 
+    {
+        path: 'admin/listarGerentes',
         component: ListarGerentesComponent,
         canActivate: [AuthGuard]
     },
-    { 
-        path: 'admin/adicionarGerente', 
-        component: InserirGerenteComponent,        
-        canActivate: [AuthGuard]
-    },
-    { 
-        path: 'admin/editarGerente/:id', 
+    {
+        path: 'admin/adicionarGerente',
         component: InserirGerenteComponent,
         canActivate: [AuthGuard]
     },
-    { 
-        path: 'admin/:id/relatorioClientes', 
+    {
+        path: 'admin/editarGerente/:cpf',
+        component: InserirGerenteComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'admin/:cpf/relatorioClientes',
         component: RelatorioClientesComponent,
         canActivate: [AuthGuard]
     },
-    { 
-        path: 'admin', 
+    {
+        path: 'admin',
         component: TelaInicialAdminComponent,
         canActivate: [AuthGuard]
     },
-    { 
-        path: 'cliente/consulta/:id', 
+    {
+        path: 'cliente/consulta/:id',
         component: ConsultaClienteComponent,
         canActivate: [AuthGuard]
     },
-    { 
-        path: 'cliente/consulta', 
+    {
+        path: 'cliente/consulta',
         component: ConsultaClienteComponent,
         canActivate: [AuthGuard]
-    },  
+    },
     {
         path: 'gerente/listarClientes/:id',
         component: ListarClientesGerenteComponent,

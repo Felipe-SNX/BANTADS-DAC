@@ -12,6 +12,7 @@ import { DadoGerente } from '../../shared/models/dado-gerente.model';
 import { DadoGerenteAtualizacao } from '../../shared/models/dado-gerente-atualizacao.model';
 import { GerentesResponse } from '../../shared/models/gerentes-response.model';
 import { Dashboard } from '../../shared/models/dashboard.model';
+import {DadoGerenteInsercao} from "../../shared/models/dado-gerente-insercao.model";
 
 const LS_CHAVE = "gerentes";
 
@@ -36,8 +37,18 @@ export class GerenteService {
     return this.axiosService.get<Dashboard[]>("/gerentes?filtro=dashboard");
   }
 
-  public getGerente(cpf: string): Promise<GerentesResponse>{
-    return this.axiosService.get<GerentesResponse>(`/gerentes/${cpf}`);
+  public getGerente(cpf: string): Promise<DadoGerente>{
+    const urlMontada = `/gerentes/${cpf}`;
+    console.warn('1. GerenteService montou a URL:', urlMontada);
+    return this.axiosService.get<DadoGerente>(`/gerentes/${cpf}`);
+  }
+
+  public saveGerente(dadoGerenteInsercao: DadoGerenteInsercao): Promise<DadoGerenteInsercao>{
+    return this.axiosService.post<DadoGerenteInsercao>("/gerentes", dadoGerenteInsercao);
+  }
+
+  public updateGerente(dadoGerenteAtualizacao: DadoGerenteAtualizacao): Promise<DadoGerenteAtualizacao>{
+    return this.axiosService.put<DadoGerenteAtualizacao>("/gerentes", dadoGerenteAtualizacao);
   }
 
   listManagers(): Gerente[] {

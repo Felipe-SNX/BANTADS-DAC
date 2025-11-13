@@ -112,8 +112,8 @@ export class SidebarComponent implements OnInit{
     }
   }
 
-  logout(){
-    this.userService.deleteLoggedUser();
+  async logout(){
+    await this.userService.logout();
     this.router.navigate(['/']);
   }
 }

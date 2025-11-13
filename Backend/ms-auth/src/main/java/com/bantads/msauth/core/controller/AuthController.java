@@ -1,9 +1,11 @@
 package com.bantads.msauth.core.controller;
 
 import com.bantads.msauth.config.exception.ErrorMessage;
+import com.bantads.msauth.core.document.Usuario;
 import com.bantads.msauth.core.dto.LoginInfo;
 import com.bantads.msauth.core.dto.LoginResponseDto;
 import com.bantads.msauth.core.dto.LogoutResponse;
+import com.bantads.msauth.core.dto.mapper.UsuarioMapper;
 import com.bantads.msauth.core.jwt.JwtUserDetailsService;
 import com.bantads.msauth.core.service.AuthService;
 import com.bantads.msauth.core.service.BlackListTokensService;
@@ -45,6 +47,13 @@ public class AuthController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/{email}")
+    public ResponseEntity<LoginInfo> obterDadosUsuario(@PathVariable String email){
+        Usuario usuario = authService.buscarPorLogin(email);
+        LoginInfo loginInfo = UsuarioMapper.toLoginInfo(usuario);
+        return ResponseEntity.ok(loginInfo);
     }
 
     @PostMapping("/login")

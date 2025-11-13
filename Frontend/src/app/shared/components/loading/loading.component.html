@@ -1,0 +1,10 @@
+<div class="loading-container" *ngIf="isLoading">
+
+  <div class="dots-wrapper">
+    <span [style.background-color]="dotColor"></span>
+    <span [style.background-color]="dotColor"></span>
+    <span [style.background-color]="dotColor"></span>
+  </div>
+
+  <p class="loading-message">{{ message }}</p>
+</div>

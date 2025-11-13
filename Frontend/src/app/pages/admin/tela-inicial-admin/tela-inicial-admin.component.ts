@@ -4,6 +4,7 @@ import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.com
 import { Dashboard } from "../../../shared/models/dashboard.model";
 import { GerenteService } from '../../../services/gerente/gerente.service';
 import { GerentesResponse } from '../../../shared/models/gerentes-response.model';
+import {LoadingComponent} from "../../../shared/components/loading/loading.component";
 
 
 
@@ -12,14 +13,15 @@ import { GerentesResponse } from '../../../shared/models/gerentes-response.model
   standalone: true,
   imports: [
     SidebarComponent,
-    CommonModule
+    CommonModule,
+    LoadingComponent
   ],
   templateUrl: './tela-inicial-admin.component.html',
   styleUrl: './tela-inicial-admin.component.css'
 })
 
 export class TelaInicialAdminComponent implements OnInit {
-  loading: boolean = false;
+  loading: boolean = true;
   AdminDashboard: Dashboard[] = [];
   admin: GerentesResponse | null = null;
 
@@ -28,19 +30,7 @@ export class TelaInicialAdminComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.buscarDadosAdmin();
-    this.loadDashboardData(); 
-  }
-
-  private async buscarDadosAdmin(): Promise<void> {
-    try {
-      this.loading = true;
-      //this.admin = await this.gerenteService.getGerente();      
-      this.loading = false;
-    } catch (error) {
-      this.loading = false;
-      console.error(error);
-    }
+    this.loadDashboardData();
   }
 
   private async loadDashboardData(): Promise<void> {

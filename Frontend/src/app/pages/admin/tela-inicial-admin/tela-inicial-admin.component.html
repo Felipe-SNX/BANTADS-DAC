@@ -1,7 +1,7 @@
 <div class="home-container">
   <app-sidebar [tipoTela]="'admin'"></app-sidebar>
-
-  <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;">
+  <app-loading [isLoading]="loading"></app-loading>
+  <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;" *ngIf="!loading">
     <h2 class="mb-0" >Dashboard</h2>
 
     <div class="card shadow-sm">

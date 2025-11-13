@@ -99,6 +99,20 @@ public class ClienteEventConsumer {
                     evento.setStatus(ESagaStatus.SUCCESS);
                     publicarSucesso(evento); 
                     break;
+                
+                case INSERCAO_GERENTE_SAGA:
+                    DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(
+                            rootNode.path("dadoGerenteInsercao"), DadoGerenteInsercao.class
+                    );
+                    ContaEscolhidaDto contaEscolhida = objectMapper.treeToValue(
+                            rootNode.path("contaEscolhida"), ContaEscolhidaDto.class
+                    );
+                    clienteService.atribuirGerente(contaEscolhida.getCliente(), dadoGerenteInsercao.getCpf());
+                    evento.setStatus(ESagaStatus.SUCCESS);
+                    publicarSucesso(evento); 
+                    break;
+                case REMOCAO_GERENTE_SAGA:
+                    break;
 
                 default:
                     log.warn("Saga não reconhecida em 'prosseguirTransacao': {}", sagaType);
@@ -128,6 +142,13 @@ public class ClienteEventConsumer {
                             rootNode.path("dadosAntigos"), PerfilInfo.class
                     );
                     clienteService.atualizaCliente(dadosAntigos, cpf);
+                    publicarCompensacaoSucesso(evento);
+                    break;
+                case INSERCAO_GERENTE_SAGA:
+                    ContaEscolhidaDto contaEscolhida = objectMapper.treeToValue(
+                            rootNode.path("contaEscolhida"), ContaEscolhidaDto.class
+                    );
+                    clienteService.atribuirGerente(contaEscolhida.getCliente(), contaEscolhida.getGerente());
                     publicarCompensacaoSucesso(evento);
                     break;
                 default:

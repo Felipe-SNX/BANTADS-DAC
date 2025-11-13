@@ -36,12 +36,8 @@ public class ClienteService {
     public List<ClienteParaAprovarResponse> listarClientes(String filtro) {
         List<Cliente> clientes; 
 
-        if (filtro == null) {
-            clientes = clienteRepository.findAllByAprovadoOrderByNomeAsc(true);
-        } else if (filtro.equals("para_aprovar")) {
+        if ("para_aprovar".equals(filtro)) {
             clientes = listarClientesParaAprovar();
-        } else if (filtro.equals("adm_relatorio_clientes")) {
-            clientes = clienteRepository.findAllByAprovadoOrderByNomeAsc(true);
         } else {
             clientes = clienteRepository.findAllByAprovadoOrderByNomeAsc(true);
         }
@@ -52,6 +48,7 @@ public class ClienteService {
     }
 
     private List<Cliente> listarClientesParaAprovar() {
+        
         return clienteRepository.findAllByAprovado(false);
     }
 
@@ -139,7 +136,6 @@ public class ClienteService {
         cliente.setAprovado(false);
         cliente.setDataAprovacaoRejeicao(LocalDateTime.now());
         cliente.setMotivoRejeicao(clienteRejeitadoDto.getMotivo());
-        cliente.setGerente(clienteRejeitadoDto.getUsuario().getCpf());
         clienteRepository.save(cliente);
 
         String destinatario = cliente.getEmail();
@@ -162,7 +158,7 @@ public class ClienteService {
 
     @Transactional 
     public void atribuirGerente(String cpfCliente, String cpfGerente) {
-        Cliente cliente = buscarClientePorCpfEStatus(cpfCliente, false);
+        Cliente cliente = buscarClientePorCpf(cpfCliente);
         cliente.setGerente(cpfGerente);
         clienteRepository.save(cliente); 
     }

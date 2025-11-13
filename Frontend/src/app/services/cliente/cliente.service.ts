@@ -3,9 +3,11 @@ import { Cliente } from '../../shared/models/cliente.model';
 import { ContaService } from '../conta/conta.service';
 import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
 import { Gerente } from '../../shared/models/gerente.model';
-import {Dashboard} from "../../shared/models/dashboard.model";
 import AxiosService from "../axios/axios.service";
-import {ClienteResponse} from "../../shared/models/cliente-response.model";
+import {ClienteRelatorioResponse} from "../../shared/models/cliente-relatorio-response.model";
+import { ClienteResponse } from '../../shared/models/cliente-response.model';
+import { ClienteAprovar } from '../../shared/models/cliente-aprovar.model';
+import { ClienteMotivoRejeicao } from '../../shared/models/cliente-motivo-rejeicao.model';
 
 const LS_CHAVE = "clientes";
 
@@ -29,6 +31,22 @@ export class ClienteService {
   private readonly axiosService = inject(AxiosService);
 
   constructor(private readonly accountService: ContaService) { }
+
+  public relatorioClientes(): Promise<ClienteRelatorioResponse[]> {
+    return this.axiosService.get<ClienteRelatorioResponse[]>("/clientes?filtro=adm_relatorio_clientes");
+  }
+
+  public clientesParaAprovar(): Promise<ClienteResponse[]> {
+    return this.axiosService.get<ClienteResponse[]>("/clientes?filtro=para_aprovar");
+  }
+
+  public aprovarCliente(clienteParaAprovar: ClienteAprovar, cpf: string): Promise<void> {
+    return this.axiosService.post<void>(`/clientes/${cpf}/aprovar`, clienteParaAprovar);
+  }
+
+  public rejeitarCliente(clienteMotivoRejeicao: ClienteMotivoRejeicao, cpf: string): Promise<void> {
+    return this.axiosService.post<void>(`/clientes/${cpf}/rejeitar`, clienteMotivoRejeicao);
+  }
 
   validClient(client: Cliente): boolean{
     const customers = this.listClient();
@@ -98,10 +116,6 @@ export class ClienteService {
       message: 'Cliente atualizado com sucesso!'
     };
 
-  }
-
-  public relatorioClientes(): Promise<ClienteResponse[]> {
-    return this.axiosService.get<ClienteResponse[]>("/clientes?filtro=adm_relatorio_clientes");
   }
 
   listClientData(): ClientData[] {

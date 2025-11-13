@@ -17,6 +17,7 @@ public class ClienteParaAprovarResponse {
     private String nome;
     private String email;
     private BigDecimal salario;
+    private String gerente;
     private String endereco;
     private String cidade;
     private String estado;

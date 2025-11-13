@@ -14,6 +14,7 @@ import com.bantads.msconta.command.model.Conta;
 import com.bantads.msconta.command.producer.ContaEventCQRSProducer;
 import com.bantads.msconta.command.service.ContaCommandService;
 import com.bantads.msconta.common.conta.dto.AutoCadastroInfo;
+import com.bantads.msconta.common.conta.dto.ContaEscolhidaDto;
 import com.bantads.msconta.common.conta.dto.DadosClienteConta;
 import com.bantads.msconta.common.conta.dto.GerentesNumeroContasDto;
 import com.bantads.msconta.common.conta.dto.PerfilInfo;
@@ -99,7 +100,7 @@ public class ContaEventSagaConsumer {
                     DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(
                             rootNode.path("dadoGerenteInsercao"), DadoGerenteInsercao.class
                     );
-                    Conta contaEscolhida = contaCommandService.atribuirContas(dadoGerenteInsercao);
+                    ContaEscolhidaDto contaEscolhida = contaCommandService.atribuirContas(dadoGerenteInsercao);
                     adicionarAoNode(rootNode, "contaEscolhida", contaEscolhida); 
                     atualizarPayload(evento, rootNode, sagaType);
                     evento.setStatus(ESagaStatus.SUCCESS);
@@ -147,8 +148,8 @@ public class ContaEventSagaConsumer {
                     publicarCompensacaoSucesso(evento);
                     break;
                 case INSERCAO_GERENTE_SAGA:
-                    Conta conta = objectMapper.treeToValue(
-                            rootNode.path("contaEscolhida"), Conta.class
+                    ContaEscolhidaDto conta = objectMapper.treeToValue(
+                            rootNode.path("contaEscolhida"), ContaEscolhidaDto.class
                     );
                     contaCommandService.reverterAlteracaoGerente(conta);
                     publicarCompensacaoSucesso(evento);

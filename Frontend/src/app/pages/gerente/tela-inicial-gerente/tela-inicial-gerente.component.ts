@@ -5,9 +5,11 @@ import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.com
 import { ModalRejeitarClienteComponent } from '../../../shared/components/modal-rejeitar-cliente/modal-rejeitar-cliente.component';
 import { Gerente } from '../../../shared/models/gerente.model';
 import { GerenteService } from '../../../services/gerente/gerente.service';
-import { Cliente } from '../../../shared/models/cliente.model';
 import { ToastrService } from 'ngx-toastr';
 import { NgxMaskPipe } from 'ngx-mask';
+import { ClienteService } from '../../../services/cliente/cliente.service';
+import { ClienteResponse } from '../../../shared/models/cliente-response.model';
+import { ClienteAprovar } from '../../../shared/models/cliente-aprovar.model';
 
 @Component({
   selector: 'app-tela-inicial-gerente',
@@ -20,40 +22,36 @@ export class TelaInicialGerenteComponent implements OnInit {
   @ViewChild('modalDeNegacao') modalComponent!: ModalRejeitarClienteComponent;
   private readonly toastr = inject(ToastrService);
 
-  clientesParaAprovar: Cliente[] = [];
+  clientesParaAprovar: ClienteResponse[] = [];
   gerenteId: number = 0;
   gerente: Gerente | undefined;
 
   constructor(
-    private readonly managerService: GerenteService,
-    private readonly route: ActivatedRoute,
+    private readonly customerService: ClienteService,
     @Inject(DOCUMENT) private readonly document: Document
   ) {}
 
-  ngOnInit(): void {    
-    const gerenteId = this.managerService.findLoggedUser();
-    if(gerenteId) {
-      this.gerente = this.managerService.listManagerById(gerenteId);
-    }
-    this.clientesParaAprovar = this.managerService.listCustomersForApprove(this.gerente as Gerente);
+  async ngOnInit(): Promise<void> {    
+    const cpf = sessionStorage.getItem("cpf");
+    const clientesTemp = await this.customerService.clientesParaAprovar();
+
+    this.clientesParaAprovar = clientesTemp.filter((cliente) => cliente.gerente === cpf);
   }
 
-  aprovar(cliente: Cliente) {
-    const result = this.managerService.approveCustomer(cliente, this.gerente as Gerente);
-
-    if(result.success){
+  async aprovar(cliente: ClienteResponse) {
+    try{
+      const clienteAprovar: ClienteAprovar = new ClienteAprovar(cliente.cpf, cliente.nome, cliente.email);
+      await this.customerService.aprovarCliente(clienteAprovar, cliente.cpf);
       this.toastr.success('Cliente Aprovado com Sucesso!', 'Sucesso');
       this.document.defaultView?.location.reload();
-    }
-    else{
+    } catch(error: any){
       this.toastr.error('Ocorreu um erro ao aprovar o cliente.', 'Erro');
     }
+
   }
 
-  chamarModal(cliente: Cliente) {
-    if(this.gerente){
-      this.modalComponent.abrir(cliente, this.gerente);
-    }
+  chamarModal(cliente: ClienteResponse) {
+    this.modalComponent.abrir(cliente);
   }
   
   onPedidoNegado(dados: any) {

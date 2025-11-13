@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { NgxMaskPipe } from 'ngx-mask';
-import {ClienteResponse} from "../../../shared/models/cliente-response.model";
-import {ClienteService} from "../../../services/cliente/cliente.service";
+import { ClienteService } from "../../../services/cliente/cliente.service";
+import { ClienteRelatorioResponse } from '../../../shared/models/cliente-relatorio-response.model';
 
 @Component({
   selector: 'app-relatorio-clientes',
@@ -18,7 +18,7 @@ import {ClienteService} from "../../../services/cliente/cliente.service";
 })
 export class RelatorioClientesComponent implements OnInit {
 
-  clientes: ClienteResponse[] = [];
+  clientes: ClienteRelatorioResponse[] = [];
 
   constructor(
     private readonly clienteService: ClienteService,

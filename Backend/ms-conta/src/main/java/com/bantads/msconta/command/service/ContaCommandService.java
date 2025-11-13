@@ -4,6 +4,7 @@ import com.bantads.msconta.command.model.Conta;
 import com.bantads.msconta.command.model.Movimentacao;
 import com.bantads.msconta.command.producer.ContaEventCQRSProducer;
 import com.bantads.msconta.command.repository.ContaWriteRepository;
+import com.bantads.msconta.common.conta.dto.ContaEscolhidaDto;
 import com.bantads.msconta.common.conta.dto.DadosClienteConta;
 import com.bantads.msconta.common.conta.dto.GerentesNumeroContasDto;
 import com.bantads.msconta.common.conta.dto.OperacaoRequest;
@@ -143,7 +144,7 @@ public class ContaCommandService {
     }
 
     @Transactional
-    public Conta atribuirContas(DadoGerenteInsercao dadoGerenteInsercao) {
+    public ContaEscolhidaDto atribuirContas(DadoGerenteInsercao dadoGerenteInsercao) {
         String cpfComMaisContas = getGerenteComMaisContas();
         Optional<Conta> contaOpt = contaRepository.findFirstByGerenteOrderByDataCriacaoAsc(cpfComMaisContas);
 
@@ -154,9 +155,10 @@ public class ContaCommandService {
         
         Conta contaReal = contaOpt.get();
 
-        Conta contaAntiga = new Conta();
+        ContaEscolhidaDto contaAntiga = new ContaEscolhidaDto();
         contaAntiga.setCliente(contaReal.getCliente());
         contaAntiga.setGerente(contaReal.getGerente());
+        contaAntiga.setConta(contaReal.getConta());
 
         contaReal.setGerente(dadoGerenteInsercao.getCpf());
         Conta contaAtualizada = contaRepository.save(contaReal);
@@ -235,7 +237,7 @@ public class ContaCommandService {
     }
 
     @Transactional 
-    public void reverterAlteracaoGerente(Conta contaAntiga) {
+    public void reverterAlteracaoGerente(ContaEscolhidaDto contaAntiga) {
         Conta contaAtual = buscarContaPorCpfCliente(contaAntiga.getCliente());
         contaAtual.setGerente(contaAntiga.getGerente());
         Conta contaRevertida = contaRepository.save(contaAtual);

@@ -5,6 +5,9 @@ import { Gerente } from '../../models/gerente.model';
 import { Modal } from 'bootstrap';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ClienteResponse } from '../../models/cliente-response.model';
+import { ClienteService } from '../../../services/cliente/cliente.service';
+import { ClienteMotivoRejeicao } from '../../models/cliente-motivo-rejeicao.model';
 
 @Component({
   selector: 'modal-rejeitar-cliente',
@@ -16,14 +19,13 @@ import { FormsModule } from '@angular/forms';
 export class ModalRejeitarClienteComponent implements AfterViewInit{
   @Output() pedidoNegado = new EventEmitter<any>();
   
-  clienteRecebido: Cliente = new Cliente();
-  gerenteRecebido: Gerente = new Gerente();
+  clienteRecebido: ClienteResponse = new ClienteResponse();
 
-  motivo: string = '';
+  motivo: ClienteMotivoRejeicao = new ClienteMotivoRejeicao();
   private modal!: Modal;
 
   constructor(
-    private readonly managerService: GerenteService
+    private readonly customerService: ClienteService
   ){}
 
   ngAfterViewInit(): void {
@@ -33,15 +35,14 @@ export class ModalRejeitarClienteComponent implements AfterViewInit{
     }
   }
 
-  abrir(cliente: Cliente, gerente: Gerente){
+  abrir(cliente: ClienteResponse){
     this.clienteRecebido = cliente; 
-    this.gerenteRecebido = gerente;
     this.modal.show(); 
   }
 
-  negar(){
-    this.managerService.rejectCustomer(this.clienteRecebido as Cliente, this.gerenteRecebido as Gerente, this.motivo);
-    this.pedidoNegado.emit({ clienteId: this.clienteRecebido?.id, motivo: this.motivo });
+  async negar(){
+    await this.customerService.rejeitarCliente(this.motivo, this.clienteRecebido.cpf);
+    this.pedidoNegado.emit({ clienteCpf: this.clienteRecebido?.cpf, motivo: this.motivo.motivo });
 
     this.modal.hide();
   }

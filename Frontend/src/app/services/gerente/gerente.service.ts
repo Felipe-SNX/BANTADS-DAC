@@ -38,8 +38,6 @@ export class GerenteService {
   }
 
   public getGerente(cpf: string): Promise<DadoGerente>{
-    const urlMontada = `/gerentes/${cpf}`;
-    console.warn('1. GerenteService montou a URL:', urlMontada);
     return this.axiosService.get<DadoGerente>(`/gerentes/${cpf}`);
   }
 

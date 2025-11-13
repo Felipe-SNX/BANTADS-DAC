@@ -16,16 +16,17 @@ import { GerenteService } from '../../../services/gerente/gerente.service';
   standalone: true
 })
 export class ListarClientesGerenteComponent implements OnInit {
+  
   listaId: number = 0;
   contas: Conta[] = [];
   filtroNome: string = '';
   filtroCpf: string = '';
 
   constructor(
-    private contaService: ContaService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private managerService: GerenteService
+    private readonly contaService: ContaService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly managerService: GerenteService
   ) { }
 
   ngOnInit() {

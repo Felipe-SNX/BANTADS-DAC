@@ -15,9 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors; 
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,14 +36,10 @@ public class ClienteService {
     public List<ClienteParaAprovarResponse> listarClientes(String filtro) {
         List<Cliente> clientes; 
 
-        if (filtro == null) {
-            clientes = clienteRepository.findAllByAprovadoOrderByNomeAsc(true);
-        } else if (filtro.equals("para_aprovar")) {
+        if ("para_aprovar".equals(filtro)) {
             clientes = listarClientesParaAprovar();
-        } else if (filtro.equals("adm_relatorio_clientes")) {
-            clientes = clienteRepository.findAllByAprovadoOrderByNomeAsc(true);
         } else {
-            clientes = top3Clientes();
+            clientes = clienteRepository.findAllByAprovadoOrderByNomeAsc(true);
         }
 
         return clientes.stream()
@@ -54,13 +47,8 @@ public class ClienteService {
                 .collect(Collectors.toList());
     }
 
-    private List<Cliente> top3Clientes() {
-        Pageable topTres = PageRequest.of(0, 3);
-        Page<Cliente> paginaClientes = clienteRepository.findMelhoresClientes(true, topTres);
-        return paginaClientes.getContent();
-    }
-
     private List<Cliente> listarClientesParaAprovar() {
+        
         return clienteRepository.findAllByAprovado(false);
     }
 
@@ -148,7 +136,6 @@ public class ClienteService {
         cliente.setAprovado(false);
         cliente.setDataAprovacaoRejeicao(LocalDateTime.now());
         cliente.setMotivoRejeicao(clienteRejeitadoDto.getMotivo());
-        cliente.setGerente(clienteRejeitadoDto.getUsuario().getCpf());
         clienteRepository.save(cliente);
 
         String destinatario = cliente.getEmail();
@@ -171,7 +158,7 @@ public class ClienteService {
 
     @Transactional 
     public void atribuirGerente(String cpfCliente, String cpfGerente) {
-        Cliente cliente = buscarClientePorCpfEStatus(cpfCliente, false);
+        Cliente cliente = buscarClientePorCpf(cpfCliente);
         cliente.setGerente(cpfGerente);
         clienteRepository.save(cliente); 
     }

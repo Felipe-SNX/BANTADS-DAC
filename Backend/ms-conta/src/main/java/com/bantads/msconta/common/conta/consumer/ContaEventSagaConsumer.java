@@ -14,6 +14,8 @@ import com.bantads.msconta.command.model.Conta;
 import com.bantads.msconta.command.producer.ContaEventCQRSProducer;
 import com.bantads.msconta.command.service.ContaCommandService;
 import com.bantads.msconta.common.conta.dto.AutoCadastroInfo;
+import com.bantads.msconta.common.conta.dto.ClientesAfetadosRemocaoGerenteDto;
+import com.bantads.msconta.common.conta.dto.ContaEscolhidaDto;
 import com.bantads.msconta.common.conta.dto.DadosClienteConta;
 import com.bantads.msconta.common.conta.dto.GerentesNumeroContasDto;
 import com.bantads.msconta.common.conta.dto.PerfilInfo;
@@ -99,7 +101,7 @@ public class ContaEventSagaConsumer {
                     DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(
                             rootNode.path("dadoGerenteInsercao"), DadoGerenteInsercao.class
                     );
-                    Conta contaEscolhida = contaCommandService.atribuirContas(dadoGerenteInsercao);
+                    ContaEscolhidaDto contaEscolhida = contaCommandService.atribuirContas(dadoGerenteInsercao);
                     adicionarAoNode(rootNode, "contaEscolhida", contaEscolhida); 
                     atualizarPayload(evento, rootNode, sagaType);
                     evento.setStatus(ESagaStatus.SUCCESS);
@@ -107,8 +109,8 @@ public class ContaEventSagaConsumer {
                     break;
                 case REMOCAO_GERENTE_SAGA:
                     String cpfs = objectMapper.treeToValue(rootNode.path("cpf"), String.class);
-                    List<String> cpfClientesAfetados = contaCommandService.remanejarGerentes(cpfs);
-                    adicionarAoNode(rootNode, "cpfClientesAfetados", cpfClientesAfetados); 
+                    List<ClientesAfetadosRemocaoGerenteDto> clientesAfetados = contaCommandService.remanejarGerentes(cpfs);
+                    adicionarAoNode(rootNode, "clientesAfetados", clientesAfetados); 
                     atualizarPayload(evento, rootNode, sagaType);
                     evento.setStatus(ESagaStatus.SUCCESS);
                     publicarSucesso(evento);
@@ -147,18 +149,18 @@ public class ContaEventSagaConsumer {
                     publicarCompensacaoSucesso(evento);
                     break;
                 case INSERCAO_GERENTE_SAGA:
-                    Conta conta = objectMapper.treeToValue(
-                            rootNode.path("contaEscolhida"), Conta.class
+                    ContaEscolhidaDto conta = objectMapper.treeToValue(
+                            rootNode.path("contaEscolhida"), ContaEscolhidaDto.class
                     );
                     contaCommandService.reverterAlteracaoGerente(conta);
                     publicarCompensacaoSucesso(evento);
                     break;
                 case REMOCAO_GERENTE_SAGA:
                     String cpfs = objectMapper.treeToValue(rootNode.path("cpf"), String.class);
-                    List<String> cpfClientesAfetados = objectMapper.treeToValue(
-                            rootNode.path("cpfClientesAfetados"), List.class
+                    List<ClientesAfetadosRemocaoGerenteDto> clientesAfetados = objectMapper.treeToValue(
+                            rootNode.path("clientesAfetados"), List.class
                     );
-                    contaCommandService.reverterRemanejamento(cpfs, cpfClientesAfetados);
+                    contaCommandService.reverterRemanejamento(cpfs, clientesAfetados);
                     publicarCompensacaoSucesso(evento);
                     break;
                 default:

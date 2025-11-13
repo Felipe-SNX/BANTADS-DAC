@@ -2,6 +2,7 @@ package com.bantads.mscliente.core.consumer;
 
 import com.bantads.mscliente.core.dto.*;
 import com.bantads.mscliente.core.exception.ErroExecucaoSaga; // Supondo que você tenha esta classe
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
@@ -23,6 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 @Slf4j
 @Component
@@ -99,6 +102,29 @@ public class ClienteEventConsumer {
                     evento.setStatus(ESagaStatus.SUCCESS);
                     publicarSucesso(evento); 
                     break;
+                
+                case INSERCAO_GERENTE_SAGA:
+                    DadoGerenteInsercao dadoGerenteInsercao = objectMapper.treeToValue(
+                            rootNode.path("dadoGerenteInsercao"), DadoGerenteInsercao.class
+                    );
+                    ContaEscolhidaDto contaEscolhida = objectMapper.treeToValue(
+                            rootNode.path("contaEscolhida"), ContaEscolhidaDto.class
+                    );
+                    clienteService.atribuirGerente(contaEscolhida.getCliente(), dadoGerenteInsercao.getCpf());
+                    evento.setStatus(ESagaStatus.SUCCESS);
+                    publicarSucesso(evento); 
+                    break;
+                case REMOCAO_GERENTE_SAGA:
+                    TypeReference<List<ClientesAfetadosRemocaoGerenteDto>> typeRef =
+                            new TypeReference<List<ClientesAfetadosRemocaoGerenteDto>>() {};
+                    List<ClientesAfetadosRemocaoGerenteDto> clientesAfetados =
+                            objectMapper.convertValue(rootNode.path("clientesAfetados"), typeRef);
+                    for(ClientesAfetadosRemocaoGerenteDto cliente : clientesAfetados) {
+                        clienteService.atribuirGerente(cliente.getCliente(), cliente.getGerenteNovo());
+                    }
+                    evento.setStatus(ESagaStatus.SUCCESS);
+                    publicarSucesso(evento);
+                    break;
 
                 default:
                     log.warn("Saga não reconhecida em 'prosseguirTransacao': {}", sagaType);
@@ -128,6 +154,23 @@ public class ClienteEventConsumer {
                             rootNode.path("dadosAntigos"), PerfilInfo.class
                     );
                     clienteService.atualizaCliente(dadosAntigos, cpf);
+                    publicarCompensacaoSucesso(evento);
+                    break;
+                case INSERCAO_GERENTE_SAGA:
+                    ContaEscolhidaDto contaEscolhida = objectMapper.treeToValue(
+                            rootNode.path("contaEscolhida"), ContaEscolhidaDto.class
+                    );
+                    clienteService.atribuirGerente(contaEscolhida.getCliente(), contaEscolhida.getGerente());
+                    publicarCompensacaoSucesso(evento);
+                    break;
+                case REMOCAO_GERENTE_SAGA:
+                    TypeReference<List<ClientesAfetadosRemocaoGerenteDto>> typeRef =
+                            new TypeReference<List<ClientesAfetadosRemocaoGerenteDto>>() {};
+                    List<ClientesAfetadosRemocaoGerenteDto> clientesAfetados =
+                            objectMapper.convertValue(rootNode.path("clientesAfetados"), typeRef);
+                    for(ClientesAfetadosRemocaoGerenteDto cliente : clientesAfetados) {
+                        clienteService.atribuirGerente(cliente.getCliente(), cliente.getGerenteAntigo());
+                    }
                     publicarCompensacaoSucesso(evento);
                     break;
                 default:

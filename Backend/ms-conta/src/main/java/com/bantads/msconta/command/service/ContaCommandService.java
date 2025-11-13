@@ -4,6 +4,8 @@ import com.bantads.msconta.command.model.Conta;
 import com.bantads.msconta.command.model.Movimentacao;
 import com.bantads.msconta.command.producer.ContaEventCQRSProducer;
 import com.bantads.msconta.command.repository.ContaWriteRepository;
+import com.bantads.msconta.common.conta.dto.ClientesAfetadosRemocaoGerenteDto;
+import com.bantads.msconta.common.conta.dto.ContaEscolhidaDto;
 import com.bantads.msconta.common.conta.dto.DadosClienteConta;
 import com.bantads.msconta.common.conta.dto.GerentesNumeroContasDto;
 import com.bantads.msconta.common.conta.dto.OperacaoRequest;
@@ -31,6 +33,7 @@ import java.math.RoundingMode;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -143,7 +146,7 @@ public class ContaCommandService {
     }
 
     @Transactional
-    public Conta atribuirContas(DadoGerenteInsercao dadoGerenteInsercao) {
+    public ContaEscolhidaDto atribuirContas(DadoGerenteInsercao dadoGerenteInsercao) {
         String cpfComMaisContas = getGerenteComMaisContas();
         Optional<Conta> contaOpt = contaRepository.findFirstByGerenteOrderByDataCriacaoAsc(cpfComMaisContas);
 
@@ -154,9 +157,10 @@ public class ContaCommandService {
         
         Conta contaReal = contaOpt.get();
 
-        Conta contaAntiga = new Conta();
+        ContaEscolhidaDto contaAntiga = new ContaEscolhidaDto();
         contaAntiga.setCliente(contaReal.getCliente());
         contaAntiga.setGerente(contaReal.getGerente());
+        contaAntiga.setConta(contaReal.getConta());
 
         contaReal.setGerente(dadoGerenteInsercao.getCpf());
         Conta contaAtualizada = contaRepository.save(contaReal);
@@ -223,7 +227,11 @@ public class ContaCommandService {
     }
 
     @Transactional
-    public void reverterRemanejamento(String cpfGerenteRestaurado, List<String> cpfsClientesAfetados) {
+    public void reverterRemanejamento(String cpfGerenteRestaurado, List<ClientesAfetadosRemocaoGerenteDto> clientesAfetados) {
+        List<String> cpfsClientesAfetados = clientesAfetados.stream()
+                .map(ClientesAfetadosRemocaoGerenteDto::getCliente)
+                .collect(Collectors.toList());
+
         List<Conta> contasParaReverter = contaRepository.findAllByClienteIn(cpfsClientesAfetados);
 
         for (Conta conta : contasParaReverter) {
@@ -235,7 +243,7 @@ public class ContaCommandService {
     }
 
     @Transactional 
-    public void reverterAlteracaoGerente(Conta contaAntiga) {
+    public void reverterAlteracaoGerente(ContaEscolhidaDto contaAntiga) {
         Conta contaAtual = buscarContaPorCpfCliente(contaAntiga.getCliente());
         contaAtual.setGerente(contaAntiga.getGerente());
         Conta contaRevertida = contaRepository.save(contaAtual);
@@ -256,22 +264,25 @@ public class ContaCommandService {
     }
 
     @Transactional 
-    public List<String> remanejarGerentes(String cpf) {
+    public List<ClientesAfetadosRemocaoGerenteDto> remanejarGerentes(String cpf) {
         List<Conta> contas = contaRepository.findAllByGerente(cpf);
-
-        List<String> cpfsClientesAfetados = contas.stream()
-                .map(Conta::getCliente)
-                .collect(Collectors.toList());
+        List<ClientesAfetadosRemocaoGerenteDto> clientesAfetados = new ArrayList<>();
 
         for (Conta conta : contas) {
+            ClientesAfetadosRemocaoGerenteDto clienteAfetado = new ClientesAfetadosRemocaoGerenteDto();
+            clienteAfetado.setCliente(conta.getCliente());
+            clienteAfetado.setGerenteAntigo(conta.getGerente());
             String cpfNovoGerente = buscarCpfGerenteComMenosContasRemanejar(cpf);
             conta.setGerente(cpfNovoGerente);
+            clienteAfetado.setGerenteNovo(cpfNovoGerente);
             Conta contaAtualizada = contaRepository.save(conta);
             
             eventProducer.publicarContaAtualizada(contaAtualizada);
+
+            clientesAfetados.add(clienteAfetado);
         }
 
-        return cpfsClientesAfetados;
+        return clientesAfetados;
     }
 
     public List<GerentesNumeroContasDto> buscarNumeroDeContasPorGerente(){

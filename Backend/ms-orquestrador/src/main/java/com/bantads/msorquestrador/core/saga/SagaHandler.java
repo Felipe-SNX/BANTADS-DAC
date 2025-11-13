@@ -69,11 +69,16 @@ public final class SagaHandler {
         { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.FINISH_FAIL },
         { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE, ETopics.FINISH_FAIL },
         { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
-        { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_AUTH_CREATE },
+        { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_CLIENTE_CREATE },
 
-        { EEventSource.AUTH_SERVICE, ESagaStatus.FAIL, ETopics.CMD_CONTA_COMPENSATE },
+        { EEventSource.CLIENTE_SERVICE, ESagaStatus.FAIL, ETopics.CMD_CONTA_COMPENSATE },
+        { EEventSource.CLIENTE_SERVICE, ESagaStatus.COMPENSATE, ETopics.CMD_CONTA_COMPENSATE },
+        { EEventSource.CLIENTE_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
+        { EEventSource.CLIENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_AUTH_CREATE },
+
+        { EEventSource.AUTH_SERVICE, ESagaStatus.FAIL, ETopics.CMD_CLIENTE_COMPENSATE },
         { EEventSource.AUTH_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
-        { EEventSource.AUTH_SERVICE, ESagaStatus.COMPENSATE, ETopics.CMD_CONTA_COMPENSATE },
+        { EEventSource.AUTH_SERVICE, ESagaStatus.COMPENSATE, ETopics.CMD_CLIENTE_COMPENSATE },
         { EEventSource.AUTH_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_GERENTE_CREATE },
 
         { EEventSource.GERENTE_SERVICE, ESagaStatus.FAIL, ETopics.CMD_AUTH_COMPENSATE },
@@ -91,7 +96,12 @@ public final class SagaHandler {
         { EEventSource.CONTA_SERVICE, ESagaStatus.FAIL, ETopics.CMD_GERENTE_COMPENSATE },
         { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE, ETopics.CMD_GERENTE_COMPENSATE },
         { EEventSource.CONTA_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
-        { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_AUTH_CREATE },
+        { EEventSource.CONTA_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_CLIENTE_CREATE },
+
+        { EEventSource.CLIENTE_SERVICE, ESagaStatus.FAIL, ETopics.CMD_AUTH_COMPENSATE },
+        { EEventSource.CLIENTE_SERVICE, ESagaStatus.COMPENSATE, ETopics.CMD_AUTH_COMPENSATE },
+        { EEventSource.CLIENTE_SERVICE, ESagaStatus.COMPENSATE_FAILED, ETopics.FINISH_FAIL },
+        { EEventSource.CLIENTE_SERVICE, ESagaStatus.SUCCESS, ETopics.CMD_AUTH_CREATE },
 
         { EEventSource.AUTH_SERVICE, ESagaStatus.FAIL, ETopics.CMD_CONTA_COMPENSATE },
         { EEventSource.AUTH_SERVICE, ESagaStatus.FINISHED, ETopics.FINISH_SUCCESS }

@@ -227,15 +227,19 @@ public class ContaCommandService {
     }
 
     @Transactional
-    public void reverterRemanejamento(String cpfGerenteRestaurado, List<ClientesAfetadosRemocaoGerenteDto> cpfsClientesAfetados) {
-        /*List<Conta> contasParaReverter = contaRepository.findAllByClienteIn(cpfsClientesAfetados);
+    public void reverterRemanejamento(String cpfGerenteRestaurado, List<ClientesAfetadosRemocaoGerenteDto> clientesAfetados) {
+        List<String> cpfsClientesAfetados = clientesAfetados.stream()
+                .map(ClientesAfetadosRemocaoGerenteDto::getCliente)
+                .collect(Collectors.toList());
+
+        List<Conta> contasParaReverter = contaRepository.findAllByClienteIn(cpfsClientesAfetados);
 
         for (Conta conta : contasParaReverter) {
             conta.setGerente(cpfGerenteRestaurado);
             Conta contaRevertida = contaRepository.save(conta);
             
             eventProducer.publicarContaAtualizada(contaRevertida);
-        }*/
+        }
     }
 
     @Transactional 

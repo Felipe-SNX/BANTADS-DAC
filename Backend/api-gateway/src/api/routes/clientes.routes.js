@@ -132,16 +132,6 @@ router.get('/', verifyToken, async (req, res, next) => {
             const listaContas = contasRes.data;
             const listaGerentes = gerentesRes.data;
 
-            console.log("============================================");
-            console.log(listaClientes);
-            console.log("============================================");
-            console.log("============================================");
-            console.log(listaContas);
-            console.log("============================================");
-            console.log("============================================");
-            console.log(listaGerentes);
-            console.log("============================================");
-
             const relatorioCompleto = listaClientes.map(cliente => {
                 const conta = listaContas.find(c => c.cliente === cliente.cpf);
                 
@@ -150,6 +140,7 @@ router.get('/', verifyToken, async (req, res, next) => {
                 return {
                     ...cliente,
                     saldo: conta ? conta.saldo : 0,
+                    limite: conta ? conta.limite : 0,
                     conta: conta ? conta.conta : null,
                     gerente: gerente ? gerente.cpf : null,
                     nomeGerente: gerente ? gerente.nome : 'Não atribuído'

@@ -14,6 +14,7 @@ import com.bantads.msconta.command.model.Conta;
 import com.bantads.msconta.command.producer.ContaEventCQRSProducer;
 import com.bantads.msconta.command.service.ContaCommandService;
 import com.bantads.msconta.common.conta.dto.AutoCadastroInfo;
+import com.bantads.msconta.common.conta.dto.ClientesAfetadosRemocaoGerenteDto;
 import com.bantads.msconta.common.conta.dto.ContaEscolhidaDto;
 import com.bantads.msconta.common.conta.dto.DadosClienteConta;
 import com.bantads.msconta.common.conta.dto.GerentesNumeroContasDto;
@@ -108,8 +109,8 @@ public class ContaEventSagaConsumer {
                     break;
                 case REMOCAO_GERENTE_SAGA:
                     String cpfs = objectMapper.treeToValue(rootNode.path("cpf"), String.class);
-                    List<String> cpfClientesAfetados = contaCommandService.remanejarGerentes(cpfs);
-                    adicionarAoNode(rootNode, "cpfClientesAfetados", cpfClientesAfetados); 
+                    List<ClientesAfetadosRemocaoGerenteDto> clientesAfetados = contaCommandService.remanejarGerentes(cpfs);
+                    adicionarAoNode(rootNode, "clientesAfetados", clientesAfetados); 
                     atualizarPayload(evento, rootNode, sagaType);
                     evento.setStatus(ESagaStatus.SUCCESS);
                     publicarSucesso(evento);
@@ -156,10 +157,10 @@ public class ContaEventSagaConsumer {
                     break;
                 case REMOCAO_GERENTE_SAGA:
                     String cpfs = objectMapper.treeToValue(rootNode.path("cpf"), String.class);
-                    List<String> cpfClientesAfetados = objectMapper.treeToValue(
-                            rootNode.path("cpfClientesAfetados"), List.class
+                    List<ClientesAfetadosRemocaoGerenteDto> clientesAfetados = objectMapper.treeToValue(
+                            rootNode.path("clientesAfetados"), List.class
                     );
-                    contaCommandService.reverterRemanejamento(cpfs, cpfClientesAfetados);
+                    contaCommandService.reverterRemanejamento(cpfs, clientesAfetados);
                     publicarCompensacaoSucesso(evento);
                     break;
                 default:

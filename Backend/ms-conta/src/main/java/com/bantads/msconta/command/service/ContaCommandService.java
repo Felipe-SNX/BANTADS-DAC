@@ -4,6 +4,7 @@ import com.bantads.msconta.command.model.Conta;
 import com.bantads.msconta.command.model.Movimentacao;
 import com.bantads.msconta.command.producer.ContaEventCQRSProducer;
 import com.bantads.msconta.command.repository.ContaWriteRepository;
+import com.bantads.msconta.common.conta.dto.ClientesAfetadosRemocaoGerenteDto;
 import com.bantads.msconta.common.conta.dto.ContaEscolhidaDto;
 import com.bantads.msconta.common.conta.dto.DadosClienteConta;
 import com.bantads.msconta.common.conta.dto.GerentesNumeroContasDto;
@@ -32,6 +33,7 @@ import java.math.RoundingMode;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -225,15 +227,15 @@ public class ContaCommandService {
     }
 
     @Transactional
-    public void reverterRemanejamento(String cpfGerenteRestaurado, List<String> cpfsClientesAfetados) {
-        List<Conta> contasParaReverter = contaRepository.findAllByClienteIn(cpfsClientesAfetados);
+    public void reverterRemanejamento(String cpfGerenteRestaurado, List<ClientesAfetadosRemocaoGerenteDto> cpfsClientesAfetados) {
+        /*List<Conta> contasParaReverter = contaRepository.findAllByClienteIn(cpfsClientesAfetados);
 
         for (Conta conta : contasParaReverter) {
             conta.setGerente(cpfGerenteRestaurado);
             Conta contaRevertida = contaRepository.save(conta);
             
             eventProducer.publicarContaAtualizada(contaRevertida);
-        }
+        }*/
     }
 
     @Transactional 
@@ -258,22 +260,25 @@ public class ContaCommandService {
     }
 
     @Transactional 
-    public List<String> remanejarGerentes(String cpf) {
+    public List<ClientesAfetadosRemocaoGerenteDto> remanejarGerentes(String cpf) {
         List<Conta> contas = contaRepository.findAllByGerente(cpf);
-
-        List<String> cpfsClientesAfetados = contas.stream()
-                .map(Conta::getCliente)
-                .collect(Collectors.toList());
+        List<ClientesAfetadosRemocaoGerenteDto> clientesAfetados = new ArrayList<>();
 
         for (Conta conta : contas) {
+            ClientesAfetadosRemocaoGerenteDto clienteAfetado = new ClientesAfetadosRemocaoGerenteDto();
+            clienteAfetado.setCliente(conta.getCliente());
+            clienteAfetado.setGerenteAntigo(conta.getGerente());
             String cpfNovoGerente = buscarCpfGerenteComMenosContasRemanejar(cpf);
             conta.setGerente(cpfNovoGerente);
+            clienteAfetado.setGerenteNovo(cpfNovoGerente);
             Conta contaAtualizada = contaRepository.save(conta);
             
             eventProducer.publicarContaAtualizada(contaAtualizada);
+
+            clientesAfetados.add(clienteAfetado);
         }
 
-        return cpfsClientesAfetados;
+        return clientesAfetados;
     }
 
     public List<GerentesNumeroContasDto> buscarNumeroDeContasPorGerente(){

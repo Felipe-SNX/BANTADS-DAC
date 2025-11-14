@@ -69,13 +69,6 @@ public class ContaEventSagaConsumer {
             JsonNode rootNode = objectMapper.readTree(evento.getPayload());
 
             switch(sagaType){
-                case AUTOCADASTRO_SAGA:
-                    List<GerentesNumeroContasDto> numeroContasGerente = contaCommandService.buscarNumeroDeContasPorGerente();
-                    adicionarAoNode(rootNode, "numeroContasGerente", numeroContasGerente); 
-                    atualizarPayload(evento, rootNode, sagaType);
-                    evento.setStatus(ESagaStatus.SUCCESS);
-                    publicarSucesso(evento);
-                    break;
                 case ALTERACAO_PERFIL_SAGA:
                     PerfilInfo perfilInfo = objectMapper.treeToValue(
                             rootNode.path("perfilInfo"), PerfilInfo.class
@@ -131,10 +124,6 @@ public class ContaEventSagaConsumer {
             JsonNode rootNode = objectMapper.readTree(evento.getPayload());
 
             switch(sagaType){
-                case AUTOCADASTRO_SAGA:
-                    log.info("Não é necessário fazer nada, pois não foi alterado dados nesse serviço");
-                    publicarCompensacaoSucesso(evento);
-                    break;
                 case ALTERACAO_PERFIL_SAGA:
                     String cpf = objectMapper.treeToValue(rootNode.path("cpf"), String.class);
                     BigDecimal limiteAntigo = objectMapper.treeToValue(rootNode.path("limiteAntigo"), BigDecimal.class);

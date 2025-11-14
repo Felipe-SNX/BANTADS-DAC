@@ -1,6 +1,5 @@
 import { Component, inject, Inject, OnInit } from '@angular/core';
 import { GerenteService } from '../../../services/gerente/gerente.service';
-import { Gerente } from '../../../shared/models/gerente.model';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -25,7 +24,6 @@ export class ListarGerentesComponent implements OnInit{
   constructor(
     private readonly managerService: GerenteService,
     private readonly router: Router,
-    @Inject(DOCUMENT) private readonly document: Document
   ) { }
 
 

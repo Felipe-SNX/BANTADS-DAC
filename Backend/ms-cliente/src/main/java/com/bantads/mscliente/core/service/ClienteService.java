@@ -79,6 +79,11 @@ public class ClienteService {
         return enriquecerClienteResponseComEndereco(cliente, enderecoSalvo);
     }
 
+    public List<GerenteNumeroContasDto> selecionarGerenteComMenosContas(){
+        return clienteRepository.countClientesByGerente();
+    }
+
+
     public RelatorioClientesResponse getClientePorCpf(String cpf) {
         Cliente cliente = buscarClientePorCpfEStatus(cpf, true); 
         Endereco endereco = buscarEnderecoPorId(cliente.getIdEndereco(), cpf);

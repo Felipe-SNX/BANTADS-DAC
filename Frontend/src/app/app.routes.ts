@@ -13,7 +13,7 @@ import { TelaInicialAdminComponent } from './pages/admin/tela-inicial-admin/tela
 import { ListarGerentesComponent } from './pages/admin/listar-gerentes/listar-gerentes.component';
 import { RelatorioClientesComponent } from './pages/admin/relatorio-clientes/relatorio-clientes.component';
 import { AuthGuard } from './services/auth/AuthGuard';
-import { ConsultaClienteComponent } from './pages/cliente/consulta-cliente/consulta-cliente.component';
+import { ConsultaClienteComponent } from './pages/gerente/consulta-cliente/consulta-cliente.component';
 import { ListarClientesGerenteComponent } from './pages/gerente/listar-clientes-gerente/listar-clientes-gerente.component';
 
 export const routes: Routes = [
@@ -81,12 +81,12 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
     },
     {
-        path: 'cliente/consulta/:id',
+        path: 'gerente/consultaCliente/:cpf',
         component: ConsultaClienteComponent,
         canActivate: [AuthGuard]
     },
     {
-        path: 'cliente/consulta',
+        path: 'gerente/consultaCliente',
         component: ConsultaClienteComponent,
         canActivate: [AuthGuard]
     },

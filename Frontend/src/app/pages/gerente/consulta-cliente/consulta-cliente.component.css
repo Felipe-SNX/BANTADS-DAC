@@ -145,3 +145,8 @@ button[type="submit"]:disabled {
 .balance-value.negative {
   color: #e74c3c;
 }
+
+.info-row.saldo-negativo {
+  color: #dc3545; 
+  font-weight: 600;
+}

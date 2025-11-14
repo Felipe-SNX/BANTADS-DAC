@@ -9,7 +9,7 @@ export class ClienteRelatorioResponse {
     public conta: string = '',
     public gerente: string = '',
     public nomeGerente: string = '',
-    public limite: string = '',
+    public limite: number = 0,
     public cidade: string = '',
     public estado: string = '',
     public saldo: number = 0

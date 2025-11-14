@@ -81,10 +81,10 @@ export class AtualizarCadastroComponent implements OnInit{
       },
 
       endereco: {
-        tipo: dadosEndereco[1] || '',
-        logradouro: dadosEndereco[2] || '',
-        numero: Number.parseInt(dadosEndereco[3]) || 0,
-        complemento: dadosEndereco[0] || '',
+        tipo: dadosEndereco.length >= 2 ? dadosEndereco[1] : '',
+        logradouro: dadosEndereco.length >= 3 ? dadosEndereco[2] : '',
+        numero: dadosEndereco.length >= 4 ? Number.parseInt(dadosEndereco[3]) : 0,
+        complemento: dadosEndereco.length > 0 ? dadosEndereco[0] : '',
         cep: customer.cep,
         cidade: customer.cidade,
         estado: customer.estado

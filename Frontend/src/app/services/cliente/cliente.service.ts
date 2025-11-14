@@ -8,6 +8,7 @@ import {ClienteRelatorioResponse} from "../../shared/models/cliente-relatorio-re
 import { ClienteResponse } from '../../shared/models/cliente-response.model';
 import { ClienteAprovar } from '../../shared/models/cliente-aprovar.model';
 import { ClienteMotivoRejeicao } from '../../shared/models/cliente-motivo-rejeicao.model';
+import { DadoCliente } from '../../shared/models/dados-cliente.model';
 
 const LS_CHAVE = "clientes";
 
@@ -46,6 +47,10 @@ export class ClienteService {
 
   public rejeitarCliente(clienteMotivoRejeicao: ClienteMotivoRejeicao, cpf: string): Promise<void> {
     return this.axiosService.post<void>(`/clientes/${cpf}/rejeitar`, clienteMotivoRejeicao);
+  }
+
+  public getCliente(cpf: string): Promise<DadoCliente> {
+    return this.axiosService.get<DadoCliente>(`/clientes/${cpf}`);
   }
 
   validClient(client: Cliente): boolean{

@@ -48,6 +48,12 @@ export class UserService {
     }
   }
 
+  getCpfUsuario(): string {
+    return sessionStorage.getItem('cpf') || '';
+  }
+
+
+
   createUserAccount(user: User): LocalStorageResult{
     const users = this.listUsers();
     const checkUser = users.find((currentUser) => currentUser.login === user.login);

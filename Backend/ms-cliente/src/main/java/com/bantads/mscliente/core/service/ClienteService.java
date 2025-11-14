@@ -11,6 +11,7 @@ import com.bantads.mscliente.core.repository.ClienteRepository;
 import com.bantads.mscliente.core.repository.EnderecoRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors; 
@@ -58,18 +59,20 @@ public class ClienteService {
 
         if (clienteExistente.isPresent()) {
             throw new CpfJaCadastradoException("Cliente", autoCadastroInfo.getCpf());
-        }
+        } 
 
         Cliente cliente = ClienteMapper.autoCadastroInfoToCliente(autoCadastroInfo);
 
-        String[] enderecoParts = parseEndereco(autoCadastroInfo.getEndereco());
+        EnderecoParts parts = parseEndereco(autoCadastroInfo.getEndereco());
 
         var endereco = Endereco.builder()
                 .cep(autoCadastroInfo.getCep())
                 .cidade(autoCadastroInfo.getCidade())
                 .estado(autoCadastroInfo.getEstado())
-                .logradouro(enderecoParts[0]) 
-                .numero(enderecoParts[1]) 
+                .logradouro(parts.logradouro)  
+                .numero(parts.numero)       
+                .complemento(parts.complemento) 
+                .tipo(parts.tipo)           
                 .build();
 
         Endereco enderecoSalvo = enderecoRepository.save(endereco);
@@ -91,7 +94,9 @@ public class ClienteService {
         RelatorioClientesResponse relatorioClientesResponse = ClienteMapper.clienteToRelatorioClientesResponse(cliente);
         relatorioClientesResponse.setCidade(endereco.getCidade());
         relatorioClientesResponse.setEstado(endereco.getEstado());
-        relatorioClientesResponse.setEndereco(endereco.getLogradouro().concat(", ").concat(endereco.getNumero()));
+        relatorioClientesResponse.setEndereco(
+            formatarEnderecoCompleto(endereco)
+        );
 
         return relatorioClientesResponse;
     }
@@ -102,13 +107,15 @@ public class ClienteService {
         PerfilInfo dadosAntigos = ClienteMapper.toPerfilInfo(cliente);
         Endereco endereco = buscarEnderecoPorId(cliente.getIdEndereco(), cpf);
 
-        String[] enderecoParts = parseEndereco(perfilInfo.getEndereco());
+        EnderecoParts parts = parseEndereco(perfilInfo.getEndereco());
 
         endereco.setEstado(perfilInfo.getEstado());
         endereco.setCep(perfilInfo.getCep());
         endereco.setCidade(perfilInfo.getCidade());
-        endereco.setLogradouro(enderecoParts[0]);
-        endereco.setNumero(enderecoParts[1]);
+        endereco.setLogradouro(parts.logradouro);
+        endereco.setNumero(parts.numero);
+        endereco.setComplemento(parts.complemento); 
+        endereco.setTipo(parts.tipo);          
         enderecoRepository.save(endereco);
 
         cliente.setNome(perfilInfo.getNome());
@@ -182,20 +189,61 @@ public class ClienteService {
         return enderecoRepository.findById(idEndereco)
                 .orElseThrow(() -> new EnderecoNaoEncontradoException("Endereco", cpfCliente));
     }
+    private static class EnderecoParts {
+        String logradouro = "";
+        String numero = "";
+        String complemento = "";
+        String tipo = "";
+    }
 
-    private String[] parseEndereco(String enderecoCompleto) {
-        if (enderecoCompleto == null || enderecoCompleto.isEmpty()) {
-            return new String[]{"", ""};
+    private EnderecoParts parseEndereco(String enderecoCompleto) {
+        EnderecoParts parts = new EnderecoParts();
+        if (enderecoCompleto == null || enderecoCompleto.trim().isEmpty()) {
+            return parts; 
         }
-        int commaIndex = enderecoCompleto.lastIndexOf(',');
+
+        String[] allParts = enderecoCompleto.split(",");
         
-        if (commaIndex == -1) {
-            return new String[]{enderecoCompleto.trim(), ""};
+        if (allParts.length == 4) { 
+            parts.complemento = allParts[0].trim();
+            parts.tipo = allParts[1].trim();
+            parts.logradouro = allParts[2].trim();
+            parts.numero = allParts[3].trim();
+            
+        } else if (allParts.length == 2) { 
+            parts.logradouro = allParts[0].trim();
+            parts.numero = allParts[1].trim();
+            
+        } else {
+            log.warn("Formato de endereço não reconhecido: {}. Usando fallback (última vírgula).", enderecoCompleto);
+            int commaIndex = enderecoCompleto.lastIndexOf(',');
+            if (commaIndex == -1) {
+                parts.logradouro = enderecoCompleto.trim(); 
+            } else {
+                parts.logradouro = enderecoCompleto.substring(0, commaIndex).trim();
+                parts.numero = enderecoCompleto.substring(commaIndex + 1).trim();
+            }
+        }
+        return parts;
+    }
+
+    private String formatarEnderecoCompleto(Endereco endereco) {
+        List<String> partes = new ArrayList<>();
+        
+        if (endereco.getComplemento() != null && !endereco.getComplemento().isEmpty()) {
+            partes.add(endereco.getComplemento());
+        }
+        if (endereco.getTipo() != null && !endereco.getTipo().isEmpty()) {
+            partes.add(endereco.getTipo());
+        }
+        if (endereco.getLogradouro() != null && !endereco.getLogradouro().isEmpty()) {
+            partes.add(endereco.getLogradouro());
+        }
+        if (endereco.getNumero() != null && !endereco.getNumero().isEmpty()) {
+            partes.add(endereco.getNumero());
         }
         
-        String logradouro = enderecoCompleto.substring(0, commaIndex).trim();
-        String numero = enderecoCompleto.substring(commaIndex + 1).trim();
-        return new String[]{logradouro, numero};
+        return String.join(", ", partes);
     }
 
     private ClienteParaAprovarResponse enriquecerClienteResponseComEndereco(Cliente cliente) {
@@ -205,9 +253,11 @@ public class ClienteService {
 
     private ClienteParaAprovarResponse enriquecerClienteResponseComEndereco(Cliente cliente, Endereco endereco) {
         ClienteParaAprovarResponse response = ClienteMapper.toClienteParaAprovarResponse(cliente);
+        
         response.setCidade(endereco.getCidade());
         response.setEstado(endereco.getEstado());
-        response.setEndereco(endereco.getLogradouro().concat(", ").concat(endereco.getNumero()));
+        response.setEndereco(formatarEnderecoCompleto(endereco));
+        
         return response;
     }
 }

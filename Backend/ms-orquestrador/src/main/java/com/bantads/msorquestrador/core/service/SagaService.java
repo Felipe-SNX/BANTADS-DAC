@@ -46,7 +46,6 @@ public class SagaService {
     public void iniciarSagaAprovarCliente(ClienteParaAprovarRequest clienteParaAprovarRequest, String cpf) {
         log.info("Saga de aprovar cliente iniciada para o cliente: {}", clienteParaAprovarRequest.getNome());
 
-
         Map<String, Object> clienteParaAprovarRequestInfo = new HashMap<>();
         clienteParaAprovarRequestInfo.put("clienteParaAprovarRequest", clienteParaAprovarRequest);
 
@@ -60,7 +59,6 @@ public class SagaService {
 
     public void iniciarSagaAlterarPerfil(PerfilInfo perfilInfo, String cpf) {
         log.info("Saga de alterar perfil iniciada para o cliente: {}", perfilInfo.getNome());
-
 
         Map<String, Object> alterarPerfilInfo = new HashMap<>();
         alterarPerfilInfo.put("cpf", cpf);

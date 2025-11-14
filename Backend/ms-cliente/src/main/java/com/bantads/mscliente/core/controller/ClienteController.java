@@ -48,7 +48,6 @@ public class ClienteController {
         return ResponseEntity.status(200).body("Cpf não cadastrado");
     }
 
-
     @GetMapping
     public ResponseEntity<?> listar(@RequestParam(required = false) String filtro, @AuthenticationPrincipal UserDetails userDetails) {
         

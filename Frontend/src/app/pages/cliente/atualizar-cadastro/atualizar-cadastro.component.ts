@@ -6,11 +6,11 @@ import { Cliente } from '../../../shared/models/cliente.model';
 import { ClienteService } from '../../../services/cliente/cliente.service';
 import { Router } from '@angular/router';
 import { UserService } from '../../../services/user/user.service';
-import { User } from '../../../shared/models/user.model';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { EnderecoFormComponent } from '../autocadastro/formularios/endereco-form/endereco-form.component';
 import { PessoaFormComponent } from '../autocadastro/formularios/pessoa-form/pessoa-form.component';
 import { LocalStorageResult } from '../../../shared/utils/LocalStorageResult';
+import { DadoCliente } from '../../../shared/models/dados-cliente.model';
 
 @Component({
   selector: 'app-atualizar-cadastro',
@@ -50,7 +50,6 @@ export class AtualizarCadastroComponent implements OnInit{
   };
 
   public etapaAtual: number = 1;
-  user: User | null | undefined;
 
   constructor(
     private readonly customerService: ClienteService,
@@ -58,23 +57,21 @@ export class AtualizarCadastroComponent implements OnInit{
     private readonly router: Router
   ) {}
 
-  ngOnInit(): void {
-    const temp = this.userService.findLoggedUser();
-
-    if(!temp) this.router.navigate(['/']);
-
-    this.user = temp;
-
-    const customer = this.customerService.getClientById(this.user?.id as number);
+  async ngOnInit(): Promise<void> {
+    const cpf = this.userService.getCpfUsuario();
+    if(cpf === '') this.router.navigate(['/']);
+    const customer = await this.customerService.getCliente(cpf);
 
     if(!customer){
       this.router.navigate(['/']);
     }
 
-    this.loadClienteData(customer as Cliente);
+    this.loadClienteData(customer);
   }
 
-  loadClienteData(customer: Cliente): void{
+  loadClienteData(customer: DadoCliente): void{
+    const dadosEndereco = customer.endereco.split(',');
+
     const clienteTransformado = {
       dadosPessoais: {
         nome: customer.nome,
@@ -85,13 +82,13 @@ export class AtualizarCadastroComponent implements OnInit{
       },
 
       endereco: {
-        tipo: customer.endereco.tipo,
-        logradouro: customer.endereco.logradouro,
-        numero: customer.endereco.numero,
-        complemento: customer.endereco.complemento,
-        cep: customer.endereco.cep,
-        cidade: customer.endereco.cidade,
-        estado: customer.endereco.estado
+        tipo: dadosEndereco[1] || '',
+        logradouro: dadosEndereco[2] || '',
+        numero: Number.parseInt(dadosEndereco[3]) || 0,
+        complemento: dadosEndereco[0] || '',
+        cep: customer.cep,
+        cidade: customer.cidade,
+        estado: customer.estado
       }
     };
 
@@ -123,8 +120,7 @@ export class AtualizarCadastroComponent implements OnInit{
 
       //Transforma os campos no objeto cliente
 
-      const updateCustomer = new Cliente(
-        this.user?.id,
+      /*const updateCustomer = new Cliente(
         this.cliente.dadosPessoais.nome,
         this.cliente.dadosPessoais.email,
         this.cliente.dadosPessoais.cpf,
@@ -143,6 +139,6 @@ export class AtualizarCadastroComponent implements OnInit{
         this.toastr.warning('Já existe um cliente com CPF informado!', 'Erro');
       }
 
-      console.log(updateCustomer);
+      console.log(updateCustomer);*/
     }
 }

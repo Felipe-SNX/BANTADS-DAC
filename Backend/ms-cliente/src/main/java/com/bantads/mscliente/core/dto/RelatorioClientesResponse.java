@@ -17,6 +17,7 @@ public class RelatorioClientesResponse {
     private String nome;
     private String email;
     private String endereco;
+    private String cep;
     private String cidade;
     private String estado;
     private String telefone;

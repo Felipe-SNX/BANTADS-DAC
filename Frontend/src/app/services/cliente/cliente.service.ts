@@ -9,6 +9,8 @@ import { ClienteResponse } from '../../shared/models/cliente-response.model';
 import { ClienteAprovar } from '../../shared/models/cliente-aprovar.model';
 import { ClienteMotivoRejeicao } from '../../shared/models/cliente-motivo-rejeicao.model';
 import { DadoCliente } from '../../shared/models/dados-cliente.model';
+import { AutocadastroModel } from '../../shared/models/autocadastro.model';
+import { PerfilInfo } from '../../shared/models/perfil-info.model';
 
 const LS_CHAVE = "clientes";
 
@@ -47,6 +49,14 @@ export class ClienteService {
 
   public clientesParaAprovar(): Promise<ClienteResponse[]> {
     return this.axiosService.get<ClienteResponse[]>("/clientes?filtro=para_aprovar");
+  }
+
+  public cadastrarCliente(autocadastroModel: AutocadastroModel): Promise<AutocadastroModel> {
+    return this.axiosService.post<AutocadastroModel>("/clientes", autocadastroModel);
+  }
+
+  public atualizarCliente(perfilInfo: PerfilInfo, cpf: string): Promise<PerfilInfo> {
+    return this.axiosService.put<PerfilInfo>(`/clientes/${cpf}`, perfilInfo);
   }
 
   public aprovarCliente(clienteParaAprovar: ClienteAprovar, cpf: string): Promise<void> {

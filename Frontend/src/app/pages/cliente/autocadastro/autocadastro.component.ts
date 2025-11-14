@@ -6,9 +6,7 @@ import { EnderecoFormComponent } from './formularios/endereco-form/endereco-form
 import { PessoaFormComponent } from "./formularios/pessoa-form/pessoa-form.component";
 import { Router } from '@angular/router';
 import { ClienteService } from '../../../services/cliente/cliente.service';
-import { GerenteService } from '../../../services/gerente/gerente.service';
-import { Cliente } from '../../../shared/models/cliente.model';
-import { LocalStorageResult } from '../../../shared/utils/LocalStorageResult';
+import { AutocadastroModel } from '../../../shared/models/autocadastro.model';
 
 @Component({
   selector: 'app-autocadastro',
@@ -49,7 +47,6 @@ export class AutocadastroComponent{
 
   constructor(
     private readonly customerService: ClienteService, 
-    private readonly managerService: GerenteService,
     private readonly router: Router
   ) {
   }
@@ -57,7 +54,7 @@ export class AutocadastroComponent{
   avancarEtapa() { this.etapaAtual++; }
   voltarEtapa() { this.etapaAtual--; }
 
-  onSubmit() {
+  async onSubmit() {
     //Marca todas as caixas como touched para aparecer os erros caso existam
     Object.values(this.meuForm.controls).forEach(control => {
       if (control instanceof FormGroup) {
@@ -75,22 +72,31 @@ export class AutocadastroComponent{
       return;
     }
 
-    //Transforma os campos no objeto cliente
-    const formValue = this.meuForm.value;
-    const customer = new Cliente(0, formValue.dadosPessoais.name , formValue.dadosPessoais.email, formValue.dadosPessoais.CPF, formValue.endereco, formValue.dadosPessoais.telefone, formValue.dadosPessoais.salario);
+    try{
+      //Transforma os campos no objeto cliente
+      const formValue = this.meuForm.value;
+      const customer : AutocadastroModel = new AutocadastroModel();
+      customer.cpf = formValue.dadosPessoais.CPF;
+      customer.email = formValue.dadosPessoais.email;
+      customer.nome = formValue.dadosPessoais.name;
+      customer.salario = formValue.dadosPessoais.salario;
+      customer.telefone = formValue.dadosPessoais.telefone;
+      customer.cidade = formValue.endereco.cidade;
+      customer.estado = formValue.endereco.estado;
+      customer.cep = formValue.endereco.cep;
+      customer.endereco = formValue.endereco.complemento + ", " + formValue.endereco.tipo + ", " + formValue.endereco.logradouro + ", " + formValue.endereco.numero;
 
-    const manager = this.managerService.addCustomerToManager(customer);
-    customer.gerente = manager;
-    const result: LocalStorageResult = this.customerService.saveClient(customer);
-
-    if(result.success){
+      await this.customerService.cadastrarCliente(customer);
       this.toastr.success('A solicitação foi enviada com sucesso!', 'Sucesso');
-    }else{
-      console.log(result.message);
-      this.toastr.warning('Já existe um cliente com CPF informado!', 'Erro');
-    }
+      this.router.navigate(['/']);
 
-    console.log(customer);
-    this.router.navigate(['/']);
+    } catch (error: any){
+      if(error.status === 409){
+        this.toastr.warning('Já existe um cliente com CPF informado!', 'Erro');
+      } else{
+        this.toastr.warning('Não foi possível cadastrar um cliente!', 'Erro');
+      }
+      console.log(error);
+    }
   }
 }

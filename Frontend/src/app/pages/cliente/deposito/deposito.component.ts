@@ -33,9 +33,6 @@ export class DepositoComponent implements OnInit{
   customer: Cliente | undefined;
   valor: string = ''
 
-  onActionSelected(action: string) {
-  }
-
   constructor(
     private readonly accountService: ContaService,
     private readonly transactionService: TransacaoService,

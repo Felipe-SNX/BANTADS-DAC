@@ -47,15 +47,15 @@ export class TelaInicialClienteComponent implements OnInit {
       this.cpf = this.userService.getCpfUsuario();
       await this.loadClienteData(this.cpf);
     } else {
-    this.router.navigate(['/']);
+      this.router.navigate(['/']);
     }
     this.loading = false;
   }
 
   async loadClienteData(cpf: string): Promise<void> {
-    
+
     try {
-      const cliente = await this.clienteService.getCliente(cpf);
+      this.cliente = await this.clienteService.getCliente(cpf);
       this.saldoNegativo = this.cliente.saldo < 0;
     } catch (error) {
       console.error('Erro ao carregar dados do cliente:', error);

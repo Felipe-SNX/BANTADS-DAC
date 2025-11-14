@@ -66,6 +66,9 @@ public class ClienteEventConsumer {
                                 rootNode.path("autoCadastroInfo"), AutoCadastroInfo.class
                         );
                         clienteService.cadastrarCliente(autoCadastroInfo);
+                        List<GerenteNumeroContasDto> numeroContasGerente = clienteService.selecionarGerenteComMenosContas();
+                        adicionarAoNode(rootNode, "numeroContasGerente", numeroContasGerente);
+                        atualizarPayload(evento, rootNode, sagaType);
                         evento.setStatus(ESagaStatus.SUCCESS);
                         
                     } else {

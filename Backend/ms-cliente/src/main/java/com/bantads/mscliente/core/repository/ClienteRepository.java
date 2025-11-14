@@ -1,5 +1,6 @@
 package com.bantads.mscliente.core.repository;
 
+import com.bantads.mscliente.core.dto.GerenteNumeroContasDto;
 import com.bantads.mscliente.core.model.Cliente;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,4 +22,10 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     List<Cliente> findAllByAprovadoOrderByNomeAsc(boolean b);
 
     void deleteByCpf(String cpf);
+
+    @Query("SELECT new com.bantads.mscliente.core.dto.GerenteNumeroContasDto(c.gerente, COUNT(c.gerente)) " +
+            "FROM Cliente c " +
+            "WHERE c.gerente IS NOT NULL " +
+            "GROUP BY c.gerente")
+    List<GerenteNumeroContasDto> countClientesByGerente();
 }

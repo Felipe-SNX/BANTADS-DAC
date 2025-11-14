@@ -2,8 +2,8 @@
 <app-sidebar [tipoTela]="'gerente'"></app-sidebar>
   <div class="gerente-container">
     <h1>Contas para Aprovação</h1>
-    <table>
-      <thead>
+    <table class="table table-hover table-striped mb-0">
+      <thead class="table-dark">
         <tr>
           <th>Nome do Cliente</th>
           <th>CPF</th>
@@ -20,13 +20,13 @@
             <button (click)="aprovar(cliente)">Aprovar</button>
             <button (click)="chamarModal(cliente)">Recusar</button>
           </td>
-        </tr>      
+        </tr>
         <tr *ngIf="clientesParaAprovar.length === 0">
           <td colspan="5">Nenhuma conta pendente de aprovação.</td>
         </tr>
       </tbody>
     </table>
-  
+
     <modal-rejeitar-cliente #modalDeNegacao (pedidoNegado)="onPedidoNegado($event)"></modal-rejeitar-cliente>
 
 </div>

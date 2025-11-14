@@ -6,7 +6,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        
+        <form #rejeicaoForm="ngForm">
           <div class="form-group">
             <label for="name" class="col-form-label">Cliente</label>
             <input 
@@ -27,14 +28,26 @@
               name="motivo-rejeicao"
               [(ngModel)]="motivo.motivo"
               #motivoInput="ngModel"
-            >
+              required >
             </textarea>
+            <div *ngIf="motivoInput.invalid && (motivoInput.dirty || motivoInput.touched)" class="text-danger mt-1" style="font-size: 0.9em;">
+              O motivo é obrigatório.
+            </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-        <button type="button" class="btn btn-primary" (click)="negar()">Enviar</button>
+        
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="negar()"
+          [disabled]="isRejeitando || !rejeicaoForm.form.valid"
+        >
+          <span *ngIf="isRejeitando" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+          <span *ngIf="!isRejeitando">Enviar</span>
+        </button>
       </div>
     </div>
   </div>

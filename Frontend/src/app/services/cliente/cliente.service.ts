@@ -33,6 +33,14 @@ export class ClienteService {
 
   constructor(private readonly accountService: ContaService) { }
 
+  public buscarClientes(): Promise<ClienteResponse[]> {
+    return this.axiosService.get<ClienteResponse[]>("/clientes");
+  }
+
+  public buscarTop3Clientes(): Promise<ClienteResponse[]> {
+    return this.axiosService.get<ClienteResponse[]>("/clientes?filtro=melhores_clientes");
+  }
+
   public relatorioClientes(): Promise<ClienteRelatorioResponse[]> {
     return this.axiosService.get<ClienteRelatorioResponse[]>("/clientes?filtro=adm_relatorio_clientes");
   }

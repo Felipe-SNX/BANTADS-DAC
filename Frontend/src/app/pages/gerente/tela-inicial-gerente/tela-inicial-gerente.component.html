@@ -1,6 +1,8 @@
 <div class="home-container">
-<app-sidebar [tipoTela]="'gerente'"></app-sidebar>
-  <div class="gerente-container">
+  <app-sidebar [tipoTela]="'gerente'"></app-sidebar>
+  <app-loading [isLoading]="loading"></app-loading>
+
+  <div class="gerente-container" *ngIf="!loading">
     <h1>Contas para Aprovação</h1>
     <table class="table table-hover table-striped mb-0">
       <thead class="table-dark">

@@ -1,17 +1,19 @@
 <div class="home-container">
   <app-sidebar [tipoTela]="'gerente'"></app-sidebar>
+  <app-loading [isLoading]="loading"></app-loading>
 
-  <div class="main-content">
+  <div class="main-content" *ngIf="!loading">
     <div class="search-card">
       <h2>Consulta de Cliente</h2>
-      <form (ngSubmit)="consultarCliente()" #consultaForm="ngForm" class="search-form">
+      
+      <form (ngSubmit)="onConsultarClick()" #consultaForm="ngForm" class="search-form">
         <div class="form-group">
           <label for="cpf">CPF do Cliente:</label>
           <input
             type="text"
             id="cpf"
             name="cpf"
-            [(ngModel)]="cpf"
+            [(ngModel)]="cpfInput" 
             required
             pattern="\d{11}"
             placeholder="Digite o CPF (apenas números)"
@@ -20,19 +22,23 @@
         </div>
         <button type="submit" [disabled]="!consultaForm.form.valid">Consultar</button>
       </form>
+      
       <div *ngIf="erroMensagem" class="error-message">
         {{ erroMensagem }}
       </div>
 
-      <div class="client-info" *ngIf="clienteEncontrado && cliente">
+      <div class="client-info" *ngIf="cliente">
         <h3>Dados do Cliente</h3>
+
         <div class="info-row"><span>Nome:</span> {{ cliente.nome }}</div>
-        <div class="info-row"><span>CPF:</span> {{ cliente.cpf }}</div>
+        <div class="info-row"><span>CPF:</span> {{ cliente.cpf | mask : '000.000.000-00' }}</div>
         <div class="info-row"><span>Email:</span> {{ cliente.email }}</div>
-        <div class="info-row"><span>Salário:</span> R$ {{ cliente.salario | number:'1.2-2' }}</div>
-        <div class="info-row"><span>Núm. da Conta:</span> {{ conta.numConta }}</div>
-        <div class="info-row"><span>Saldo:</span> R$ {{ conta.saldo | number:'1.2-2' }}</div>
-        <div class="info-row"><span>Limite:</span> R$ {{ conta.limite | number:'1.2-2' }}</div>
+        <div class="info-row"><span>Salário:</span> {{ cliente.salario | currency:'BRL' }}</div>
+        <div class="info-row"><span>Núm. da Conta:</span> {{ cliente.conta }}</div>
+        <div class="info-row" [class.saldo-negativo]="saldoNegativo">
+          <span>Saldo:</span> {{ cliente.saldo | currency:'BRL' }}
+        </div>
+        <div class="info-row"><span>Limite:</span> {{ cliente.limite | currency:'BRL' }}</div>
       </div>
     </div>
   </div>

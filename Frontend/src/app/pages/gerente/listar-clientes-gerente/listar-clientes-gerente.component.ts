@@ -3,10 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { NgxMaskPipe } from 'ngx-mask';
-import { Conta } from '../../../shared/models/conta.model';
-import { ContaService } from '../../../services/conta/conta.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GerenteService } from '../../../services/gerente/gerente.service';
+import { UserService } from '../../../services/user/user.service';
+import { ClienteService } from '../../../services/cliente/cliente.service';
+import { ClienteResponse } from '../../../shared/models/cliente-response.model';
 
 @Component({
   selector: 'app-listar-clientes-gerente',
@@ -16,57 +16,78 @@ import { GerenteService } from '../../../services/gerente/gerente.service';
   standalone: true
 })
 export class ListarClientesGerenteComponent implements OnInit {
-  
   listaId: number = 0;
-  contas: Conta[] = [];
-  filtroNome: string = '';
-  filtroCpf: string = '';
+  
+  private clientesBase: ClienteResponse[] = [];
+  public clientesFiltrados: ClienteResponse[] = [];
+
+  public filtroNome: string = '';
+  public filtroCpf: string = '';
 
   constructor(
-    private readonly contaService: ContaService,
+    private readonly clienteService: ClienteService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly managerService: GerenteService
+    private readonly userService: UserService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.listaId = Number(this.route.snapshot.paramMap.get('id'));
-    this.loadContas();
+    await this.carregarEFiltrarClientes();
+    this.aplicarFiltrosLocais(); 
   }
 
-  loadContas() {
-    const gerenteId = this.managerService.findLoggedUser();
-    const accounts = this.contaService.listAccountsByManager(gerenteId as number);
+  async carregarEFiltrarClientes() {
+    const gerenteCpf = this.userService.getCpfUsuario();
 
-    if (this.listaId === 1) {
-      accounts.sort((a, b) => {
-        const nameA = a.cliente.nome.toUpperCase();
-        const nameB = b.cliente.nome.toUpperCase();
-        if (nameA < nameB) return -1;
-        if (nameA > nameB) return 1;
-        return 0;
-      });
-    } else if (this.listaId === 3) {
-      accounts.sort((a, b) => b.saldo - a.saldo);
-      accounts.splice(3);
+    try {
+      const todosClientes = await this.clienteService.buscarClientes();
+      
+      if (todosClientes.length === 0) {
+        console.error("Backend não retornou clientes.");
+        this.clientesBase = [];
+        return;
+      }
+
+      const clientesDoGerente = todosClientes.filter((cliente) => cliente.gerente === gerenteCpf);
+
+      switch (this.listaId) {
+        
+        case 1:
+          this.clientesBase = clientesDoGerente;
+          break;
+
+        case 3:
+          const clientesOrdenados = clientesDoGerente.sort((a, b) => b.saldo - a.saldo);
+          this.clientesBase = clientesOrdenados.slice(0, 3);
+          break;
+
+        default:
+          console.warn("listaId não reconhecido:", this.listaId);
+          this.clientesBase = clientesDoGerente;
+      }
+
+    } catch (error) {
+      console.error("Falha ao carregar clientes", error);
+      this.clientesBase = [];
     }
-
-    this.contas = accounts;
   }
 
-  get contasFiltradas(): Conta[] {
-    return this.contas.filter(conta => {
+  public aplicarFiltrosLocais(): void {
+    this.clientesFiltrados = this.clientesBase.filter(cliente => {
       const nomeMatch = this.filtroNome
-        ? conta.cliente.nome.toLowerCase().includes(this.filtroNome.toLowerCase())
+        ? cliente.nome.toLowerCase().includes(this.filtroNome.toLowerCase())
         : true;
+        
       const cpfMatch = this.filtroCpf
-        ? conta.cliente.cpf.replace(/\D/g, '').includes(this.filtroCpf.replace(/\D/g, ''))
+        ? cliente.cpf.replace(/\D/g, '').includes(this.filtroCpf.replace(/\D/g, ''))
         : true;
+        
       return nomeMatch && cpfMatch;
     });
   }
 
-  irParaConsulta(clienteId: number) {
-    this.router.navigate(['cliente/consulta', clienteId]);
+  public irParaConsulta(clientecpf: string) {
+    this.router.navigate(['gerente/consultaCliente', clientecpf]);
   }
 }

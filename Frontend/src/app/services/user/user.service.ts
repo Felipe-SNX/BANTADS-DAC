@@ -1,8 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import { User } from '../../shared/models/user.model';
 import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
-import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
 import {LoginResponse} from "../../shared/models/loginResponse.model";
 import {LoginRequest} from "../../shared/models/loginRequest.model";
 import AxiosService from "../axios/axios.service";

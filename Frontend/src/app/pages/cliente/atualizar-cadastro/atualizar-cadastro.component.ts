@@ -2,15 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormsModule, NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { Cliente } from '../../../shared/models/cliente.model';
 import { ClienteService } from '../../../services/cliente/cliente.service';
 import { Router } from '@angular/router';
 import { UserService } from '../../../services/user/user.service';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { EnderecoFormComponent } from '../autocadastro/formularios/endereco-form/endereco-form.component';
 import { PessoaFormComponent } from '../autocadastro/formularios/pessoa-form/pessoa-form.component';
-import { LocalStorageResult } from '../../../shared/utils/LocalStorageResult';
 import { DadoCliente } from '../../../shared/models/dados-cliente.model';
+import { PerfilInfo } from '../../../shared/models/perfil-info.model';
 
 @Component({
   selector: 'app-atualizar-cadastro',
@@ -100,7 +99,7 @@ export class AtualizarCadastroComponent implements OnInit{
     avancarEtapa() { this.etapaAtual++; }
     voltarEtapa() { this.etapaAtual--; }
 
-    onSubmit() {
+    async onSubmit() {
       //Marca todas as caixas como touched para aparecer os erros caso existam
       Object.values(this.meuForm.controls).forEach(control => {
         if (control instanceof FormGroup) {
@@ -120,25 +119,25 @@ export class AtualizarCadastroComponent implements OnInit{
 
       //Transforma os campos no objeto cliente
 
-      /*const updateCustomer = new Cliente(
-        this.cliente.dadosPessoais.nome,
-        this.cliente.dadosPessoais.email,
-        this.cliente.dadosPessoais.cpf,
-        this.cliente.endereco,
-        this.cliente.dadosPessoais.telefone,
-        this.cliente.dadosPessoais.salario
-      );
+      try{
+        const updateCustomer = new PerfilInfo();
+        updateCustomer.nome = this.cliente.dadosPessoais.nome;
+        updateCustomer.email = this.cliente.dadosPessoais.email;
+        updateCustomer.salario = this.cliente.dadosPessoais.salario;
+        updateCustomer.telefone = this.cliente.dadosPessoais.telefone;
+        updateCustomer.endereco =  this.cliente.endereco.complemento + ", " + this.cliente.endereco.tipo + ", " + this.cliente.endereco.logradouro + ", " + this.cliente.endereco.numero;
+        updateCustomer.cep = this.cliente.endereco.cep;
+        updateCustomer.cidade = this.cliente.endereco.cidade;
+        updateCustomer.estado = this.cliente.endereco.estado;
 
-      const result: LocalStorageResult = this.customerService.updateClient(updateCustomer);
+        console.log(updateCustomer);
 
-      if(result.success){
+        await this.customerService.atualizarCliente(updateCustomer, this.cliente.dadosPessoais.cpf);
         this.toastr.success('Cliente atualizado com sucesso!', 'Sucesso');
         this.router.navigate(['/cliente']);
-      }else{
-        console.log(result.message);
+      } catch(error) {
         this.toastr.warning('Já existe um cliente com CPF informado!', 'Erro');
       }
 
-      console.log(updateCustomer);*/
     }
 }

@@ -1,8 +1,11 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Conta } from '../../shared/models/conta.model';
 import { Cliente } from '../../shared/models/cliente.model';
 import { Gerente } from '../../shared/models/gerente.model';
 import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
+import AxiosService from '../axios/axios.service';
+import { ContaDepositoResponse } from '../../shared/models/conta-deposito-response.model';
+import { ContaDepositoRequest } from '../../shared/models/conta-deposito-request.model';
 
 const LS_CHAVE_CONTAS = "contas";
 
@@ -11,7 +14,13 @@ const LS_CHAVE_CONTAS = "contas";
 })
 export class ContaService {
 
+  private readonly axiosService = inject(AxiosService); ////////////////
+
   constructor() { }
+
+  public depositarConta(numConta:string, contaDepositoRequest: ContaDepositoRequest): Promise<ContaDepositoResponse> { 
+      return this.axiosService.post<ContaDepositoResponse>(`/contas/${numConta}/depositar`, contaDepositoRequest);
+  }/////////////////////
 
   listAccounts(): Conta[]{
     const accounts = localStorage[LS_CHAVE_CONTAS];

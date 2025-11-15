@@ -25,6 +25,7 @@ import { LoadingComponent } from '../../../shared/components/loading/loading.com
   standalone: true
 })
 export class TelaInicialClienteComponent implements OnInit {
+  
   cliente: DadoCliente = new DadoCliente();
   cpf: string = '';
   loading: boolean = false;
@@ -32,13 +33,10 @@ export class TelaInicialClienteComponent implements OnInit {
 
   constructor
   (
-    private readonly mockDataService: MockDataService,
     private readonly clienteService: ClienteService,
     private readonly userService: UserService,
-    private readonly accountService: ContaService,
-    private readonly router: Router) {
-
-   }
+    private readonly router: Router
+  ){}
 
   async ngOnInit(): Promise<void> {
     this.loading = true;
@@ -55,7 +53,7 @@ export class TelaInicialClienteComponent implements OnInit {
   async loadClienteData(cpf: string): Promise<void> {
     
     try {
-      const cliente = await this.clienteService.getCliente(cpf);
+      this.cliente = await this.clienteService.getCliente(cpf);
       this.saldoNegativo = this.cliente.saldo < 0;
     } catch (error) {
       console.error('Erro ao carregar dados do cliente:', error);

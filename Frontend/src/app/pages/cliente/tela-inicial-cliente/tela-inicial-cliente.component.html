@@ -4,21 +4,88 @@
 
   <div class="main-content" *ngIf="!loading">
     <header class="content-header">
-      <h1>Bem-vindo ao BANTADS</h1>
+      <h1 class="mb-0">Olá, {{ cliente.nome }}!</h1>
     </header>
     
     <div class="dashboard">
-      <div class="welcome-card">
-        <h2>Olá, {{ cliente.nome }}!</h2>
-        <p>Número da conta: {{ cliente.conta }}</p>
-        <p>Gerente responsável: {{ cliente.gerente_nome }}</p>
+      
+      <div class="welcome-card finance-card"> 
         <div class="balance">
-          <h3>Saldo disponível</h3>
-          <p class="balance-value" [class.negative]="saldoNegativo">
-            R$ {{ cliente.saldo.toFixed(2) }}
-          </p>
+          <h3 class="card-title">Seu Resumo</h3>
+          
+          <div class="balance-row">
+            <span>Saldo em conta</span>
+            <span class="balance-value fs-5" [class.negative]="saldoNegativo">
+              {{ cliente.saldo | currency:'BRL' }}
+            </span>
+          </div>
+          
+          <div class="balance-row">
+            <span>Limite de crédito</span>
+            <span class="balance-value fs-5">
+              {{ cliente.limite | currency:'BRL' }}
+            </span>
+          </div>
+          
+          <hr class="my-3">
+          
+          <div class="balance-row total">
+            <span>Disponível total</span>
+            <span class="balance-value fs-4">
+              {{ (cliente.saldo + cliente.limite) | currency:'BRL' }}
+            </span>
+          </div>
         </div>
       </div>
-    </div>           
+
+      <div class="welcome-card actions-card">
+        <h3 class="card-title">Ações Rápidas</h3>
+        <ul class="actions-list">
+          <li>
+            <a routerLink="/cliente/deposito">
+              <i class="fas fa-dollar-sign"></i>
+              <span>Depositar</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/cliente/saque">
+              <i class="fas fa-money-bill-wave"></i>
+              <span>Sacar</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/cliente/transferencia">
+              <i class="fas fa-exchange-alt"></i>
+              <span>Transferir</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/cliente/consultaExtrato">
+              <i class="fas fa-receipt"></i>
+              <span>Ver Extrato</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="welcome-card full-width-card"> 
+        <h3 class="card-title">Informações da Conta</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Número da conta:</span>
+            <span class="info-value">{{ cliente.conta }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Gerente responsável:</span>
+            <span class="info-value">{{ cliente.gerente_nome }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">E-mail do gerente:</span>
+            <span class="info-value">{{ cliente.gerente_email }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>        
   </div>
 </div>

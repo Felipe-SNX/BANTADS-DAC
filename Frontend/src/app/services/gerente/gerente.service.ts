@@ -16,8 +16,7 @@ export class GerenteService {
 
   private readonly axiosService = inject(AxiosService);
 
-  constructor(
-  ) { }
+  constructor() { }
 
   public listarGerentes(): Promise<DadoGerente[]> {
     return this.axiosService.get<DadoGerente[]>("/gerentes");

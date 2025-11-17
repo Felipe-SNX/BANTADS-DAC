@@ -16,7 +16,7 @@ export class ClienteService {
 
   private readonly axiosService = inject(AxiosService);
 
-  constructor(private readonly accountService: ContaService) { }
+  constructor() { }
 
   public buscarClientes(): Promise<ClienteResponse[]> {
     return this.axiosService.get<ClienteResponse[]>("/clientes");

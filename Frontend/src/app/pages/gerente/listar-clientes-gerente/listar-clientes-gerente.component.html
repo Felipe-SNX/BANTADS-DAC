@@ -39,12 +39,12 @@
             <table class="table table-hover table-striped mb-0">
               <thead class="table-dark">
                 <tr>
-                  <th>CPF</th>
-                  <th>Nome</th>
-                  <th>Cidade</th>
-                  <th>Estado</th>
-                  <th>Saldo da Conta</th>
-                  <th>Limite da Conta</th>
+                  <th class="text-start">CPF</th>
+                  <th class="text-start">Nome</th>
+                  <th class="text-start">Cidade</th>
+                  <th class="text-start">Estado</th>
+                  <th class="text-end">Saldo da Conta</th>
+                  <th class="text-end">Limite da Conta</th>
                 </tr>
               </thead>
               <tbody>
@@ -52,13 +52,21 @@
                   *ngFor="let cliente of clientesFiltrados"
                   style="cursor:pointer"
                   (click)="irParaConsulta(cliente.cpf)"
+                  class="align-middle"
                 >
-                  <td>{{cliente.cpf | mask: '000.000.000-00'}}</td>
-                  <td>{{cliente.nome}}</td>
-                  <td>{{cliente.cidade}}</td>
-                  <td>{{cliente.estado}}</td>
-                  <td>{{cliente.saldo | currency:'BRL'}}</td>
-                  <td>{{cliente.limite | currency:'BRL'}}</td>                  
+                  <td class="text-start">{{cliente.cpf | mask: '000.000.000-00'}}</td>
+                  <td class="text-start">{{cliente.nome}}</td>
+                  <td class="text-start">{{cliente.cidade}}</td>
+                  <td class="text-start">{{cliente.estado}}</td>
+                  
+                  <td 
+                    class="text-end" 
+                    [class.text-danger]="cliente.saldo < 0"
+                    [class.text-success]="cliente.saldo > 0"
+                  >
+                    {{cliente.saldo | currency:'BRL'}}
+                  </td>
+                  <td class="text-end">{{cliente.limite | currency:'BRL'}}</td>                  
                 </tr>
               </tbody>
             </table>

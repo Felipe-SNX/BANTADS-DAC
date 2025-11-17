@@ -46,7 +46,7 @@ export class LoginComponent {
         new LoginRequest(this.login.login, this.login.senha)
       );
 
-      if (!respostaLogin || !respostaLogin.access_token) {
+      if (!respostaLogin?.access_token) {
         throw new Error("Resposta inválida do servidor.");
       }
 
@@ -62,8 +62,8 @@ export class LoginComponent {
   }
 
   private handleLoginSuccess(resposta: LoginResponse) {
-    const token = resposta.access_token.replace(/"/g, '');
-    const cpf = resposta.usuario.cpf.replace(/"/g, '');
+    const token = resposta.access_token.replaceAll('"', '');
+    const cpf = resposta.usuario.cpf.replaceAll('"', '');
     sessionStorage.setItem('cpf', cpf);
     sessionStorage.setItem('token', token);
 
@@ -84,7 +84,7 @@ export class LoginComponent {
   }
 
   private handleLoginError(error: any) {
-    if (error.response && error.response.status === 401) {
+    if (error.response?.status === 401) {
       this.loginError = "Login ou senha incorretos.";
     } else {
       this.loginError = "Erro inesperado. Tente novamente mais tarde.";

@@ -2,16 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../services/user/user.service';
 import { ClienteService } from '../../../services/cliente/cliente.service';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DadoCliente } from '../../../shared/models/dados-cliente.model';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 
 @Component({
   selector: 'app-tela-inicial-cliente',
   templateUrl: './tela-inicial-cliente.component.html',
   styleUrls: ['./tela-inicial-cliente.component.css'],
-  imports: [SidebarComponent, CommonModule, LoadingComponent],
+  imports: [SidebarComponent, CommonModule, LoadingComponent, RouterLink, CurrencyPipe],
   standalone: true
 })
 export class TelaInicialClienteComponent implements OnInit {

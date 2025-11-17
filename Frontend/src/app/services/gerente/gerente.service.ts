@@ -1,11 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { Gerente } from '../../shared/models/gerente.model';
-import { Cliente } from '../../shared/models/cliente.model';
 import { ContaService } from '../conta/conta.service';
-import { LocalStorageResult } from '../../shared/utils/LocalStorageResult';
 import { UserService } from '../user/user.service';
-import { User } from '../../shared/models/user.model';
-import { TipoUsuario } from '../../shared/enums/TipoUsuario';
 import { ClienteService } from '../cliente/cliente.service';
 import AxiosService from '../axios/axios.service';
 import { DadoGerente } from '../../shared/models/dado-gerente.model';
@@ -22,9 +17,6 @@ export class GerenteService {
   private readonly axiosService = inject(AxiosService);
 
   constructor(
-    private readonly accountService: ContaService,
-    private readonly userService: UserService,
-    private readonly customerService: ClienteService
   ) { }
 
   public listarGerentes(): Promise<DadoGerente[]> {
@@ -41,10 +33,6 @@ export class GerenteService {
 
   public saveGerente(dadoGerenteInsercao: DadoGerenteInsercao): Promise<DadoGerenteInsercao>{
     return this.axiosService.post<DadoGerenteInsercao>("/gerentes", dadoGerenteInsercao);
-  }
-
-  public updateGerente(dadoGerenteAtualizacao: DadoGerenteAtualizacao): Promise<DadoGerenteAtualizacao>{
-    return this.axiosService.put<DadoGerenteAtualizacao>("/gerentes", dadoGerenteAtualizacao);
   }
 
   public updateManager(dadoGerenteAtualizacao: DadoGerenteAtualizacao, cpf: string): Promise<GerentesResponse[]> {

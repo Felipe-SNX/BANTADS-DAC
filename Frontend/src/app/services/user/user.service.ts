@@ -17,7 +17,7 @@ export class UserService {
     return this.axiosService.post<LoginResponse>("/login", login);
   }
 
-  public buscarDadosUsuario(email: String): Promise<LoginInfo> {
+  public buscarDadosUsuario(email: string): Promise<LoginInfo> {
     return this.axiosService.get<LoginInfo>(`/${email}`);
   }
 

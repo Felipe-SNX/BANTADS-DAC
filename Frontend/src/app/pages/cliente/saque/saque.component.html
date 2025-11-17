@@ -1,7 +1,8 @@
 <main class="d-flex flex-row w-100" style="max-height: 100vh;">
     <app-sidebar [tipoTela]="'cliente'"></app-sidebar>
+    <app-loading [isLoading]="loadingPagina"></app-loading>
 
-    <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;">
+    <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;" *ngIf="!loadingPagina">
         <h2 class="mb-0 align-self-start">Saque</h2>
 
         <div class="card shadow-sm">
@@ -27,13 +28,13 @@
                 <div class="d-flex flex-column gap-2 mb-4">
                     <div class="d-flex justify-content-between align-items-center text-muted">
                         <span>Saldo em conta</span>
-                        <span *ngIf="saldoVisivel">{{ saldo | currency:'BRL' }}</span>
+                        <span *ngIf="saldoVisivel">{{ customer.saldo | currency:'BRL' }}</span>
                         <span *ngIf="!saldoVisivel">R$ ••••••</span>
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center text-muted">
                         <span>Limite de crédito</span>
-                        <span *ngIf="saldoVisivel">{{ limite | currency:'BRL' }}</span>
+                        <span *ngIf="saldoVisivel">{{ customer.limite | currency:'BRL' }}</span>
                         <span *ngIf="!saldoVisivel">R$ ••••••</span>
                     </div>
 
@@ -41,7 +42,7 @@
 
                     <div class="d-flex justify-content-between align-items-center fw-bold h5">
                         <span>Disponível para saque</span>
-                        <span *ngIf="saldoVisivel">{{ (limite + saldo) | currency:'BRL' }}</span>
+                        <span *ngIf="saldoVisivel">{{ (customer.limite + customer.saldo) | currency:'BRL' }}</span>
                         <span *ngIf="!saldoVisivel">R$ ••••••</span>
                     </div>
                 </div>
@@ -73,12 +74,12 @@
                         <button
                             type="submit"
                             class="btn btn-primary btn-lg"
-                            [disabled]="!saqueForm.valid || loading">
-                            <span *ngIf="loading">
+                            [disabled]="!saqueForm.valid || loadingBotao">
+                            <span *ngIf="loadingBotao">
                                 <i class="fas fa-spinner fa-spin"></i>
                                 Sacando...
                             </span>
-                            <span *ngIf="!loading">
+                            <span *ngIf="!loadingBotao">
                                 Sacar
                             </span>
                         </button>

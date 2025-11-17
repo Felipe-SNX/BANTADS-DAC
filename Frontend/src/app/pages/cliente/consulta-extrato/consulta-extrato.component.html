@@ -40,15 +40,15 @@
                                 <tr 
                                     *ngFor="let transacao of transacoes"
                                     [ngClass]="{
-                                        'table-primary': transacao.tipo === 'DEPÓSITO' || (transacao.tipo === 'TRANSFERÊNCIA' && (transacao.clienteDestino?.id === id)),
-                                        'table-danger': transacao.tipo === 'SAQUE' || (transacao.tipo === 'TRANSFERÊNCIA' && (transacao.clienteOrigem?.id === id)),
-                                        'table-light': transacao.tipo === 'SALDO' 
+                                        'table-primary': transacao.tipo === 'depósito' || (transacao.tipo === 'transferência' && (transacao.destino === numConta)),
+                                        'table-danger': transacao.tipo === 'saque' || (transacao.tipo === 'transferência' && (transacao.origem === numConta)),
+                                        'table-light': transacao.tipo === 'saldo' 
                                     }"
                                 >
                                     <td>{{transacao.data | date:'dd/MM/yyyy HH:mm:ss'}}</td>
                                     <td>{{transacao.tipo}}</td>
-                                    <td>{{transacao.clienteOrigem?.nome}}</td>
-                                    <td>{{transacao.clienteDestino?.nome}}</td>
+                                    <td>{{transacao.origem}}</td>
+                                    <td>{{transacao.destino}}</td>
                                     <td class="text-end">{{transacao.valor | currency:'BRL'}}</td>
                                 </tr>
                             </tbody>

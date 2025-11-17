@@ -12,7 +12,7 @@ import { AutocadastroModel } from '../../../shared/models/autocadastro.model';
   selector: 'app-autocadastro',
   standalone: true,
   imports: [
-    FormsModule, // Estilo de formulário mantido (Template-Driven)
+    FormsModule, 
     CommonModule,
     EnderecoFormComponent,
     PessoaFormComponent

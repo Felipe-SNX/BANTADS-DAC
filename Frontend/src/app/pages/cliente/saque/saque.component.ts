@@ -1,111 +1,118 @@
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { NgxMaskDirective } from 'ngx-mask';
 import { UserService } from '../../../services/user/user.service';
 import { ContaService } from '../../../services/conta/conta.service';
-import { TransacaoService } from '../../../services/transacao/transacao.service';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
-import { TipoMovimentacao } from '../../../shared/enums/TipoMovimentacao';
-import { Cliente } from '../../../shared/models/cliente.model';
-import { Conta } from '../../../shared/models/conta.model';
-import { Transacao } from '../../../shared/models/transacao.model';
-import { User } from '../../../shared/models/user.model';
 import { ClienteService } from '../../../services/cliente/cliente.service';
+import { DadoCliente } from '../../../shared/models/dados-cliente.model';
+import { ContaDepositoRequest } from '../../../shared/models/conta-deposito-request.model';
+import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 
 @Component({
   selector: 'app-saque',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarComponent, NgxMaskDirective],
+  imports: [CommonModule, FormsModule, SidebarComponent, NgxMaskDirective, LoadingComponent],
   templateUrl: './saque.component.html',
   styleUrl: './saque.component.css'
 })
 export class SaqueComponent implements OnInit{
   @ViewChild('saqueForm') saqueForm!: NgForm;
-  user: User | null | undefined;
-  loading: boolean = false;
-  private readonly toastr = inject(ToastrService);
 
+  public loadingBotao: boolean = false;
+  public loadingPagina: boolean = false;
+  public saldoVisivel: boolean = false;
+  
+  public valorSaque: string = ''; 
   public saldo: number = 0;
   public limite: number = 0;
-  public saldoVisivel: boolean = false;
-  conta: Conta | undefined;
-  public valorSaque: string = '';
-  customer: Cliente | undefined;
-
-  onActionSelected(action: string) {
-  }
+  public customer: DadoCliente = new DadoCliente(); 
+  
+  private numConta: string = ''; 
+  
+  private readonly toastr = inject(ToastrService);
 
   constructor(
     private readonly accountService: ContaService,
-    private readonly transactionService: TransacaoService,
     private readonly router: Router,
-    private readonly cd: ChangeDetectorRef,
     private readonly userService: UserService,
     private readonly customerService: ClienteService
-  ){}
+  ) {}
 
-  toggleVisibilidadeSaldo(): void {
+  public toggleVisibilidadeSaldo(): void {
     this.saldoVisivel = !this.saldoVisivel;
   }
 
-  ngOnInit(): void {
-    const temp = this.userService.findLoggedUser();
-
-    if(!temp) this.router.navigate(['/']);
-
-    this.user = temp;
-    const tempCustomer = this.customerService.getClientById(this.user?.id as number);
-    const tempAccount = this.accountService.getAccountByCustomer(tempCustomer as Cliente);
-
-    if(!tempAccount){
-      this.router.navigate(['/']);
-    }
-    else{
-      this.customer = tempCustomer;
-      this.conta = tempAccount;
-      this.saldo = this.conta.saldo;
-      this.limite = this.conta.limite;
+  async ngOnInit(): Promise<void> {
+    this.loadingPagina = true;
+    try {
+      const user = this.userService.isLogged(); 
+      if (user) { 
+        const cpf = this.userService.getCpfUsuario();
+        const cliente = await this.customerService.getCliente(cpf);
+        
+        if (!cliente || !cliente.conta) {
+          throw new Error('Dados do cliente ou número da conta não encontrados.');
+        }
+        
+        this.customer = cliente;
+        this.numConta = cliente.conta;  
+        this.saldo = cliente.saldo;
+        this.limite = cliente.limite;
+        
+      } else {
+        this.toastr.error('Sessão expirada. Por favor, faça o login novamente.', 'Erro');
+        this.router.navigate(['/']);
+      }
+    } catch (error) {
+      console.error('Falha ao carregar dados do cliente:', error);
+      this.toastr.error('Não foi possível carregar os dados da sua conta.', 'Erro');
+      this.router.navigate(['/cliente']); // Volta para a home do cliente
+    } finally {
+      this.loadingPagina = false;
     }
   }
 
-  onSubmit() {
-    Object.values(this.saqueForm.controls).forEach(control => {
-      control.markAsTouched();
-    });
+  async onSubmit() {
+    this.saqueForm.form.markAllAsTouched();
 
     if (this.saqueForm.invalid) {
       this.toastr.error('Corrija os erros do formulário', 'Erro');
       return;
     }
 
-    this.loading = true;
-    this.cd.detectChanges();
+    this.loadingBotao = true;
 
-    setTimeout(() => {
-      try {
-
-        const valor = +this.valorSaque;
-        const transacao = new Transacao(new Date(), TipoMovimentacao.SAQUE, this.customer as Cliente, null, valor);
-        const result = this.transactionService.registerNewTransaction(transacao);
-
-        if (result.success) {
-          this.toastr.success("Saque efetuado com sucesso", 'Sucesso');
-          console.log("Saque bem sucedido");
-          this.router.navigate(['cliente/', this.user?.id])
-        } else {
-          this.toastr.error(result.message, 'Erro');
-        }
-
-      } catch (error) {
-        console.log(error);
-        this.toastr.error('Por favor, tente novamente', 'Erro');
-      } finally {
-        this.loading = false;
-        this.cd.detectChanges();
+    try {
+      const valorNumerico = +this.valorSaque;
+      
+      if (Number.isNaN(valorNumerico) || valorNumerico <= 0) {
+        this.toastr.error('Valor de saque inválido.', 'Erro');
+        throw new Error('Valor inválido'); 
       }
-    }, 0);
+      
+      if (valorNumerico > (this.saldo + this.limite)) {
+         this.toastr.error('Saldo insuficiente (incluindo limite).', 'Erro');
+         throw new Error('Saldo insuficiente');
+      }
+
+      const contaDepositoRequest = new ContaDepositoRequest(valorNumerico);
+      await this.accountService.sacarConta(this.numConta, contaDepositoRequest);
+          
+      this.toastr.success("Saque efetuado com sucesso", 'Sucesso');
+      this.router.navigate(['/cliente']);
+    
+    } catch (error: any) {
+      console.error(error);
+      if (error.message !== 'Valor inválido' && error.message !== 'Saldo insuficiente') {
+        this.toastr.error('Erro ao processar o saque. Tente novamente.', 'Erro');
+      }
+    } finally {
+      this.loadingBotao = false;
+    }
   }
+  
 }

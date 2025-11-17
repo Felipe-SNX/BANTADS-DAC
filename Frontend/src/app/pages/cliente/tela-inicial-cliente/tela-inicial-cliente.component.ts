@@ -15,12 +15,14 @@ import { LoadingComponent } from '../../../shared/components/loading/loading.com
   standalone: true
 })
 export class TelaInicialClienteComponent implements OnInit {
+  
   cliente: DadoCliente = new DadoCliente();
   cpf: string = '';
   loading: boolean = false;
   saldoNegativo: boolean = false;
 
-  constructor(
+  constructor
+  (
     private readonly clienteService: ClienteService,
     private readonly userService: UserService,
     private readonly router: Router) {

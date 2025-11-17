@@ -6,18 +6,19 @@
     <header class="content-header">
       <h1>Bem-vindo ao BANTADS</h1>
     </header>
+    
     <div class="dashboard">
-        <div class="welcome-card">
-          <h2>Olá, {{ cliente.nome }}</h2>
-          <p>Número da conta: {{ cliente.conta }}</p>
-          <p>Gerente responsável: {{ cliente.gerente_nome }}</p>
-          <div class="balance">
-            <h3>Saldo disponível</h3>
-            <p class="balance-value" [class.negative]="saldoNegativo">
-              R$ {{ cliente.saldo.toFixed(2) }}
-            </p>
-          </div>
+      <div class="welcome-card">
+        <h2>Olá, {{ cliente.nome }}!</h2>
+        <p>Número da conta: {{ cliente.conta }}</p>
+        <p>Gerente responsável: {{ cliente.gerente_nome }}</p>
+        <div class="balance">
+          <h3>Saldo disponível</h3>
+          <p class="balance-value" [class.negative]="saldoNegativo">
+            R$ {{ cliente.saldo.toFixed(2) }}
+          </p>
         </div>
-    </div>
+      </div>
+    </div>           
   </div>
 </div>

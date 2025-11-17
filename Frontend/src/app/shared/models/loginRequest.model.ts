@@ -1,7 +1,7 @@
 export class LoginRequest {
 
   constructor(
-    public login: String = '',
-    public senha: String = ''
+    public login: string = '',
+    public senha: string = ''
   ){}
 }

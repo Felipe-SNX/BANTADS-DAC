@@ -1,7 +1,8 @@
 <main class="d-flex flex-row w-100" style="max-height: 100vh;">
     <app-sidebar [tipoTela]="'cliente'"></app-sidebar>
+    <app-loading [isLoading]="loadingPagina"></app-loading>
 
-    <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;">
+    <div class="d-flex flex-column w-100 p-4 gap-4 conteudo-principal-container bg-light" style="overflow-y: auto;" *ngIf="!loadingPagina">
         <h2 class="mb-0">Realizar Depósito</h2>
 
         <div class="card shadow-sm">
@@ -44,12 +45,12 @@
                         <button
                             type="submit"
                             class="btn btn-primary btn-lg"
-                            [disabled]="!depositoForm.valid || loading">
-                            <span *ngIf="loading">
+                            [disabled]="!depositoForm.valid || loadingBotao">
+                            <span *ngIf="loadingBotao">
                                 <i class="fas fa-spinner fa-spin"></i>
                                 Depositando...
                             </span>
-                            <span *ngIf="!loading">
+                            <span *ngIf="!loadingBotao">
                                 Confirmar Depósito
                             </span>
                         </button>

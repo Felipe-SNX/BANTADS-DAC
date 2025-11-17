@@ -7,6 +7,7 @@ constructor(
     public endereco: string = '',
     public cidade: string = '',
     public estado: string = '',
+    public cep: string = '',
     public telefone: string = '',
     public salario: number = 0,
     public limite: number = 0,

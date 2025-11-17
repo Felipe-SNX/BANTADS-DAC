@@ -110,6 +110,9 @@ export class SidebarComponent implements OnInit{
     else if(this.tipoTela === 'gerente'){
       this.router.navigate(['gerente']);
     }
+    else{
+      this.router.navigate(['admin']);
+    }
   }
 
   async logout(){

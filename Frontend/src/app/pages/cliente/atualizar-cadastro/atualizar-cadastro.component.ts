@@ -2,15 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormsModule, NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { Cliente } from '../../../shared/models/cliente.model';
 import { ClienteService } from '../../../services/cliente/cliente.service';
 import { Router } from '@angular/router';
 import { UserService } from '../../../services/user/user.service';
-import { User } from '../../../shared/models/user.model';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { EnderecoFormComponent } from '../autocadastro/formularios/endereco-form/endereco-form.component';
 import { PessoaFormComponent } from '../autocadastro/formularios/pessoa-form/pessoa-form.component';
-import { LocalStorageResult } from '../../../shared/utils/LocalStorageResult';
+import { DadoCliente } from '../../../shared/models/dados-cliente.model';
+import { PerfilInfo } from '../../../shared/models/perfil-info.model';
 
 @Component({
   selector: 'app-atualizar-cadastro',
@@ -30,7 +29,7 @@ export class AtualizarCadastroComponent implements OnInit{
   @ViewChild('meuForm') meuForm!: NgForm;
   private readonly toastr = inject(ToastrService);
 
-  public cliente = {
+  public cliente: any = { 
     dadosPessoais: {
       nome: '',
       cpf: '',
@@ -50,7 +49,6 @@ export class AtualizarCadastroComponent implements OnInit{
   };
 
   public etapaAtual: number = 1;
-  user: User | null | undefined;
 
   constructor(
     private readonly customerService: ClienteService,
@@ -58,23 +56,29 @@ export class AtualizarCadastroComponent implements OnInit{
     private readonly router: Router
   ) {}
 
-  ngOnInit(): void {
-    const temp = this.userService.findLoggedUser();
-
-    if(!temp) this.router.navigate(['/']);
-
-    this.user = temp;
-
-    const customer = this.customerService.getClientById(this.user?.id as number);
-
-    if(!customer){
+  async ngOnInit(): Promise<void> {
+    const cpf = this.userService.getCpfUsuario();
+    if(cpf === '') {
       this.router.navigate(['/']);
+      return; 
     }
 
-    this.loadClienteData(customer as Cliente);
+    const customer = await this.customerService.getCliente(cpf);
+
+    if(!customer){
+      this.toastr.warning('Cliente não encontrado.', 'Erro');
+      this.router.navigate(['/']);
+      return; 
+    }
+
+    this.loadClienteData(customer);
   }
 
-  loadClienteData(customer: Cliente): void{
+  loadClienteData(customer: DadoCliente): void{
+    const dadosEndereco = (customer.endereco || '').split(',');
+
+    console.log(customer.cep);
+
     const clienteTransformado = {
       dadosPessoais: {
         nome: customer.nome,
@@ -85,13 +89,13 @@ export class AtualizarCadastroComponent implements OnInit{
       },
 
       endereco: {
-        tipo: customer.endereco.tipo,
-        logradouro: customer.endereco.logradouro,
-        numero: customer.endereco.numero,
-        complemento: customer.endereco.complemento,
-        cep: customer.endereco.cep,
-        cidade: customer.endereco.cidade,
-        estado: customer.endereco.estado
+        tipo: dadosEndereco.length >= 2 ? dadosEndereco[1].trim() : '',
+        logradouro: dadosEndereco.length >= 3 ? dadosEndereco[2].trim() : '',
+        numero: dadosEndereco.length >= 4 ? Number.parseInt(dadosEndereco[3]) : 0,
+        complemento: dadosEndereco.length > 0 ? dadosEndereco[0].trim() : '',
+        cep: customer.cep,
+        cidade: customer.cidade,
+        estado: customer.estado
       }
     };
 
@@ -103,8 +107,7 @@ export class AtualizarCadastroComponent implements OnInit{
     avancarEtapa() { this.etapaAtual++; }
     voltarEtapa() { this.etapaAtual--; }
 
-    onSubmit() {
-      //Marca todas as caixas como touched para aparecer os erros caso existam
+    async onSubmit() {
       Object.values(this.meuForm.controls).forEach(control => {
         if (control instanceof FormGroup) {
           Object.values(control.controls).forEach(innerControl => {
@@ -115,34 +118,36 @@ export class AtualizarCadastroComponent implements OnInit{
         }
       });
 
-      //Se tiver erros não prossegue
       if (this.meuForm.invalid) {
         console.log("Formulário inválido. Por favor, corrija os erros.");
+        this.toastr.warning('Formulário inválido. Verifique os campos.', 'Erro');
         return;
       }
 
-      //Transforma os campos no objeto cliente
+      try{
+        const updateCustomer = new PerfilInfo();
+        updateCustomer.nome = this.cliente.dadosPessoais.nome;
+        updateCustomer.email = this.cliente.dadosPessoais.email;
+        updateCustomer.salario = this.cliente.dadosPessoais.salario;
+        updateCustomer.telefone = this.cliente.dadosPessoais.telefone;
+        updateCustomer.endereco = [
+          this.cliente.endereco.complemento || '',
+          this.cliente.endereco.tipo || '',
+          this.cliente.endereco.logradouro || '',
+          this.cliente.endereco.numero || 0
+        ].join(', ');
+        updateCustomer.cep = this.cliente.endereco.cep;
+        updateCustomer.cidade = this.cliente.endereco.cidade;
+        updateCustomer.estado = this.cliente.endereco.estado;
 
-      const updateCustomer = new Cliente(
-        this.user?.id,
-        this.cliente.dadosPessoais.nome,
-        this.cliente.dadosPessoais.email,
-        this.cliente.dadosPessoais.cpf,
-        this.cliente.endereco,
-        this.cliente.dadosPessoais.telefone,
-        this.cliente.dadosPessoais.salario
-      );
+        console.log("Enviando atualização:", updateCustomer);
 
-      const result: LocalStorageResult = this.customerService.updateClient(updateCustomer);
-
-      if(result.success){
+        await this.customerService.atualizarCliente(updateCustomer, this.cliente.dadosPessoais.cpf);
         this.toastr.success('Cliente atualizado com sucesso!', 'Sucesso');
         this.router.navigate(['/cliente']);
-      }else{
-        console.log(result.message);
-        this.toastr.warning('Já existe um cliente com CPF informado!', 'Erro');
+      } catch(error) {
+        console.error("Erro ao atualizar cliente:", error);
+        this.toastr.error('Falha ao atualizar o cadastro. Tente novamente.', 'Erro');
       }
-
-      console.log(updateCustomer);
     }
 }

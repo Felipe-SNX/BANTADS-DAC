@@ -18,6 +18,8 @@ public class Endereco {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private String tipo;
+
     @Column(nullable = false)
     private String logradouro;
 

@@ -5,9 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f407bdc-04fa-4438-b84e-483bf43ae5f3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Frontend/src/app/pages/cliente/deposito/deposito.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/app/pages/cliente/deposito/deposito.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/app/pages/cliente/tela-inicial-cliente/tela-inicial-cliente.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/app/pages/cliente/tela-inicial-cliente/tela-inicial-cliente.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/src/app/pages/cliente/tela-inicial-cliente/tela-inicial-cliente.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/app/pages/cliente/tela-inicial-cliente/tela-inicial-cliente.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/ms-cliente/src/main/java/com/bantads/mscliente/core/service/ClienteService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/ms-cliente/src/main/java/com/bantads/mscliente/core/service/ClienteService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/app/pages/cliente/atualizar-cadastro/atualizar-cadastro.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/app/pages/cliente/atualizar-cadastro/atualizar-cadastro.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/app/pages/cliente/autocadastro/autocadastro.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/app/pages/cliente/autocadastro/autocadastro.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/app/pages/cliente/autocadastro/formularios/endereco-form/endereco-form.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/app/pages/cliente/autocadastro/formularios/endereco-form/endereco-form.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/src/app/pages/gerente/listar-clientes-gerente/listar-clientes-gerente.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/src/app/pages/gerente/listar-clientes-gerente/listar-clientes-gerente.component.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,26 +38,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Orquestrador",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Projetos/Faculdade/BANTADS-DAC",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "run.configurations.included.in.services": "true",
-    "ts.external.directory.path": "C:\\Projetos\\Faculdade\\BANTADS-DAC\\Frontend\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Orquestrador&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Projetos/Faculdade/BANTADS-DAC&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Projetos\\Faculdade\\BANTADS-DAC\\Frontend\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunDashboard">
     <option name="configurationTypes">
       <set>
@@ -64,7 +68,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.MscontaApplication">
+  <component name="RunManager">
     <configuration name="BantadsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="demo" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.dac.bantads.BantadsApplication" />
@@ -97,14 +101,6 @@
       </method>
     </configuration>
   </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
-      </set>
-    </attachedChunks>
-  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="4f407bdc-04fa-4438-b84e-483bf43ae5f3" name="Changes" comment="" />
@@ -117,6 +113,7 @@
       <workItem from="1762865217092" duration="2000" />
       <workItem from="1762866600445" duration="7097000" />
       <workItem from="1762953004564" duration="29484000" />
+      <workItem from="1763121456650" duration="7225000" />
     </task>
     <servers />
   </component>

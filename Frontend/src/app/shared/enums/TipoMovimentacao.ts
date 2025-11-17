@@ -1,6 +1,6 @@
 export enum TipoMovimentacao{
-    DEPOSITO = "DEPÓSITO",
-    SAQUE = "SAQUE",
-    TRANSFERENCIA = "TRANSFERÊNCIA",
-    SALDO = "SALDO"
+    depósito = "depósito",
+    saque = "saque",
+    transferência = "transferência",
+    saldo = "saldo"
 }

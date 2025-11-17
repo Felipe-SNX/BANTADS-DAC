@@ -6,23 +6,21 @@ import { EnderecoFormComponent } from './formularios/endereco-form/endereco-form
 import { PessoaFormComponent } from "./formularios/pessoa-form/pessoa-form.component";
 import { Router } from '@angular/router';
 import { ClienteService } from '../../../services/cliente/cliente.service';
-import { GerenteService } from '../../../services/gerente/gerente.service';
-import { Cliente } from '../../../shared/models/cliente.model';
-import { LocalStorageResult } from '../../../shared/utils/LocalStorageResult';
+import { AutocadastroModel } from '../../../shared/models/autocadastro.model';
 
 @Component({
   selector: 'app-autocadastro',
   standalone: true,
   imports: [
-    FormsModule,
+    FormsModule, 
     CommonModule,
     EnderecoFormComponent,
     PessoaFormComponent
-],
+  ],
   templateUrl: './autocadastro.component.html',
   styleUrl: './autocadastro.component.css'
 })
-export class AutocadastroComponent{
+export class AutocadastroComponent {
   @ViewChild('meuForm') meuForm!: NgForm;
   private readonly toastr = inject(ToastrService);
 
@@ -48,17 +46,18 @@ export class AutocadastroComponent{
   public etapaAtual: number = 1;
 
   constructor(
-    private readonly customerService: ClienteService, 
-    private readonly managerService: GerenteService,
+    private readonly customerService: ClienteService,
     private readonly router: Router
   ) {
   }
 
-  avancarEtapa() { this.etapaAtual++; }
+  avancarEtapa() {
+    this.etapaAtual++;
+  }
+
   voltarEtapa() { this.etapaAtual--; }
 
-  onSubmit() {
-    //Marca todas as caixas como touched para aparecer os erros caso existam
+  async onSubmit() {
     Object.values(this.meuForm.controls).forEach(control => {
       if (control instanceof FormGroup) {
         Object.values(control.controls).forEach(innerControl => {
@@ -69,28 +68,43 @@ export class AutocadastroComponent{
       }
     });
 
-    //Se tiver erros não prossegue
     if (this.meuForm.invalid) {
-      console.log("Formulário inválido. Por favor, corrija os erros.");
+      console.log("Formulário inválido (Pai). Por favor, corrija os erros.");
+      this.toastr.warning("Formulário inválido. Verifique os campos.", "Erro");
       return;
     }
 
-    //Transforma os campos no objeto cliente
-    const formValue = this.meuForm.value;
-    const customer = new Cliente(0, formValue.dadosPessoais.name , formValue.dadosPessoais.email, formValue.dadosPessoais.CPF, formValue.endereco, formValue.dadosPessoais.telefone, formValue.dadosPessoais.salario);
+    try {
+      const customer: AutocadastroModel = new AutocadastroModel();
+      
+      customer.cpf = this.cliente.dadosPessoais.cpf;
+      customer.email = this.cliente.dadosPessoais.email;
+      customer.nome = this.cliente.dadosPessoais.nome;
+      customer.salario = this.cliente.dadosPessoais.salario;
+      customer.telefone = this.cliente.dadosPessoais.telefone;
 
-    const manager = this.managerService.addCustomerToManager(customer);
-    customer.gerente = manager;
-    const result: LocalStorageResult = this.customerService.saveClient(customer);
+      customer.cidade = this.cliente.endereco.cidade;
+      customer.estado = this.cliente.endereco.estado;
+      customer.cep = this.cliente.endereco.cep;
 
-    if(result.success){
+      customer.endereco = [
+        this.cliente.endereco.complemento || '',
+        this.cliente.endereco.tipo || '',
+        this.cliente.endereco.logradouro || '',
+        this.cliente.endereco.numero || 0
+      ].join(', ');
+
+      await this.customerService.cadastrarCliente(customer);
       this.toastr.success('A solicitação foi enviada com sucesso!', 'Sucesso');
-    }else{
-      console.log(result.message);
-      this.toastr.warning('Já existe um cliente com CPF informado!', 'Erro');
-    }
+      this.router.navigate(['/']);
 
-    console.log(customer);
-    this.router.navigate(['/']);
+    } catch (error: any) {
+      if (error.status === 409) {
+        this.toastr.warning('Já existe um cliente com CPF informado!', 'Erro');
+      } else {
+        this.toastr.warning('Não foi possível cadastrar um cliente!', 'Erro');
+      }
+      console.log(error);
+    }
   }
 }

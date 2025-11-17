@@ -17,7 +17,7 @@ import { ClienteResponse } from '../../../shared/models/cliente-response.model';
 })
 export class ListarClientesGerenteComponent implements OnInit {
   listaId: number = 0;
-  
+
   private clientesBase: ClienteResponse[] = [];
   public clientesFiltrados: ClienteResponse[] = [];
 
@@ -34,7 +34,7 @@ export class ListarClientesGerenteComponent implements OnInit {
   async ngOnInit() {
     this.listaId = Number(this.route.snapshot.paramMap.get('id'));
     await this.carregarEFiltrarClientes();
-    this.aplicarFiltrosLocais(); 
+    this.aplicarFiltrosLocais();
   }
 
   async carregarEFiltrarClientes() {
@@ -42,7 +42,7 @@ export class ListarClientesGerenteComponent implements OnInit {
 
     try {
       const todosClientes = await this.clienteService.buscarClientes();
-      
+
       if (todosClientes.length === 0) {
         console.error("Backend não retornou clientes.");
         this.clientesBase = [];
@@ -52,14 +52,13 @@ export class ListarClientesGerenteComponent implements OnInit {
       const clientesDoGerente = todosClientes.filter((cliente) => cliente.gerente === gerenteCpf);
 
       switch (this.listaId) {
-        
+
         case 1:
           this.clientesBase = clientesDoGerente;
           break;
 
         case 3:
-          const clientesOrdenados = clientesDoGerente.sort((a, b) => b.saldo - a.saldo);
-          this.clientesBase = clientesOrdenados.slice(0, 3);
+          this.clientesBase = await this.clienteService.buscarTop3Clientes();
           break;
 
         default:
@@ -78,11 +77,11 @@ export class ListarClientesGerenteComponent implements OnInit {
       const nomeMatch = this.filtroNome
         ? cliente.nome.toLowerCase().includes(this.filtroNome.toLowerCase())
         : true;
-        
+
       const cpfMatch = this.filtroCpf
         ? cliente.cpf.replace(/\D/g, '').includes(this.filtroCpf.replace(/\D/g, ''))
         : true;
-        
+
       return nomeMatch && cpfMatch;
     });
   }

@@ -94,6 +94,7 @@ public class ClienteService {
         RelatorioClientesResponse relatorioClientesResponse = ClienteMapper.clienteToRelatorioClientesResponse(cliente);
         relatorioClientesResponse.setCidade(endereco.getCidade());
         relatorioClientesResponse.setEstado(endereco.getEstado());
+        relatorioClientesResponse.setCep(endereco.getCep());
         relatorioClientesResponse.setEndereco(
             formatarEnderecoCompleto(endereco)
         );

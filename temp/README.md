@@ -1,0 +1,1 @@
+pasta temp apenas para SR, depois deleto a pasta temp!

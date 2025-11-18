@@ -58,15 +58,8 @@ export class AutocadastroComponent {
   voltarEtapa() { this.etapaAtual--; }
 
   async onSubmit() {
-    Object.values(this.meuForm.controls).forEach(control => {
-      if (control instanceof FormGroup) {
-        Object.values(control.controls).forEach(innerControl => {
-          innerControl.markAsTouched();
-        });
-      } else {
-        control.markAsTouched();
-      }
-    });
+
+    this.meuForm.control.markAllAsTouched();
 
     if (this.meuForm.invalid) {
       console.log("Formulário inválido (Pai). Por favor, corrija os erros.");

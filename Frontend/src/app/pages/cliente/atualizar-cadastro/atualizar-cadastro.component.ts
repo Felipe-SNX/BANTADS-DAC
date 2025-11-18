@@ -74,10 +74,38 @@ export class AtualizarCadastroComponent implements OnInit{
     this.loadClienteData(customer);
   }
 
-  loadClienteData(customer: DadoCliente): void{
-    const dadosEndereco = (customer.endereco || '').split(',');
+  loadClienteData(customer: DadoCliente): void {
+    const parts = (customer.endereco || '').split(',').map(p => p.trim());
+    const len = parts.length;
 
-    console.log(customer.cep);
+    const enderecoObj = {
+      tipo: '',
+      logradouro: '',
+      numero: 0,
+      complemento: '',
+      cep: customer.cep,
+      cidade: customer.cidade,
+      estado: customer.estado
+    };
+
+    if (len >= 4) {
+      enderecoObj.complemento = parts[0];
+      enderecoObj.tipo = parts[1];
+      enderecoObj.logradouro = parts[2];
+      enderecoObj.numero = this.parseNumeroSeguro(parts[3]);
+    } 
+    else if (len === 3) {
+      enderecoObj.tipo = parts[0];
+      enderecoObj.logradouro = parts[1];
+      enderecoObj.numero = this.parseNumeroSeguro(parts[2]);
+    } 
+    else if (len === 2) {
+      enderecoObj.logradouro = parts[0];
+      enderecoObj.numero = this.parseNumeroSeguro(parts[1]);
+    } 
+    else if (len === 1) {
+      enderecoObj.logradouro = parts[0];
+    }
 
     const clienteTransformado = {
       dadosPessoais: {
@@ -87,21 +115,16 @@ export class AtualizarCadastroComponent implements OnInit{
         telefone: customer.telefone,
         salario: customer.salario
       },
-
-      endereco: {
-        tipo: dadosEndereco.length >= 2 ? dadosEndereco[1].trim() : '',
-        logradouro: dadosEndereco.length >= 3 ? dadosEndereco[2].trim() : '',
-        numero: dadosEndereco.length >= 4 ? Number.parseInt(dadosEndereco[3]) : 0,
-        complemento: dadosEndereco.length > 0 ? dadosEndereco[0].trim() : '',
-        cep: customer.cep,
-        cidade: customer.cidade,
-        estado: customer.estado
-      }
+      endereco: enderecoObj
     };
 
     this.cliente = clienteTransformado;
+    console.log('Endereço processado com segurança:', this.cliente.endereco);
+  }
 
-    console.log('Cliente encontrado e transformado para o formulário:', this.cliente);
+  private parseNumeroSeguro(valor: string): number {
+    const num = Number.parseInt(valor);
+    return Number.isNaN(num) ? 0 : num;
   }
 
     avancarEtapa() { this.etapaAtual++; }

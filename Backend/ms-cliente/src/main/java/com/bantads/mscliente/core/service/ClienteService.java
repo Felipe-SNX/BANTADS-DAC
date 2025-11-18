@@ -86,15 +86,14 @@ public class ClienteService {
         return clienteRepository.countClientesByGerente();
     }
 
-
     public RelatorioClientesResponse getClientePorCpf(String cpf) {
         Cliente cliente = buscarClientePorCpfEStatus(cpf, true); 
         Endereco endereco = buscarEnderecoPorId(cliente.getIdEndereco(), cpf);
 
         RelatorioClientesResponse relatorioClientesResponse = ClienteMapper.clienteToRelatorioClientesResponse(cliente);
+        relatorioClientesResponse.setCep(endereco.getCep());
         relatorioClientesResponse.setCidade(endereco.getCidade());
         relatorioClientesResponse.setEstado(endereco.getEstado());
-        relatorioClientesResponse.setCep(endereco.getCep());
         relatorioClientesResponse.setEndereco(
             formatarEnderecoCompleto(endereco)
         );

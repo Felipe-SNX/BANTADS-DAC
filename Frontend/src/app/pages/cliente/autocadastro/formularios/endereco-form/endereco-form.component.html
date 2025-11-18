@@ -1,6 +1,7 @@
 <fieldset ngModelGroup="endereco">
     <h4>Endereço</h4>
     <div class="d-flex flex-row flex-wrap gap-3 justify-content-between align-items-center w-100">
+        
         <div class="form-group col-md-5">
             <label class="col-sm-4 col-form-label labels" for="CEP">CEP</label>
             <input 
@@ -23,6 +24,7 @@
                 <small *ngIf="CEPInput.errors?.['minlength']">O CEP digitado é inválido</small>
             </div>
         </div>
+
         <div class="form-group col-md-6">
             <label class="col-sm-6 col-form-label labels" for="estado">Estado</label>
             <input 
@@ -43,6 +45,7 @@
                 <small *ngIf="estadoInput.errors?.['required']">O campo Estado é obrigatório</small>
             </div>
         </div>
+
         <div class="form-group col-md-5">
             <label class="col-sm-5 col-form-label labels" for="cidade">Cidade</label>
             <input 
@@ -63,6 +66,7 @@
                 <small *ngIf="cidadeInput.errors?.['required']">O campo Cidade é obrigatório</small>
             </div>
         </div>
+
         <div class="form-group col-md-6">
             <label class="col-sm-6 col-form-label labels" for="tipoEnd">Tipo de Endereço</label>
             <input 
@@ -73,8 +77,17 @@
                 name="tipoEnd"
                 #tipoInput="ngModel"
                 [(ngModel)]="endereco.tipo"
+                required
             />
+            <div
+                id="tipoEnd-warning"
+                class="text-danger mt-1"
+                *ngIf="tipoInput.invalid && (tipoInput.dirty || tipoInput.touched)"
+            >
+                <small *ngIf="tipoInput.errors?.['required']">O campo Tipo é obrigatório</small>
+            </div>
         </div>
+
         <div class="form-group col-md-12">
             <label class="col-sm-12 col-form-label labels" for="logradouro">Logradouro</label>
             <input 
@@ -95,6 +108,7 @@
                 <small *ngIf="logradouroInput.errors?.['required']">O campo Logradouro é obrigatório</small>
             </div>
         </div>
+
         <div class="form-group col-md-5">
             <label class="col-sm-5 col-form-label labels" for="number">Número</label>
             <input 
@@ -105,19 +119,21 @@
                 name="numero"
                 aria-describedby="numero-warning"
                 #numeroInput="ngModel"
+                inputGreaterThanZero
                 [(ngModel)]="endereco.numero"
                 required
             />
             <div
                 id="numero-warning"
                 class="text-danger mt-1"
-                *ngIf="numeroInput.invalid && (numeroInput.touched)"
+                *ngIf="numeroInput.invalid && (numeroInput.dirty || numeroInput.touched)"
             >
                 <small *ngIf="numeroInput.errors?.['required']">O campo Número é obrigatório</small>
                 <small *ngIf="numeroInput.errors?.['maiorQueZero']">O campo Número deve ser maior que zero</small>
             </div>
         </div>
-        <div class="form- col-md-6">
+
+        <div class="form-group col-md-6">
             <label class="col-sm-6 col-form-label labels" for="complemento">Complemento</label>
             <input 
                 type="text" 
@@ -125,8 +141,18 @@
                 id="complemento" 
                 placeholder="Ex: Casa, Apartamento"
                 name="complemento"
+                aria-describedby="complemento-warning"
+                #complementoInput="ngModel"
                 [(ngModel)]="endereco.complemento"
+                required
             />
+            <div
+                id="complemento-warning"
+                class="text-danger mt-1"
+                *ngIf="complementoInput.invalid && (complementoInput.dirty || complementoInput.touched)"
+            >
+                <small *ngIf="complementoInput.errors?.['required']">O campo complemento é obrigatório</small>
+            </div>
         </div>
     </div>
 </fieldset>

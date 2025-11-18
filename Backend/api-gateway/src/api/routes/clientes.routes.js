@@ -163,6 +163,7 @@ router.get('/', verifyToken, async (req, res, next) => {
                 const conta = listaContas.find(c => c.cliente === cliente.cpf);
                 return {
                     ...cliente,
+                    limite: conta ? conta.limite : 0,
                     saldo: conta ? conta.saldo : 0,
                 };
             });

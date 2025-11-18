@@ -112,13 +112,18 @@ export class TransferenciaComponent implements OnInit{
       this.router.navigate(['/cliente']);
         
     } catch (error: any) {
-      console.error(error);
-      
-      const errosIgnorados = ['Valor inválido', 'Saldo insuficiente', 'Conta de destino inválida'];
-      if (!errosIgnorados.includes(error.message)) {
-        this.toastr.error('Erro ao processar a transferência. Tente novamente.', 'Erro');
+      const status = error.response?.status;
+      const backendMessage = error.response?.data?.message || 'Erro de rede';
+
+      if (status === 400) {
+          this.toastr.warning(backendMessage, 'Atenção!'); 
+      } else if (status === 404) {
+          this.toastr.error('Conta não encontrada ou inacessível.', 'Erro');
+      } else {
+          this.toastr.error('Erro de servidor inesperado.', 'Erro');
       }
-    } finally {
+    }
+    finally{
       this.loadingBotao = false;
     }
   }

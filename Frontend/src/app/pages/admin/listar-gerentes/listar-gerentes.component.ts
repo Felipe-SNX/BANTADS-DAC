@@ -43,9 +43,14 @@ export class ListarGerentesComponent implements OnInit{
   }
 
    async deletarGerente(gerente: DadoGerente){
-    await this.managerService.deleteManager(gerente.cpf);
-    this.toastr.success('Gerente deletado com sucesso!', 'Sucesso');
-    this.gerentes = this.gerentes.filter(g => g.cpf !== gerente.cpf);
+    if(this.gerentes.length === 1){
+      this.toastr.error('O último gerente do banco não pode ser deletado!', 'Erro');
+    }
+    else{
+      await this.managerService.deleteManager(gerente.cpf);
+      this.toastr.success('Gerente deletado com sucesso!', 'Sucesso');
+      this.gerentes = this.gerentes.filter(g => g.cpf !== gerente.cpf);
+    }
   }
 
   editarGerente(gerente: DadoGerente){

@@ -86,6 +86,8 @@ router.get('/', verifyToken, async (req, res, next) => {
                 }
             }
             const compositeResponse = Array.from(dashboardMap.values());
+            compositeResponse.sort((a, b) => b.saldo_positivo - a.saldo_positivo);
+            
             return res.status(200).json(compositeResponse);
         }
 

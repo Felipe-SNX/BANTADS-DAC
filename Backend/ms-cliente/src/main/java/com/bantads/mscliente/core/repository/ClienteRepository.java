@@ -25,4 +25,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
             "WHERE c.gerente IS NOT NULL " +
             "GROUP BY c.gerente")
     List<GerenteNumeroContasDto> countClientesByGerente();
+
+    List<Cliente> findAllByAprovadoAndMotivoRejeicaoIsNull(boolean b);
 }

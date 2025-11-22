@@ -114,17 +114,18 @@ export class ConsultaExtratoComponent implements OnInit {
       const list = groupByDate.get(dayKey) || [];
       list.push(t);
       groupByDate.set(dayKey, list);
-    });
+    })
 
     let finalResult: ItemExtratoResponse[] = [];
-    
     let accumulatorBalance = 0; 
 
     const startDate = new Date(ordenedTransactions[0].data);
     const endDate = new Date(ordenedTransactions[ordenedTransactions.length - 1].data);
+
     let currentDate = new Date(startDate.toISOString().split('T')[0]);
 
     while(currentDate <= endDate){
+
       const dayKey = currentDate.toISOString().split('T')[0];
       const dayTransactions = groupByDate.get(dayKey) || [];
 
@@ -155,15 +156,18 @@ export class ConsultaExtratoComponent implements OnInit {
 
       const balanceDate = new Date(transactionsDate);
       balanceDate.setDate(transactionsDate.getDate() + 1);
+      
+      const isLastTransactionDay = currentDate.toISOString().split('T')[0] === endDate.toISOString().split('T')[0];
 
-      finalResult.push({
-        tipo: TipoMovimentacao.saldo,
-        origem: '',
-        destino: '',
-        data: balanceDate,
-        valor: accumulatorBalance
-      });
-
+      if (!isLastTransactionDay) {
+          finalResult.push({
+              tipo: TipoMovimentacao.saldo,
+              origem: '',
+              destino: '',
+              data: balanceDate,
+              valor: accumulatorBalance
+          });
+      }
       currentDate.setUTCDate(currentDate.getUTCDate() + 1);
     }
 

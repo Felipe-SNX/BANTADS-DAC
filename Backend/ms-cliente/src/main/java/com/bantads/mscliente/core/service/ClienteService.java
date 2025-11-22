@@ -1,6 +1,21 @@
 package com.bantads.mscliente.core.service;
 
-import com.bantads.mscliente.core.dto.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.bantads.mscliente.core.dto.AutoCadastroInfo;
+import com.bantads.mscliente.core.dto.ClienteParaAprovarResponse;
+import com.bantads.mscliente.core.dto.ClienteRejeitadoDto;
+import com.bantads.mscliente.core.dto.DadosClienteConta;
+import com.bantads.mscliente.core.dto.GerenteNumeroContasDto;
+import com.bantads.mscliente.core.dto.PerfilInfo;
+import com.bantads.mscliente.core.dto.RelatorioClientesResponse;
 import com.bantads.mscliente.core.dto.mapper.ClienteMapper;
 import com.bantads.mscliente.core.exception.ClienteNaoEncontradoException;
 import com.bantads.mscliente.core.exception.CpfJaCadastradoException;
@@ -10,16 +25,8 @@ import com.bantads.mscliente.core.model.Endereco;
 import com.bantads.mscliente.core.repository.ClienteRepository;
 import com.bantads.mscliente.core.repository.EnderecoRepository;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors; 
-
-import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -50,7 +57,7 @@ public class ClienteService {
 
     private List<Cliente> listarClientesParaAprovar() {
         
-        return clienteRepository.findAllByAprovado(false);
+        return clienteRepository.findAllByAprovadoAndMotivoRejeicaoIsNull(false);
     }
 
     @Transactional

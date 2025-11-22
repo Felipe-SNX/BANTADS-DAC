@@ -95,7 +95,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 50s
+      start_period: 60s
 
   ms-auth:
     build: './Backend/ms-auth'
@@ -127,7 +127,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 50s
+      start_period: 60s
 
   ms-orquestrador:
     build: './Backend/ms-orquestrador'
@@ -174,7 +174,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 50s
+      start_period: 60s
 
   ms-gerente:
     build: './Backend/ms-gerente'
@@ -201,7 +201,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 50s
+      start_period: 60s
 
   ms-cliente:
     build: './Backend/ms-cliente'
@@ -235,7 +235,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 50s
+      start_period: 60s
 
 volumes:
   rabbitmq_data:
